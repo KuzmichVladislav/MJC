@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
@@ -19,4 +20,5 @@ public class GiftCertificate {
     int duration;
     Date createDate;
     Date lastUpdateDate;
+    List<Tag> tagList;
 }
