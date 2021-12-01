@@ -1,16 +1,13 @@
 package com.epam.esm.dao;
 
-import com.epam.esm.model.GiftCertificate;
 import com.epam.esm.model.Tag;
 import org.springframework.stereotype.Component;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Component
 public class TagDao {
-//    InitialContext initContext;
+    //    InitialContext initContext;
 //    DataSource ds;
 //    {
 //        try {

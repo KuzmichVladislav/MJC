@@ -1,5 +1,8 @@
 rootProject.name = 'esm'
-include 'model'
-include 'controller'
-include 'dao'
+include 'service'
+include 'web'
+include 'persistence'
 
+project(':service').projectDir = "$rootDir/service" as File
+project(':web').projectDir = "$rootDir/web" as File
+project(':persistence').projectDir = "$rootDir/persistence" as File
