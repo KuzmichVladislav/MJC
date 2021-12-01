@@ -1,8 +1,8 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.dao.TagDao;
-import com.epam.esm.model.GiftCertificate;
-import com.epam.esm.model.Tag;
+import com.epam.esm.dao.impl.TagDaoImpl;
+import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.entity.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/gift_certificate")
 public class GiftCertificateController {
 
-    private final TagDao giftCertificateDao;
+    private final TagDaoImpl giftCertificateDao;
 
     @Autowired
-    public GiftCertificateController(TagDao giftCertificateDao) {
+    public GiftCertificateController(TagDaoImpl giftCertificateDao) {
         this.giftCertificateDao = giftCertificateDao;
     }
 
@@ -39,8 +39,8 @@ public class GiftCertificateController {
         System.out.println("work");
         Tag tag = new Tag();
 //        tag.setId(id);
-        tag.setName(name);
-        giftCertificateDao.save(tag);
+       // tag.setName(name);
+        giftCertificateDao.createTag(tag);
     }
 
     @GetMapping("/{id}/edit")

@@ -6,7 +6,7 @@ public interface TagDao {
 
     Tag createTag(Tag tag);
 
-    Tag readTag(Tag tag);
+    Tag readTag(int id);
 
-    Tag deleteTag(Tag tag);
+    boolean deleteTag(int id);
 }

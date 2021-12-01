@@ -1,12 +1,17 @@
 package com.epam.esm.dao.impl;
 
+import com.epam.esm.dao.TagDao;
 import com.epam.esm.entity.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 @Component
-public class TagDaoImpl {
+public class TagDaoImpl implements TagDao {
     //    InitialContext initContext;
 //    DataSource ds;
 //    {
@@ -23,60 +28,37 @@ public class TagDaoImpl {
 //            e.printStackTrace();
 //        }
 //    }
-    private static final String URL = "jdbc:mysql://localhost:3306/gifts";
-    private static final String USERNAME = "root";
-    private static final String PASSWORD = "Amedab22";
 
-    private static Connection connection;
+    private final JdbcTemplate jdbcTemplate;
 
-    static {
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        try {
-            connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
+    @Autowired
+    public TagDaoImpl(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
-    public Tag show(int id) {
-        Tag tag = null;
-        try (PreparedStatement preparedStatement =
-                     connection.prepareStatement("SELECT * FROM tag WHERE id=?")) {
-            preparedStatement.setInt(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            resultSet.next();
-            tag = new Tag();
-            tag.setId(resultSet.getInt("id"));
-            tag.setName(resultSet.getString("name"));
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
+    @Override
+    public Tag createTag(Tag tag) {
+        jdbcTemplate.update("INSERT INTO tag VALUES(?,?)", tag.getId(), tag.getName());
         return tag;
     }
 
-    public Tag save(Tag tag) {
-        try (PreparedStatement preparedStatement =
-                     connection.prepareStatement("INSERT INTO tag VALUES(?,?)")) {
-            preparedStatement.setInt(1, tag.getId());
-            preparedStatement.setString(2, tag.getName());
-            preparedStatement.executeUpdate();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        return tag;
+    @Override
+    public Tag readTag(int id) {
+        return jdbcTemplate.query("SELECT * FROM tag WHERE id=?", new BeanPropertyRowMapper<>(Tag.class), id)
+                .stream().findAny().orElse(null);
     }
+//    @Override
+//    public Tag readTag(int id) {
+//        return jdbcTemplate.query("SELECT * FROM tag WHERE id=?", new Object[]{id}, new TagMapper())
+//                .stream().findAny().orElse(null);
+//    }
 
-    public void delete(int id) {
-        try (PreparedStatement preparedStatement =
-                     connection.prepareStatement("DELETE FROM tag WHERE id=?")) {
-            preparedStatement.setInt(1, id);
-            preparedStatement.executeUpdate();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+    @Override
+    public boolean deleteTag(int id) {
+        boolean isDelete = false;
+        if (jdbcTemplate.update("DELETE FROM tag WHERE id=?", id) > 0){
+            isDelete = true;
         }
+        return isDelete;
     }
 }
