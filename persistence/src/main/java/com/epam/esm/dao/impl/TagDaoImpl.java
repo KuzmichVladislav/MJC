@@ -6,28 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-@Component
+@Repository
 public class TagDaoImpl implements TagDao {
-    //    InitialContext initContext;
-//    DataSource ds;
-//    {
-//        try {
-//            initContext = new InitialContext();
-//        } catch (NamingException e) {
-//            e.printStackTrace();
-//        }
-//    }
-//    {
-//        try {
-//            ds = (DataSource) initContext.lookup("java:comp/env/jdbc/dbconnect");
-//        } catch (NamingException e) {
-//            e.printStackTrace();
-//        }
-//    }
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -47,11 +32,6 @@ public class TagDaoImpl implements TagDao {
         return jdbcTemplate.query("SELECT * FROM tag WHERE id=?", new BeanPropertyRowMapper<>(Tag.class), id)
                 .stream().findAny().orElse(null);
     }
-//    @Override
-//    public Tag readTag(int id) {
-//        return jdbcTemplate.query("SELECT * FROM tag WHERE id=?", new Object[]{id}, new TagMapper())
-//                .stream().findAny().orElse(null);
-//    }
 
     @Override
     public boolean deleteTag(int id) {
