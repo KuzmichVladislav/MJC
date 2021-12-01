@@ -1,17 +1,24 @@
-package com.epam.esm.model;
+package com.epam.esm.entity;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 @Data
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
-public class Tag {
+public class GiftCertificate {
     int id;
     String name;
-    List<GiftCertificate> giftCertificateList;
+    String description;
+    BigDecimal price;
+    int duration;
+    Date createDate;
+    Date lastUpdateDate;
+    List<Tag> tagList;
 }
