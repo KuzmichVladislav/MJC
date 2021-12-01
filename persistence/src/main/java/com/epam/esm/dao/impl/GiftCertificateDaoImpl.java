@@ -20,9 +20,9 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
     @Override
     public GiftCertificate createGiftCertificate(GiftCertificate giftCertificate) {
-        jdbcTemplate.update("INSERT INTO gift_certificate VALUES(?,?,?,?,?,?,?)", giftCertificate.getId(),
+        jdbcTemplate.update("INSERT INTO gift_certificate (name, description, price, duration) VALUES(?,?,?,?)",
                 giftCertificate.getName(), giftCertificate.getDescription(), giftCertificate.getPrice(),
-                giftCertificate.getDuration(), giftCertificate.getCreateDate(), giftCertificate.getLastUpdateDate());
+                giftCertificate.getDuration());
 
 //        try (PreparedStatement preparedStatement =
 //                     connection.prepareStatement("INSERT INTO tag VALUES(?,?,?,?,?,?,?)")) {

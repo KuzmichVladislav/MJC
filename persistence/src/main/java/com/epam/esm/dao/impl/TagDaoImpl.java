@@ -5,11 +5,12 @@ import com.epam.esm.entity.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Component;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 
 @Repository
 public class TagDaoImpl implements TagDao {
@@ -23,7 +24,7 @@ public class TagDaoImpl implements TagDao {
 
     @Override
     public Tag createTag(Tag tag) {
-        jdbcTemplate.update("INSERT INTO tag VALUES(?,?)", tag.getId(), tag.getName());
+        jdbcTemplate.update("INSERT INTO tag (name) VALUES(?)");
         return tag;
     }
 
@@ -36,7 +37,7 @@ public class TagDaoImpl implements TagDao {
     @Override
     public boolean deleteTag(int id) {
         boolean isDelete = false;
-        if (jdbcTemplate.update("DELETE FROM tag WHERE id=?", id) > 0){
+        if (jdbcTemplate.update("DELETE FROM tag WHERE id=?", id) > 0) {
             isDelete = true;
         }
         return isDelete;
