@@ -12,28 +12,8 @@ repositories {
 
 
 dependencies {
-//    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
-//    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
-//
-//    testCompile group: 'junit', name: 'junit', version: '4.11'
-//    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
-//    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
-//
-//    implementation group: 'org.springframework', name: 'spring-core', version: '5.3.13'
-//
-//    implementation group: 'org.springframework', name: 'spring-context', version: '5.3.13'
-//
-//    implementation group: 'org.springframework', name: 'spring-web', version: '5.3.13'
-//
-//    implementation group: 'org.springframework', name: 'spring-webmvc', version: '5.3.13'
-//
-//    implementation group: 'org.thymeleaf', name: 'thymeleaf-spring5', version: '3.0.12.RELEASE'
-//    compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
-
-
     implementation project(':service')
     implementation project(':persistence')
-
 }
 
 test {
