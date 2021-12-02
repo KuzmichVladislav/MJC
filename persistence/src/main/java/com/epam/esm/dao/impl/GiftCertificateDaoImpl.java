@@ -5,41 +5,48 @@ import com.epam.esm.entity.GiftCertificate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Component;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+
+import java.sql.PreparedStatement;
 
 @Repository
 public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
     private final JdbcTemplate jdbcTemplate;
+//    private SimpleJdbcInsert simpleJdbcInsert;
+
 
     @Autowired
     public GiftCertificateDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+//        this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
+
     }
 
     @Override
     public GiftCertificate createGiftCertificate(GiftCertificate giftCertificate) {
-        jdbcTemplate.update("INSERT INTO gift_certificate (name, description, price, duration) VALUES(?,?,?,?)",
-                giftCertificate.getName(), giftCertificate.getDescription(), giftCertificate.getPrice(),
-                giftCertificate.getDuration());
+//        jdbcTemplate.update("INSERT INTO gift_certificate (name, description, price, duration) VALUES(?,?,?,?)",
+//                giftCertificate.getName(), giftCertificate.getDescription(), giftCertificate.getPrice(),
+//                giftCertificate.getDuration());
 
-//        try (PreparedStatement preparedStatement =
-//                     connection.prepareStatement("INSERT INTO tag VALUES(?,?,?,?,?,?,?)")) {
-//            preparedStatement.setInt(1, giftCertificate.getId()); // TODO: 11/30/2021 change to autoincrement
-//            preparedStatement.setString(2, giftCertificate.getName());
-//            preparedStatement.setString(3, giftCertificate.getDescription());
-//            preparedStatement.setBigDecimal(4, giftCertificate.getPrice());
-//            preparedStatement.setInt(5, giftCertificate.getDuration());
-//            preparedStatement.setDate(6, (Date) giftCertificate.getCreateDate());
-//            preparedStatement.setDate(7, (Date) giftCertificate.getLastUpdateDate());
-//            // TODO: 11/30/2021 add transaction to add? tag
-//            preparedStatement.executeUpdate();
-//        } catch (SQLException throwables) {
-//            throwables.printStackTrace();
-//        }
+        String SQL = "INSERT INTO gift_certificate (name, description, price, duration) VALUES(?,?,?,?)";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(connection -> {
+            PreparedStatement preparedStatement = connection.prepareStatement(SQL, new String[]{"id"});
+            preparedStatement.setString(1, giftCertificate.getName());
+            preparedStatement.setString(2, giftCertificate.getDescription());
+            preparedStatement.setBigDecimal(3, giftCertificate.getPrice());
+            preparedStatement.setInt(4, giftCertificate.getDuration());
+
+            return preparedStatement;
+        }, keyHolder);
+
+        System.out.println(keyHolder.getKey().longValue());
+
         return giftCertificate;
-    }
+}
 
     @Override
     public GiftCertificate readGiftCertificate(int id) {
