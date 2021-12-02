@@ -1,6 +1,5 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.dao.TagDao;
 import com.epam.esm.dao.impl.TagDaoImpl;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.service.TagService;
@@ -13,10 +12,11 @@ import java.util.List;
 public class TagServiceImpl implements TagService {
 
     private final TagDaoImpl tagDao;
+    GiftCertificateServiceImpl giftCertificateService;
 
     @Autowired
-    public TagServiceImpl(TagDao tagDao) {
-        this.tagDao = (TagDaoImpl) tagDao;
+    public TagServiceImpl(TagDaoImpl tagDao) {
+        this.tagDao = tagDao;
     }
 
     @Override
@@ -27,7 +27,9 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public Tag read(int id) {
-        return tagDao.readTag(id);
+        Tag tag = tagDao.readTag(id);
+        tag.setGiftCertificateList(giftCertificateService.readAllCertificateByTagId(id));
+        return tag;
     }
 
     @Override
@@ -38,5 +40,17 @@ public class TagServiceImpl implements TagService {
     @Override
     public boolean delete(int id) {
         return tagDao.deleteTag(id);
+    }
+
+    public void addTagToCertificate(int giftCertificateId, int tagId) {
+        tagDao.addTagToCertificate(giftCertificateId, tagId);
+    }
+
+    public int findByName(String name) {
+        return tagDao.findByName(name);
+    }
+
+    public List<Tag> readAllTagsByCertificateId(int id) {
+        return tagDao.readAllTagsByCertificateId(id);
     }
 }

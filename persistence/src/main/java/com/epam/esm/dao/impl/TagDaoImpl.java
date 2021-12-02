@@ -62,4 +62,12 @@ public class TagDaoImpl implements TagDao {
     public int findByName(String name) {
         return jdbcTemplate.queryForObject("SELECT id FROM tag WHERE name=?", Integer.class, name);
     }
+
+    public List<Tag> readAllTagsByCertificateId(int giftCertificateId) {
+        return jdbcTemplate.query("SELECT id, name\n" +
+                        "FROM tag\n" +
+                        "   LEFT JOIN gift_certificate_tag_include gcti on tag.id = gcti.tag\n" +
+                        "WHERE gcti.giftCertificate = ?",
+                new BeanPropertyRowMapper<>(Tag.class), giftCertificateId);
+    }
 }

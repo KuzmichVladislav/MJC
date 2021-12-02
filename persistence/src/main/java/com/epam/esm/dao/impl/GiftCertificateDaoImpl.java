@@ -10,27 +10,20 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
+import java.util.List;
 
 @Repository
 public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
     private final JdbcTemplate jdbcTemplate;
-//    private SimpleJdbcInsert simpleJdbcInsert;
-
 
     @Autowired
     public GiftCertificateDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-//        this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
-
     }
 
     @Override
     public int createGiftCertificate(GiftCertificate giftCertificate) {
-//        jdbcTemplate.update("INSERT INTO gift_certificate (name, description, price, duration) VALUES(?,?,?,?)",
-//                giftCertificate.getName(), giftCertificate.getDescription(), giftCertificate.getPrice(),
-//                giftCertificate.getDuration());
-
         String SQL = "INSERT INTO gift_certificate (name, description, price, duration) VALUES(?,?,?,?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
@@ -41,7 +34,6 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             preparedStatement.setInt(4, giftCertificate.getDuration());
             return preparedStatement;
         }, keyHolder);
-
         return keyHolder.getKey().intValue();
     }
 
@@ -49,25 +41,6 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     public GiftCertificate readGiftCertificate(int id) {
         return jdbcTemplate.query("SELECT * FROM gift_certificate WHERE id=?", new BeanPropertyRowMapper<>(GiftCertificate.class), id)
                 .stream().findAny().orElse(null);
-//        GiftCertificate giftCertificate = null;
-//        try (PreparedStatement preparedStatement =
-//                     connection.prepareStatement("SELECT * FROM gift_certificate WHERE id=?")) {
-//            preparedStatement.setInt(1, id);
-//            ResultSet resultSet = preparedStatement.executeQuery();
-//            resultSet.next();
-//            giftCertificate = new GiftCertificate();
-//            giftCertificate.setId(resultSet.getInt("id"));
-//            giftCertificate.setName(resultSet.getString("name"));
-//            giftCertificate.setDescription(resultSet.getString("description"));
-//            giftCertificate.setPrice(resultSet.getBigDecimal("price"));
-//            giftCertificate.setDuration(resultSet.getInt("duration"));
-//            giftCertificate.setCreateDate(resultSet.getDate("create_date"));
-//            giftCertificate.setLastUpdateDate(resultSet.getDate("last_update_date"));
-//            // TODO: 11/30/2021 add tags
-//        } catch (SQLException throwables) {
-//            throwables.printStackTrace();
-//        }
-//        return giftCertificate;
     }
 
     @Override
@@ -112,7 +85,8 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         }
         return isDelete;
     }
-//        boolean isDelete = false;
+
+    //        boolean isDelete = false;
 //        try (PreparedStatement preparedStatement =
 //                     connection.prepareStatement("DELETE FROM gift_certificate WHERE id=?")) {
 //            preparedStatement.setInt(1, id);
@@ -124,4 +98,12 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 //        }
 //        return isDelete;
 //    }
+    public List<GiftCertificate> readAllCertificateByTagId(int tagId) {
+        return jdbcTemplate.query("SELECT id, name, description, price, duration, createDate, lastUpdateDate, giftCertificate, tag\n" +
+                        "FROM gift_certificate\n" +
+                        "   LEFT JOIN gift_certificate_tag_include gcti on gift_certificate.id = gcti.giftCertificate\n" +
+                        "WHERE gcti.tag = ?",
+                new BeanPropertyRowMapper<>(GiftCertificate.class), tagId);
+    }
+
 }

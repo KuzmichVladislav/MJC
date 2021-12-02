@@ -1,8 +1,6 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.dao.GiftCertificateDao;
-import com.epam.esm.dao.TagDao;
-import com.epam.esm.dao.impl.TagDaoImpl;
+import com.epam.esm.dao.impl.GiftCertificateDaoImpl;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.service.GiftCertificateService;
@@ -15,28 +13,29 @@ import java.util.List;
 @Service
 public class GiftCertificateServiceImpl implements GiftCertificateService {
 
-    private final GiftCertificateDao giftCertificateDao;
-    private final TagDaoImpl tagDao;
+    private final GiftCertificateDaoImpl giftCertificateDao;
 
     @Autowired
-    public GiftCertificateServiceImpl(GiftCertificateDao giftCertificateDao, TagDao tagDao) {
+    TagServiceImpl tagService;
+
+    @Autowired
+    public GiftCertificateServiceImpl(GiftCertificateDaoImpl giftCertificateDao) {
         this.giftCertificateDao = giftCertificateDao;
-        this.tagDao = (TagDaoImpl) tagDao;
     }
 
     @Override
     public GiftCertificate create(GiftCertificate giftCertificate) {
         List<Tag> tagList = giftCertificate.getTagList();
-        List<Tag> existingTags = tagDao.readAllTags();
+        List<Tag> existingTags = tagService.readAll();
         int giftCertificateId = giftCertificateDao.createGiftCertificate(giftCertificate);
         tagList.stream()
                 .distinct()
                 .filter(e -> !existingTags.contains(e))
                 .forEach(t -> {
                     try {
-                        tagDao.addTagToCertificate(giftCertificateId, tagDao.createTag(t));
+                        tagService.addTagToCertificate(giftCertificateId, tagService.create(t).getId());
                     } catch (DuplicateKeyException e) {
-                        tagDao.addTagToCertificate(giftCertificateId, tagDao.findByName(t.getName()));
+                        tagService.addTagToCertificate(giftCertificateId, tagService.findByName(t.getName()));
                     }
                 });
         return giftCertificateDao.readGiftCertificate(giftCertificateId);
@@ -44,7 +43,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     public GiftCertificate read(int id) {
-        return giftCertificateDao.readGiftCertificate(id);
+        GiftCertificate giftCertificate = giftCertificateDao.readGiftCertificate(id);
+        giftCertificate.setTagList(tagService.readAllTagsByCertificateId(id));
+        return giftCertificate;
     }
 
     @Override
@@ -55,5 +56,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     public boolean delete(int id) {
         return giftCertificateDao.deleteGiftCertificate(id);
+    }
+
+    public List<GiftCertificate> readAllCertificateByTagId(int giftCertificateId) {
+        return giftCertificateDao.readAllCertificateByTagId(giftCertificateId);
     }
 }
