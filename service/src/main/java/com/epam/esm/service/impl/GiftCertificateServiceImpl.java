@@ -1,6 +1,6 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.dao.impl.GiftCertificateDaoImpl;
+import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.service.GiftCertificateService;
@@ -13,13 +13,13 @@ import java.util.List;
 @Service
 public class GiftCertificateServiceImpl implements GiftCertificateService {
 
-    private final GiftCertificateDaoImpl giftCertificateDao;
+    private final GiftCertificateDao giftCertificateDao;
 
     @Autowired
     TagServiceImpl tagService;
 
     @Autowired
-    public GiftCertificateServiceImpl(GiftCertificateDaoImpl giftCertificateDao) {
+    public GiftCertificateServiceImpl(GiftCertificateDao giftCertificateDao) {
         this.giftCertificateDao = giftCertificateDao;
     }
 
@@ -27,7 +27,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     public GiftCertificate create(GiftCertificate giftCertificate) {
         List<Tag> tagList = giftCertificate.getTagList();
         List<Tag> existingTags = tagService.readAll();
-        int giftCertificateId = giftCertificateDao.createGiftCertificate(giftCertificate);
+        int giftCertificateId = giftCertificateDao.create(giftCertificate);
         tagList.stream()
                 .distinct()
                 .filter(e -> !existingTags.contains(e))
@@ -38,24 +38,24 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
                         tagService.addTagToCertificate(giftCertificateId, tagService.findByName(t.getName()));
                     }
                 });
-        return giftCertificateDao.readGiftCertificate(giftCertificateId);
+        return giftCertificateDao.read(giftCertificateId);
     }
 
     @Override
     public GiftCertificate read(int id) {
-        GiftCertificate giftCertificate = giftCertificateDao.readGiftCertificate(id);
+        GiftCertificate giftCertificate = giftCertificateDao.read(id);
         giftCertificate.setTagList(tagService.readAllTagsByCertificateId(id));
         return giftCertificate;
     }
 
     @Override
     public GiftCertificate update(int id, GiftCertificate giftCertificate) {
-        return giftCertificateDao.updateGiftCertificate(id, giftCertificate);
+        return giftCertificateDao.update(id, giftCertificate);
     }
 
     @Override
     public boolean delete(int id) {
-        return giftCertificateDao.deleteGiftCertificate(id);
+        return giftCertificateDao.delete(id);
     }
 
     public List<GiftCertificate> readAllCertificateByTagId(int giftCertificateId) {

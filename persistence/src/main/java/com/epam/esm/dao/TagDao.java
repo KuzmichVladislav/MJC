@@ -6,11 +6,17 @@ import java.util.List;
 
 public interface TagDao {
 
-    int createTag(Tag tag);
+    int create(Tag tag);
 
-    List<Tag> readAllTags();
+    List<Tag> readAll();
 
-    Tag readTag(int id);
+    Tag read(int id);
 
-    boolean deleteTag(int id);
+    boolean delete(int id);
+
+    void addTagToCertificate(int giftCertificate, int tag);
+
+    int findByName(String name);
+
+    List<Tag> readAllTagsByCertificateId(int giftCertificateId);
 }

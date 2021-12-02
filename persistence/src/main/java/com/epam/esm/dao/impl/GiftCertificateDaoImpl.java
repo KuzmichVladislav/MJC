@@ -17,13 +17,12 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    @Autowired
     public GiftCertificateDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
-    public int createGiftCertificate(GiftCertificate giftCertificate) {
+    public int create(GiftCertificate giftCertificate) {
         String SQL = "INSERT INTO gift_certificate (name, description, price, duration) VALUES(?,?,?,?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
@@ -38,13 +37,13 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
-    public GiftCertificate readGiftCertificate(int id) {
+    public GiftCertificate read(int id) {
         return jdbcTemplate.query("SELECT * FROM gift_certificate WHERE id=?", new BeanPropertyRowMapper<>(GiftCertificate.class), id)
                 .stream().findAny().orElse(null);
     }
 
     @Override
-    public GiftCertificate updateGiftCertificate(int id, GiftCertificate giftCertificate) {
+    public GiftCertificate update(int id, GiftCertificate giftCertificate) {
         jdbcTemplate.update("UPDATE gift_certificate SET name=?, description=?, price=?, duration=? WHERE id=?", id);
         return giftCertificate;
 //        try (PreparedStatement preparedStatement =
@@ -78,7 +77,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
-    public boolean deleteGiftCertificate(int id) {
+    public boolean delete(int id) {
         boolean isDelete = false;
         if (jdbcTemplate.update("DELETE FROM gift_certificate WHERE id=?", id) > 0) {
             isDelete = true;

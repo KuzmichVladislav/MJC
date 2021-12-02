@@ -24,7 +24,7 @@ public class TagDaoImpl implements TagDao {
     }
 
     @Override
-    public int createTag(Tag tag) throws DuplicateKeyException {
+    public int create(Tag tag) throws DuplicateKeyException {
         String SQL = "INSERT INTO tag (name) VALUES(?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
@@ -36,18 +36,18 @@ public class TagDaoImpl implements TagDao {
     }
 
     @Override
-    public List<Tag> readAllTags() {
+    public List<Tag> readAll() {
         return jdbcTemplate.query("SELECT * FROM tag", new BeanPropertyRowMapper<>(Tag.class));
     }
 
     @Override
-    public Tag readTag(int id) {
+    public Tag read(int id) {
         return jdbcTemplate.query("SELECT * FROM tag WHERE id=?", new BeanPropertyRowMapper<>(Tag.class), id)
                 .stream().findAny().orElse(null);
     }
 
     @Override
-    public boolean deleteTag(int id) {
+    public boolean delete(int id) {
         boolean isDelete = false;
         if (jdbcTemplate.update("DELETE FROM tag WHERE id=?", id) > 0) {
             isDelete = true;

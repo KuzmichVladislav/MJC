@@ -6,11 +6,14 @@ import java.util.List;
 
 public interface GiftCertificateDao {
 
-    int createGiftCertificate(GiftCertificate giftCertificate);
+    int create(GiftCertificate giftCertificate);
 
-    GiftCertificate readGiftCertificate(int id);
+    GiftCertificate read(int id);
 
-    GiftCertificate updateGiftCertificate(int id, GiftCertificate giftCertificate);
+    GiftCertificate update(int id, GiftCertificate giftCertificate);
 
-    boolean deleteGiftCertificate(int id);
+    boolean delete(int id);
+
+    List<GiftCertificate> readAllCertificateByTagId(int tagId);
+
 }
