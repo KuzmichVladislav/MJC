@@ -11,6 +11,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
+import java.util.List;
 
 @Repository
 public class TagDaoImpl implements TagDao {
@@ -26,6 +27,11 @@ public class TagDaoImpl implements TagDao {
     public Tag createTag(Tag tag) {
         jdbcTemplate.update("INSERT INTO tag (name) VALUES(?)");
         return tag;
+    }
+
+    @Override
+    public List<Tag> readAllTags() {
+        return jdbcTemplate.query("SELECT * FROM tag", new BeanPropertyRowMapper<>(Tag.class));
     }
 
     @Override
