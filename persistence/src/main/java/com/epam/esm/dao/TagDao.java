@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface TagDao {
 
-    Tag createTag(Tag tag);
+    int createTag(Tag tag);
 
     List<Tag> readAllTags();
 

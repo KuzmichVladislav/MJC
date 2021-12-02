@@ -4,7 +4,7 @@ import com.epam.esm.entity.GiftCertificate;
 
 public interface GiftCertificateDao {
 
-    GiftCertificate createGiftCertificate(GiftCertificate giftCertificate);
+    int createGiftCertificate(GiftCertificate giftCertificate);
 
     GiftCertificate readGiftCertificate(int id);
 

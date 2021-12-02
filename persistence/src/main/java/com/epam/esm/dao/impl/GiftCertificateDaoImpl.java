@@ -26,7 +26,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
-    public GiftCertificate createGiftCertificate(GiftCertificate giftCertificate) {
+    public int createGiftCertificate(GiftCertificate giftCertificate) {
 //        jdbcTemplate.update("INSERT INTO gift_certificate (name, description, price, duration) VALUES(?,?,?,?)",
 //                giftCertificate.getName(), giftCertificate.getDescription(), giftCertificate.getPrice(),
 //                giftCertificate.getDuration());
@@ -39,14 +39,11 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             preparedStatement.setString(2, giftCertificate.getDescription());
             preparedStatement.setBigDecimal(3, giftCertificate.getPrice());
             preparedStatement.setInt(4, giftCertificate.getDuration());
-
             return preparedStatement;
         }, keyHolder);
 
-        System.out.println(keyHolder.getKey().longValue());
-
-        return giftCertificate;
-}
+        return keyHolder.getKey().intValue();
+    }
 
     @Override
     public GiftCertificate readGiftCertificate(int id) {

@@ -3,9 +3,9 @@ package com.epam.esm.dao.impl;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.entity.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -24,9 +24,19 @@ public class TagDaoImpl implements TagDao {
     }
 
     @Override
-    public Tag createTag(Tag tag) {
-        jdbcTemplate.update("INSERT INTO tag (name) VALUES(?)");
-        return tag;
+    public int createTag(Tag tag) throws DuplicateKeyException {
+//        jdbcTemplate.update("INSERT INTO tag (name) VALUES(?)", tag.getName());
+//        return tag;
+
+        String SQL = "INSERT INTO tag (name) VALUES(?)";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(connection -> {
+            PreparedStatement preparedStatement = connection.prepareStatement(SQL, new String[]{"id"});
+            preparedStatement.setString(1, tag.getName());
+            return preparedStatement;
+        }, keyHolder);
+
+        return keyHolder.getKey().intValue();
     }
 
     @Override
@@ -47,5 +57,15 @@ public class TagDaoImpl implements TagDao {
             isDelete = true;
         }
         return isDelete;
+    }
+    public int addTagToCertificate (int giftCertificate, int tag){
+       return jdbcTemplate.update("INSERT INTO gift_certificate_tag_include VALUES(?, ?)", giftCertificate, tag);
+    }
+
+    public int findByName(String name) {
+        return jdbcTemplate.queryForObject("SELECT id FROM tag WHERE name=?", new Object[]{name}, Integer.class);
+
+//        return jdbcTemplate.query("SELECT id FROM tag WHERE name=?", new BeanPropertyRowMapper<>(Tag.class), name)
+//                .stream().findAny().orElse(null);
     }
 }
