@@ -25,9 +25,6 @@ public class TagDaoImpl implements TagDao {
 
     @Override
     public int createTag(Tag tag) throws DuplicateKeyException {
-//        jdbcTemplate.update("INSERT INTO tag (name) VALUES(?)", tag.getName());
-//        return tag;
-
         String SQL = "INSERT INTO tag (name) VALUES(?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
@@ -35,7 +32,6 @@ public class TagDaoImpl implements TagDao {
             preparedStatement.setString(1, tag.getName());
             return preparedStatement;
         }, keyHolder);
-
         return keyHolder.getKey().intValue();
     }
 
@@ -58,14 +54,12 @@ public class TagDaoImpl implements TagDao {
         }
         return isDelete;
     }
-    public int addTagToCertificate (int giftCertificate, int tag){
-       return jdbcTemplate.update("INSERT INTO gift_certificate_tag_include VALUES(?, ?)", giftCertificate, tag);
+
+    public void addTagToCertificate(int giftCertificate, int tag) {
+        jdbcTemplate.update("INSERT INTO gift_certificate_tag_include VALUES(?, ?)", giftCertificate, tag);
     }
 
     public int findByName(String name) {
-        return jdbcTemplate.queryForObject("SELECT id FROM tag WHERE name=?", new Object[]{name}, Integer.class);
-
-//        return jdbcTemplate.query("SELECT id FROM tag WHERE name=?", new BeanPropertyRowMapper<>(Tag.class), name)
-//                .stream().findAny().orElse(null);
+        return jdbcTemplate.queryForObject("SELECT id FROM tag WHERE name=?", Integer.class, name);
     }
 }

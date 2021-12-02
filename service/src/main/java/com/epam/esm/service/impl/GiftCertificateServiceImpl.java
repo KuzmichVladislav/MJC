@@ -1,6 +1,7 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.GiftCertificateDao;
+import com.epam.esm.dao.TagDao;
 import com.epam.esm.dao.impl.TagDaoImpl;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
@@ -10,7 +11,6 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class GiftCertificateServiceImpl implements GiftCertificateService {
@@ -19,9 +19,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     private final TagDaoImpl tagDao;
 
     @Autowired
-    public GiftCertificateServiceImpl(GiftCertificateDao giftCertificateDao, TagDaoImpl tagDao) {
+    public GiftCertificateServiceImpl(GiftCertificateDao giftCertificateDao, TagDao tagDao) {
         this.giftCertificateDao = giftCertificateDao;
-        this.tagDao = tagDao;
+        this.tagDao = (TagDaoImpl) tagDao;
     }
 
     @Override
