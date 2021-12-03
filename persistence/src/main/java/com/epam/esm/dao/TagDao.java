@@ -20,4 +20,6 @@ public interface TagDao {
     Optional<Tag> findTagByName(String name);
 
     List<Tag> readAllTagsByCertificateId(int giftCertificateId);
+
+    void removeTagByCertificateId(int certificateId);
 }

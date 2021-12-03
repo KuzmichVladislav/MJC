@@ -43,6 +43,11 @@ public class TagServiceImpl implements TagService {
         return tagDao.removeTagById(id);
     }
 
+    @Override
+    public void removeTagByCertificateId(int certificateId) {
+        tagDao.removeTagByCertificateId(certificateId);
+    }
+
     public void addTagToCertificate(int giftCertificateId, int tagId) {
         tagDao.addTagToCertificate(giftCertificateId, tagId);
     }

@@ -13,4 +13,6 @@ public interface TagService {
     Tag findTagById(int id);
 
     boolean removeTagById(int id);
+
+    void removeTagByCertificateId(int certificateId);
 }

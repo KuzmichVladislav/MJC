@@ -57,6 +57,21 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     public GiftCertificate updateGiftCertificate(int id, GiftCertificate giftCertificate) {
+        tagService.removeTagByCertificateId(id);
+        List<Tag> tagList = giftCertificate.getTagList();
+        List<Tag> existingTags = tagService.findAllTags();
+        tagList.stream()
+                .distinct()
+                .filter(e -> !existingTags.contains(e))
+                .forEach(t -> {
+                    Optional<Tag> foundTag = tagService.findByName(t.getName());
+                    if (foundTag.isPresent()) {
+                        tagService.addTagToCertificate(id, foundTag.get().getId());
+                    } else {
+                        tagService.addTagToCertificate(id, tagService.addTag(t).getId());
+                    }
+
+                });
         giftCertificate.setLastUpdateDate(new java.sql.Timestamp(new java.util.Date().getTime()));
         return giftCertificateDao.updateGiftCertificate(id, giftCertificate);
     }
