@@ -21,19 +21,19 @@ public class TagControllerImpl implements TagController {
     @Override
     @PostMapping(consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Tag create(@RequestBody Tag tag) {
-        return tagService.create(tag);
+        return tagService.addTag(tag);
     }
 
     @Override
     @GetMapping(value = "/{id}", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Tag read(@PathVariable("id") int id) {
-        return tagService.read(id);
+        return tagService.findTagById(id);
     }
 
     @Override
     @DeleteMapping("/{id}")
     public boolean delete(@PathVariable("id") int id) {
-        return tagService.delete(id);
+        return tagService.removeTagById(id);
     }
 
     // TODO: 12/1/2021

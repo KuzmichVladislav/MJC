@@ -25,7 +25,7 @@ public class TagDaoImpl implements TagDao {
     }
 
     @Override
-    public int create(Tag tag) throws DuplicateKeyException { // FIXME: 12/3/2021 what return?
+    public int addTag(Tag tag) throws DuplicateKeyException { // FIXME: 12/3/2021 what return?
         String SQL = "INSERT INTO tag (name) VALUES(?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
@@ -37,18 +37,18 @@ public class TagDaoImpl implements TagDao {
     }
 
     @Override
-    public Tag read(int id) {
+    public Tag findTagById(int id) {
         return jdbcTemplate.query("SELECT * FROM tag WHERE id=?", new BeanPropertyRowMapper<>(Tag.class), id)
                 .stream().findAny().orElse(null);// FIXME: 12/3/2021 what return?
     }
 
     @Override
-    public List<Tag> readAll() {
+    public List<Tag> findAllTags() {
         return jdbcTemplate.query("SELECT * FROM tag", new BeanPropertyRowMapper<>(Tag.class));
     }
 
     @Override
-    public boolean delete(int id) { // FIXME: 12/3/2021 what return?
+    public boolean removeTagById(int id) { // FIXME: 12/3/2021 what return?
         boolean isDelete = false;
         if (jdbcTemplate.update("DELETE FROM tag WHERE id=?", id) > 0) {
             isDelete = true;
@@ -60,7 +60,7 @@ public class TagDaoImpl implements TagDao {
         jdbcTemplate.update("INSERT INTO gift_certificate_tag_include VALUES(?, ?)", giftCertificate, tag);
     }
 
-    public Optional<Tag> findByName(String name) {
+    public Optional<Tag> findTagByName(String name) {
         return jdbcTemplate.query("SELECT id FROM tag WHERE name=?", new BeanPropertyRowMapper<>(Tag.class), name).stream().findAny();
     }
 

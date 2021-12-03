@@ -6,11 +6,11 @@ import java.util.List;
 
 public interface TagService {
 
-    Tag create(Tag tag);
+    Tag addTag(Tag tag);
 
-    Tag read(int id);
+    List<Tag> findAllTags();
 
-    List<Tag> readAll();
+    Tag findTagById(int id);
 
-    boolean delete(int id);
+    boolean removeTagById(int id);
 }

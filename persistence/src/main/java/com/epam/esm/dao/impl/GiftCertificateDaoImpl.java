@@ -22,7 +22,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
-    public int create(GiftCertificate giftCertificate) {
+    public int addGiftCertificate(GiftCertificate giftCertificate) {
         String SQL = "INSERT INTO gift_certificate (name, description, price, duration) VALUES(?,?,?,?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
@@ -37,19 +37,19 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
-    public GiftCertificate read(int id) {
+    public GiftCertificate findGiftCertificateById(int id) {
         return jdbcTemplate.query("SELECT * FROM gift_certificate WHERE id=?", new BeanPropertyRowMapper<>(GiftCertificate.class), id)
                 .stream().findAny().orElse(null);
     }
 
     @Override
-    public List<GiftCertificate> readAll() {
+    public List<GiftCertificate> findAllGiftCertificates() {
         return jdbcTemplate.query("SELECT id, name, description, price, duration, createDate, lastUpdateDate FROM gift_certificate",
                 new BeanPropertyRowMapper<>(GiftCertificate.class));
     }
 
     @Override
-    public GiftCertificate update(int id, GiftCertificate giftCertificate) {
+    public GiftCertificate updateGiftCertificate(int id, GiftCertificate giftCertificate) {
         jdbcTemplate.update("UPDATE gift_certificate SET name=?, description=?, price=?, duration=?, lastUpdateDate=? WHERE id=?",
                 giftCertificate.getName(), giftCertificate.getDescription(), giftCertificate.getPrice(), giftCertificate.getDuration(),
                 new java.sql.Timestamp(new java.util.Date().getTime()), id);// FIXME: 12/3/2021 date
@@ -57,7 +57,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
-    public boolean delete(int id) {
+    public boolean removeGiftCertificateById(int id) {
         boolean isDelete = false;
         if (jdbcTemplate.update("DELETE FROM gift_certificate WHERE id=?", id) > 0) {
             isDelete = true;

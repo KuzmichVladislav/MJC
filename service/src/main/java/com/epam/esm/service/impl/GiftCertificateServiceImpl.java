@@ -24,10 +24,10 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public GiftCertificate create(GiftCertificate giftCertificate) {
+    public GiftCertificate addGiftCertificate(GiftCertificate giftCertificate) {
         List<Tag> tagList = giftCertificate.getTagList();
-        List<Tag> existingTags = tagService.readAll();
-        int giftCertificateId = giftCertificateDao.create(giftCertificate);
+        List<Tag> existingTags = tagService.findAllTags();
+        int giftCertificateId = giftCertificateDao.addGiftCertificate(giftCertificate);
         tagList.stream()
                 .distinct()
                 .filter(e -> !existingTags.contains(e))
@@ -36,33 +36,33 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
                     if (foundTag.isPresent()) {
                         tagService.addTagToCertificate(giftCertificateId, foundTag.get().getId());
                     } else {
-                        tagService.addTagToCertificate(giftCertificateId, tagService.create(t).getId());
+                        tagService.addTagToCertificate(giftCertificateId, tagService.addTag(t).getId());
                     }
 
                 });
-        return giftCertificateDao.read(giftCertificateId);
+        return giftCertificateDao.findGiftCertificateById(giftCertificateId);
     }
 
     @Override
-    public GiftCertificate read(int id) {
-        GiftCertificate giftCertificate = giftCertificateDao.read(id);
+    public GiftCertificate findGiftCertificateById(int id) {
+        GiftCertificate giftCertificate = giftCertificateDao.findGiftCertificateById(id);
         giftCertificate.setTagList(tagService.readAllTagsByCertificateId(id));
         return giftCertificate;
     }
 
     @Override
-    public List<GiftCertificate> readAll() {
-        return giftCertificateDao.readAll();
+    public List<GiftCertificate> findAllGiftCertificates() {
+        return giftCertificateDao.findAllGiftCertificates();
     }
 
     @Override
-    public GiftCertificate update(int id, GiftCertificate giftCertificate) {
-        return giftCertificateDao.update(id, giftCertificate);
+    public GiftCertificate updateGiftCertificate(int id, GiftCertificate giftCertificate) {
+        return giftCertificateDao.updateGiftCertificate(id, giftCertificate);
     }
 
     @Override
-    public boolean delete(int id) {
-        return giftCertificateDao.delete(id);
+    public boolean removeGiftCertificateById(int id) {
+        return giftCertificateDao.removeGiftCertificateById(id);
     }
 
     public List<GiftCertificate> readAllCertificateByTagId(int giftCertificateId) {

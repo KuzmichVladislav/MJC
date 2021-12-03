@@ -21,26 +21,26 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public Tag create(Tag tag) {
-        int tagId = tagDao.create(tag);
-        return tagDao.read(tagId);
+    public Tag addTag(Tag tag) {
+        int tagId = tagDao.addTag(tag);
+        return tagDao.findTagById(tagId);
     }
 
     @Override
-    public Tag read(int id) {
-        Tag tag = tagDao.read(id);
+    public Tag findTagById(int id) {
+        Tag tag = tagDao.findTagById(id);
         tag.setGiftCertificateList(giftCertificateService.readAllCertificateByTagId(id));
         return tag;
     }
 
     @Override
-    public List<Tag> readAll() {
-        return tagDao.readAll();
+    public List<Tag> findAllTags() {
+        return tagDao.findAllTags();
     }
 
     @Override
-    public boolean delete(int id) {
-        return tagDao.delete(id);
+    public boolean removeTagById(int id) {
+        return tagDao.removeTagById(id);
     }
 
     public void addTagToCertificate(int giftCertificateId, int tagId) {
@@ -48,7 +48,7 @@ public class TagServiceImpl implements TagService {
     }
 
     public Optional<Tag> findByName(String name) {
-        return tagDao.findByName(name);
+        return tagDao.findTagByName(name);
     }
 
     public List<Tag> readAllTagsByCertificateId(int id) {

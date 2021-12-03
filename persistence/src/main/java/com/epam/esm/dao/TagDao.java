@@ -7,17 +7,17 @@ import java.util.Optional;
 
 public interface TagDao {
 
-    int create(Tag tag);
+    int addTag(Tag tag);
 
-    List<Tag> readAll();
+    List<Tag> findAllTags();
 
-    Tag read(int id);
+    Tag findTagById(int id);
 
-    boolean delete(int id);
+    boolean removeTagById(int id);
 
     void addTagToCertificate(int giftCertificate, int tag);
 
-    Optional<Tag> findByName(String name);
+    Optional<Tag> findTagByName(String name);
 
     List<Tag> readAllTagsByCertificateId(int giftCertificateId);
 }
