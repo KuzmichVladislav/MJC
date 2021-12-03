@@ -25,7 +25,7 @@ public class TagDaoImpl implements TagDao {
     }
 
     @Override
-    public int addTag(Tag tag) throws DuplicateKeyException { // FIXME: 12/3/2021 what return?
+    public Tag addTag(Tag tag) throws DuplicateKeyException { // FIXME: 12/3/2021 what return?
         String SQL = "INSERT INTO tag (name) VALUES(?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
@@ -33,7 +33,7 @@ public class TagDaoImpl implements TagDao {
             preparedStatement.setString(1, tag.getName());
             return preparedStatement;
         }, keyHolder);
-        return keyHolder.getKey().intValue();
+        return findTagById(keyHolder.getKey().intValue());
     }
 
     @Override

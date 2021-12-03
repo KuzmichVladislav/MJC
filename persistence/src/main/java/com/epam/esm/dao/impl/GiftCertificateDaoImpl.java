@@ -9,7 +9,6 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
-import java.sql.Timestamp;
 import java.util.List;
 
 @Repository
@@ -22,7 +21,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
-    public int addGiftCertificate(GiftCertificate giftCertificate) {
+    public GiftCertificate addGiftCertificate(GiftCertificate giftCertificate) {
         String SQL = "INSERT INTO gift_certificate (name, description, price, duration) VALUES(?,?,?,?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
@@ -33,7 +32,8 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             preparedStatement.setInt(4, giftCertificate.getDuration());
             return preparedStatement;
         }, keyHolder);
-        return keyHolder.getKey().intValue();
+
+        return findGiftCertificateById(keyHolder.getKey().intValue());
     }
 
     @Override

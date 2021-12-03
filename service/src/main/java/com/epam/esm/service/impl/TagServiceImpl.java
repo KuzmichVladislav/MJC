@@ -22,7 +22,7 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public Tag addTag(Tag tag) {
-        int tagId = tagDao.addTag(tag);
+        int tagId = tagDao.addTag(tag).getId();
         return tagDao.findTagById(tagId);
     }
 

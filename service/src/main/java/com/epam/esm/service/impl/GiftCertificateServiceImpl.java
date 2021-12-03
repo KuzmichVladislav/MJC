@@ -27,7 +27,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     public GiftCertificate addGiftCertificate(GiftCertificate giftCertificate) {
         List<Tag> tagList = giftCertificate.getTagList();
         List<Tag> existingTags = tagService.findAllTags();
-        int giftCertificateId = giftCertificateDao.addGiftCertificate(giftCertificate);
+        int giftCertificateId = giftCertificateDao.addGiftCertificate(giftCertificate).getId();
         tagList.stream()
                 .distinct()
                 .filter(e -> !existingTags.contains(e))

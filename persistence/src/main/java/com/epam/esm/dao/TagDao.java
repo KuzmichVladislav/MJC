@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface TagDao {
 
-    int addTag(Tag tag);
+    Tag addTag(Tag tag);
 
     List<Tag> findAllTags();
 
