@@ -17,7 +17,7 @@ public class SpringApplicationInitializer extends
 
     @Override
     protected Class<?>[] getServletConfigClasses() {
-        return new Class<?>[]{SpringMvcConfig.class};
+        return new Class<?>[]{PersistenceConfig.class};
     }
 
     @Override
