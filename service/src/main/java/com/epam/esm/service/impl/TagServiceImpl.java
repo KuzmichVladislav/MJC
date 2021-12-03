@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TagServiceImpl implements TagService {
@@ -46,7 +47,7 @@ public class TagServiceImpl implements TagService {
         tagDao.addTagToCertificate(giftCertificateId, tagId);
     }
 
-    public int findByName(String name) {
+    public Optional<Tag> findByName(String name) {
         return tagDao.findByName(name);
     }
 

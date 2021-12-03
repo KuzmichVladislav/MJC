@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/gift_certificate")
 public class GiftCertificateControllerImpl implements GiftCertificateController {
@@ -31,8 +33,14 @@ public class GiftCertificateControllerImpl implements GiftCertificateController 
     }
 
     @Override
+    @GetMapping(consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<GiftCertificate> readAll() {
+        return giftCertificateService.readAll();
+    }
+
+    @Override
     @PatchMapping(value = "/{id}", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public GiftCertificate update(@PathVariable("id") int id, GiftCertificate giftCertificate) {
+    public GiftCertificate update(@PathVariable("id") int id, @RequestBody GiftCertificate giftCertificate) {
         return giftCertificateService.update(id, giftCertificate);
     }
 

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class TagDaoImpl implements TagDao {
@@ -24,7 +25,7 @@ public class TagDaoImpl implements TagDao {
     }
 
     @Override
-    public int create(Tag tag) throws DuplicateKeyException {
+    public int create(Tag tag) throws DuplicateKeyException { // FIXME: 12/3/2021 what return?
         String SQL = "INSERT INTO tag (name) VALUES(?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
@@ -36,18 +37,18 @@ public class TagDaoImpl implements TagDao {
     }
 
     @Override
+    public Tag read(int id) {
+        return jdbcTemplate.query("SELECT * FROM tag WHERE id=?", new BeanPropertyRowMapper<>(Tag.class), id)
+                .stream().findAny().orElse(null);// FIXME: 12/3/2021 what return?
+    }
+
+    @Override
     public List<Tag> readAll() {
         return jdbcTemplate.query("SELECT * FROM tag", new BeanPropertyRowMapper<>(Tag.class));
     }
 
     @Override
-    public Tag read(int id) {
-        return jdbcTemplate.query("SELECT * FROM tag WHERE id=?", new BeanPropertyRowMapper<>(Tag.class), id)
-                .stream().findAny().orElse(null);
-    }
-
-    @Override
-    public boolean delete(int id) {
+    public boolean delete(int id) { // FIXME: 12/3/2021 what return?
         boolean isDelete = false;
         if (jdbcTemplate.update("DELETE FROM tag WHERE id=?", id) > 0) {
             isDelete = true;
@@ -55,12 +56,12 @@ public class TagDaoImpl implements TagDao {
         return isDelete;
     }
 
-    public void addTagToCertificate(int giftCertificate, int tag) {
+    public void addTagToCertificate(int giftCertificate, int tag) { // FIXME: 12/3/2021 what return?
         jdbcTemplate.update("INSERT INTO gift_certificate_tag_include VALUES(?, ?)", giftCertificate, tag);
     }
 
-    public int findByName(String name) {
-        return jdbcTemplate.queryForObject("SELECT id FROM tag WHERE name=?", Integer.class, name);
+    public Optional<Tag> findByName(String name) {
+        return jdbcTemplate.query("SELECT id FROM tag WHERE name=?", new BeanPropertyRowMapper<>(Tag.class), name).stream().findAny();
     }
 
     public List<Tag> readAllTagsByCertificateId(int giftCertificateId) {

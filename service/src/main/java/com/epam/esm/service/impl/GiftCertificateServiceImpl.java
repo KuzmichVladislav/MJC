@@ -5,10 +5,10 @@ import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.service.GiftCertificateService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class GiftCertificateServiceImpl implements GiftCertificateService {
@@ -32,11 +32,13 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
                 .distinct()
                 .filter(e -> !existingTags.contains(e))
                 .forEach(t -> {
-                    try {
+                    Optional<Tag> foundTag = tagService.findByName(t.getName());
+                    if (foundTag.isPresent()) {
+                        tagService.addTagToCertificate(giftCertificateId, foundTag.get().getId());
+                    } else {
                         tagService.addTagToCertificate(giftCertificateId, tagService.create(t).getId());
-                    } catch (DuplicateKeyException e) {
-                        tagService.addTagToCertificate(giftCertificateId, tagService.findByName(t.getName()));
                     }
+
                 });
         return giftCertificateDao.read(giftCertificateId);
     }
@@ -46,6 +48,11 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         GiftCertificate giftCertificate = giftCertificateDao.read(id);
         giftCertificate.setTagList(tagService.readAllTagsByCertificateId(id));
         return giftCertificate;
+    }
+
+    @Override
+    public List<GiftCertificate> readAll() {
+        return giftCertificateDao.readAll();
     }
 
     @Override

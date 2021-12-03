@@ -2,7 +2,6 @@ package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.entity.GiftCertificate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -10,6 +9,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Repository
@@ -43,37 +43,17 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
+    public List<GiftCertificate> readAll() {
+        return jdbcTemplate.query("SELECT id, name, description, price, duration, createDate, lastUpdateDate FROM gift_certificate",
+                new BeanPropertyRowMapper<>(GiftCertificate.class));
+    }
+
+    @Override
     public GiftCertificate update(int id, GiftCertificate giftCertificate) {
-        jdbcTemplate.update("UPDATE gift_certificate SET name=?, description=?, price=?, duration=? WHERE id=?", id);
+        jdbcTemplate.update("UPDATE gift_certificate SET name=?, description=?, price=?, duration=?, lastUpdateDate=? WHERE id=?",
+                giftCertificate.getName(), giftCertificate.getDescription(), giftCertificate.getPrice(), giftCertificate.getDuration(),
+                new java.sql.Timestamp(new java.util.Date().getTime()), id);// FIXME: 12/3/2021 date
         return giftCertificate;
-//        try (PreparedStatement preparedStatement =
-//                     connection.prepareStatement("UPDATE gift_certificate SET name=?, description=?, price=?, duration=? WHERE id=?")) {
-//            if (giftCertificate.getName() != null) {
-//                preparedStatement.setString(1, giftCertificate.getName());
-//            } else {
-//                preparedStatement.setNull(1, Types.VARCHAR);
-//            }
-//            if (giftCertificate.getDescription() != null) {
-//                preparedStatement.setString(2, giftCertificate.getDescription());
-//            } else {
-//                preparedStatement.setNull(2, Types.VARCHAR);
-//            }
-//            if (giftCertificate.getPrice() != null) {
-//                preparedStatement.setBigDecimal(3, giftCertificate.getPrice());
-//            } else {
-//                preparedStatement.setNull(3, Types.DECIMAL);
-//            }
-//            if (giftCertificate.getDuration() != 0) {
-//                preparedStatement.setInt(4, giftCertificate.getDuration());
-//            } else {
-//                preparedStatement.setNull(4, Types.INTEGER);
-//            }
-//            preparedStatement.setInt(5, id);
-//            preparedStatement.executeUpdate();
-//        } catch (SQLException throwables) {
-//            throwables.printStackTrace();
-//        }
-//        return giftCertificate;
     }
 
     @Override

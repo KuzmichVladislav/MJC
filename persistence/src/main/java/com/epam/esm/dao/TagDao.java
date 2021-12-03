@@ -3,6 +3,7 @@ package com.epam.esm.dao;
 import com.epam.esm.entity.Tag;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface TagDao {
 
@@ -16,7 +17,7 @@ public interface TagDao {
 
     void addTagToCertificate(int giftCertificate, int tag);
 
-    int findByName(String name);
+    Optional<Tag> findByName(String name);
 
     List<Tag> readAllTagsByCertificateId(int giftCertificateId);
 }

@@ -10,6 +10,8 @@ public interface GiftCertificateDao {
 
     GiftCertificate read(int id);
 
+    List<GiftCertificate> readAll();
+
     GiftCertificate update(int id, GiftCertificate giftCertificate);
 
     boolean delete(int id);
