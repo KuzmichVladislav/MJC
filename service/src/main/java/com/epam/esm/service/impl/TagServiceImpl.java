@@ -29,7 +29,7 @@ public class TagServiceImpl implements TagService {
     @Override
     public Tag findTagById(int id) {
         Tag tag = tagDao.findTagById(id);
-        tag.setGiftCertificateList(giftCertificateService.readAllCertificateByTagId(id));
+        tag.setGiftCertificateList(giftCertificateService.findAllCertificateByTagId(id));
         return tag;
     }
 
