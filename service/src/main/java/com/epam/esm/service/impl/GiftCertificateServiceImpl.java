@@ -57,6 +57,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     public GiftCertificate updateGiftCertificate(int id, GiftCertificate giftCertificate) {
+        giftCertificate.setLastUpdateDate(new java.sql.Timestamp(new java.util.Date().getTime()));
         return giftCertificateDao.updateGiftCertificate(id, giftCertificate);
     }
 
@@ -65,7 +66,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         return giftCertificateDao.removeGiftCertificateById(id);
     }
 
-    public List<GiftCertificate> readAllCertificateByTagId(int giftCertificateId) {
+    public List<GiftCertificate> findAllCertificateByTagId(int giftCertificateId) {
         return giftCertificateDao.readAllCertificateByTagId(giftCertificateId);
     }
 }
