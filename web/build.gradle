@@ -14,8 +14,6 @@ repositories {
 dependencies {
     implementation project(':service')
     implementation project(':persistence')
-
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.0'
 }
 
 test {
