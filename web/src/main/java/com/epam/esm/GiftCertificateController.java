@@ -38,7 +38,6 @@ public class GiftCertificateController {
     public GiftCertificateDto getGiftCertificate(@PathVariable("id") long id) {
 
         GiftCertificateDto byId = giftCertificateService.findById(id);
-        System.out.println(byId.getCreateDate());
         return byId;
     }
 

@@ -38,13 +38,13 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         GiftCertificate giftCertificate = convertToGiftCertificateEntity(giftCertificateDto);
         long giftCertificateId = giftCertificateDao.add(giftCertificate).getId();
         addGiftCertificateTags(giftCertificateDto, giftCertificateId);
-        return convertToGiftCertificateDto(giftCertificateDao
-                .findById(giftCertificateId).orElse(null));// TODO: 12/7/2021
+        return convertToGiftCertificateDto(giftCertificate);// TODO: 12/7/2021 date is null?
     }
 
     private GiftCertificate convertToGiftCertificateEntity(GiftCertificateDto giftCertificateDto) {
         GiftCertificate giftCertificate = modelMapper.map(giftCertificateDto, GiftCertificate.class);
-        giftCertificate.setTagList(MapperUtil.convertList(giftCertificateDto.getTagDtoList(), this::convertToTagEntity));
+        giftCertificate.setTagList(MapperUtil.convertList(giftCertificateDto.getTagDtoList(),
+                this::convertToTagEntity));
         return giftCertificate;
     }
 
@@ -54,7 +54,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     private GiftCertificateDto convertToGiftCertificateDto(GiftCertificate giftCertificate) {
         GiftCertificateDto giftCertificateDto = modelMapper.map(giftCertificate, GiftCertificateDto.class);
-        //  giftCertificateDto.setTagDtoList(MapperUtil.convertList(giftCertificate.getTagList(), this::convertToTagDto));
+        giftCertificateDto.setTagDtoList(readAllTagsByCertificateId(giftCertificateDto.getId()));
         return giftCertificateDto;
     }
 
@@ -74,9 +74,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     public List<GiftCertificateDto> findAll() {
         List<GiftCertificate> all = giftCertificateDao.findAll();
-        return MapperUtil.convertList(all, this::convertToGiftCertificateDto).stream()
-                .peek(t -> t.setTagDtoList(readAllTagsByCertificateId(t.getId())))
-                .collect(Collectors.toList());
+        return MapperUtil.convertList(all, this::convertToGiftCertificateDto);
     }
 
     @Override
@@ -110,6 +108,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     private void addGiftCertificateTags(GiftCertificateDto giftCertificateDto, long giftCertificateId) {
+        System.out.println(giftCertificateDto.getTagDtoList());
         List<Tag> tagList = MapperUtil.convertList(giftCertificateDto.getTagDtoList(), this::convertToTagEntity);
         List<Tag> existingTags = tagDao.findAll();
         tagList.stream()
