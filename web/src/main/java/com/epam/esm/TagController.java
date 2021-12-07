@@ -1,7 +1,6 @@
 package com.epam.esm;
 
-import com.epam.esm.dto.GiftCertificateDto;
-import com.epam.esm.entity.Tag;
+import com.epam.esm.dto.TagDto;
 import com.epam.esm.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -21,17 +20,17 @@ public class TagController {
     }
 
     @GetMapping(consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Tag> getAllTags() {
+    public List<TagDto> getAllTags() {
         return tagService.findAll();
     }
 
     @PostMapping(consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Tag addTag(@RequestBody Tag tag) {
-        return tagService.add(tag);
+    public TagDto addTag(@RequestBody TagDto tagDto) {
+        return tagService.add(tagDto);
     }
 
     @GetMapping(value = "/{id}", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Tag getTagById(@PathVariable("id") long id) {
+    public TagDto getTagById(@PathVariable("id") long id) {
         return tagService.findById(id);
     }
 

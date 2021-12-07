@@ -1,11 +1,10 @@
 package com.epam.esm.service;
 
-import com.epam.esm.entity.Tag;
+import com.epam.esm.dto.TagDto;
 
-import java.util.List;
 import java.util.Optional;
 
-public interface TagService extends BaseService<Tag> {
+public interface TagService extends BaseService<TagDto> {
 
-    Optional<Tag> findByName(String name);
+    Optional<TagDto> findByName(String name);
 }

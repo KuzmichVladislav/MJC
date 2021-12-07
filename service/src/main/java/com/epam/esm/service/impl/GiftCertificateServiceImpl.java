@@ -22,9 +22,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     private final GiftCertificateDao giftCertificateDao;
     @Autowired
-    TagService tagService;
+    private TagService tagService;
     @Autowired
-    TagDao tagDao;
+    private TagDao tagDao;
     @Autowired
     private ModelMapper modelMapper;
 
@@ -89,7 +89,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         tagList.stream()
                 .distinct()
                 .filter(e -> !existingTags.contains(e))
-                .map(tag -> tagService.findByName(tag.getName()).orElseGet(() -> tagService.add(tag)).getId())
+                .map(tag -> tagService.findByName(tag.getName()).orElseGet(() -> tagService.add(convertToTagDto(tag))).getId())
                 .forEach(id -> addTagToCertificate(giftCertificateId, id));
     }
 
