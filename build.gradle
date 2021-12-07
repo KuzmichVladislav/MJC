@@ -6,10 +6,6 @@ plugins {
 group 'com.epam.esm'
 version '1.0-SNAPSHOT'
 
-ext {
-    SPRING_VERSION = '5.3.13'
-}
-
 repositories {
     mavenCentral()
 }
@@ -35,5 +31,9 @@ subprojects {
 
         testCompileOnly 'org.projectlombok:lombok:1.18.22'
         testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
+
+        implementation 'com.fasterxml.jackson.core:jackson-core:2.13.0'
+        implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.0'
+        implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.0'
     }
 }

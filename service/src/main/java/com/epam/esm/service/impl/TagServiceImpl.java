@@ -1,7 +1,6 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.TagDao;
-import com.epam.esm.dto.mapper.TagDtoMapper;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +13,6 @@ import java.util.Optional;
 public class TagServiceImpl implements TagService {
 
     private final TagDao tagDao;
-
-    @Autowired
-    TagDtoMapper mapper;
 
     @Autowired
     public TagServiceImpl(TagDao tagDao) {
@@ -46,10 +42,5 @@ public class TagServiceImpl implements TagService {
     @Override
     public Optional<Tag> findByName(String name) {
         return tagDao.findTagByName(name);
-    }
-
-    @Override
-    public List<Tag> readAllTagsByCertificateId(long giftCertificateId) {
-        return tagDao.readAllTagsByCertificateId(giftCertificateId);
     }
 }

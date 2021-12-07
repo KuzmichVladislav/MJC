@@ -1,6 +1,7 @@
 package com.epam.esm.dao;
 
 import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.entity.Tag;
 
 import java.util.List;
 
@@ -13,4 +14,6 @@ public interface GiftCertificateDao extends BaseDao<GiftCertificate>{
     void addTagToCertificate(long giftCertificateId, long tagId);
 
     void removeTagByCertificateId(long giftCertificateId);
+
+    List<Tag> readAllTagsByCertificateId(long giftCertificateId);
 }

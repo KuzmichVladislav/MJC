@@ -23,10 +23,6 @@ public class TagDaoImpl implements TagDao {
     public static final String FIND_TAG_SQL = "SELECT id, name FROM tag WHERE id=?";
     public static final String FIND_ALL_TAG_SQL = "SELECT id, name FROM tag";
     public static final String REMOVE_TAG_SQL = "DELETE FROM tag WHERE id=?";
-    public static final String READ_ALL_TAG_BY_CERTIFICATE_ID_SQL = "SELECT id, name\n" +
-                    "FROM tag\n" +
-                    "   LEFT JOIN gift_certificate_tag_include gcti on tag.id = gcti.tag\n" +
-                    "WHERE gcti.giftCertificate = ?";
     public static final String FIND_TAG_BY_NAME_SQL = "SELECT id, name FROM tag WHERE name=?";
 
     private final JdbcTemplate jdbcTemplate;
@@ -72,10 +68,5 @@ public class TagDaoImpl implements TagDao {
     public Optional<Tag> findTagByName(String name) {
         return jdbcTemplate.query(FIND_TAG_BY_NAME_SQL,
                 tagBeanPropertyRowMapper, name).stream().findAny();
-    }
-
-    public List<Tag> readAllTagsByCertificateId(long giftCertificateId) {
-        return jdbcTemplate.query(READ_ALL_TAG_BY_CERTIFICATE_ID_SQL,
-                tagBeanPropertyRowMapper, giftCertificateId);
     }
 }

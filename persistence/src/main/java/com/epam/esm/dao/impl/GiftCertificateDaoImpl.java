@@ -2,7 +2,9 @@ package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dao.mapper.GiftCertificateMapper;
+import com.epam.esm.dao.mapper.TagMapper;
 import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.entity.Tag;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -28,13 +30,21 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             "WHERE gcti.tag = ?";
     public static final String ADD_TAG_TO_CERTIFICATE_SQL = "INSERT INTO gift_certificate_tag_include VALUES(?, ?)";
     public static final String REMOVE_TAG_BY_CERTIFICATE_ID_SQL = "DELETE FROM gift_certificate_tag_include WHERE giftCertificate=?";
+    public static final String READ_ALL_TAG_BY_CERTIFICATE_ID_SQL = "SELECT id, name\n" +
+            "FROM tag\n" +
+            "   LEFT JOIN gift_certificate_tag_include gcti on tag.id = gcti.tag\n" +
+            "WHERE gcti.giftCertificate = ?";
 
     private final GiftCertificateMapper giftCertificateBeanPropertyRowMapper;
 
+    private final TagMapper tagBeanPropertyRowMapper;
+
     private final JdbcTemplate jdbcTemplate;
 
-    public GiftCertificateDaoImpl(GiftCertificateMapper giftCertificateBeanPropertyRowMapper, JdbcTemplate jdbcTemplate) {
+    public GiftCertificateDaoImpl(GiftCertificateMapper giftCertificateBeanPropertyRowMapper,
+                                  TagMapper tagBeanPropertyRowMapper, JdbcTemplate jdbcTemplate) {
         this.giftCertificateBeanPropertyRowMapper = giftCertificateBeanPropertyRowMapper;
+        this.tagBeanPropertyRowMapper = tagBeanPropertyRowMapper;
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -65,7 +75,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     public List<GiftCertificate> findAll() {
         List<GiftCertificate> query = jdbcTemplate.query(FIND_ALL_GIFT_CERTIFICATE_SQL,
                 giftCertificateBeanPropertyRowMapper);
-        System.out.println(Arrays.asList(query));// TODO: 12/6/2021 all in console
+       // System.out.println(Arrays.asList(query));// TODO: 12/6/2021 all in console
         return query; // TODO: 12/6/2021 return only 1 GC in postman
     }
 
@@ -96,5 +106,11 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     @Override
     public void removeTagByCertificateId(long giftCertificateId) {
         jdbcTemplate.update(REMOVE_TAG_BY_CERTIFICATE_ID_SQL, giftCertificateId);
+    }
+
+    @Override
+    public List<Tag> readAllTagsByCertificateId(long giftCertificateId) {
+        return jdbcTemplate.query(READ_ALL_TAG_BY_CERTIFICATE_ID_SQL,
+                tagBeanPropertyRowMapper, giftCertificateId);
     }
 }

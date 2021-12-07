@@ -8,6 +8,4 @@ import java.util.Optional;
 public interface TagService extends BaseService<Tag> {
 
     Optional<Tag> findByName(String name);
-
-    List<Tag> readAllTagsByCertificateId(long giftCertificateId);
 }
