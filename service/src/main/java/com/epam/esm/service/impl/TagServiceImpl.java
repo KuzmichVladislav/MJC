@@ -1,6 +1,7 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.TagDao;
+import com.epam.esm.dto.mapper.TagDtoMapper;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,9 @@ import java.util.Optional;
 public class TagServiceImpl implements TagService {
 
     private final TagDao tagDao;
-    GiftCertificateServiceImpl giftCertificateService;
+
+    @Autowired
+    TagDtoMapper mapper;
 
     @Autowired
     public TagServiceImpl(TagDao tagDao) {
@@ -21,42 +24,32 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public Tag addTag(Tag tag) {
-        int tagId = tagDao.addTag(tag).getId();
-        return tagDao.findTagById(tagId);
+    public Tag add(Tag tag) {
+        return tagDao.add(tag);
     }
 
     @Override
-    public Tag findTagById(int id) {
-        Tag tag = tagDao.findTagById(id);
-        tag.setGiftCertificateList(giftCertificateService.findAllCertificateByTagId(id));
-        return tag;
+    public Tag findById(long id) {
+        return tagDao.findById(id).orElse(null);// TODO: 12/7/2021
     }
 
     @Override
-    public List<Tag> findAllTags() {
-        return tagDao.findAllTags();
+    public List<Tag> findAll() {
+        return tagDao.findAll();
     }
 
     @Override
-    public boolean removeTagById(int id) {
-        return tagDao.removeTagById(id);
+    public boolean removeById(long id) {
+        return tagDao.removeById(id);
     }
 
     @Override
-    public void removeTagByCertificateId(int certificateId) {
-        tagDao.removeTagByCertificateId(certificateId);
-    }
-
-    public void addTagToCertificate(int giftCertificateId, int tagId) {
-        tagDao.addTagToCertificate(giftCertificateId, tagId);
-    }
-
     public Optional<Tag> findByName(String name) {
         return tagDao.findTagByName(name);
     }
 
-    public List<Tag> readAllTagsByCertificateId(int id) {
-        return tagDao.readAllTagsByCertificateId(id);
+    @Override
+    public List<Tag> readAllTagsByCertificateId(long giftCertificateId) {
+        return tagDao.readAllTagsByCertificateId(giftCertificateId);
     }
 }

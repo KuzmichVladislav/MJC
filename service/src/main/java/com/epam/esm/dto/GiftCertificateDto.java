@@ -1,5 +1,6 @@
-package com.epam.esm.entity;
+package com.epam.esm.dto;
 
+import com.epam.esm.entity.Tag;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class GiftCertificate {
+public class GiftCertificateDto {
     long id;
     String name;
     String description;

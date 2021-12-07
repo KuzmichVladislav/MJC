@@ -1,39 +1,43 @@
-package com.epam.esm.controller.impl;
+package com.epam.esm;
 
-import com.epam.esm.controller.TagController;
+import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/tag")
-public class TagControllerImpl implements TagController {
+@RequestMapping("/tags")
+public class TagController {
 
     private final TagService tagService;
 
     @Autowired
-    public TagControllerImpl(TagService tagService) {
+    public TagController(TagService tagService) {
         this.tagService = tagService;
     }
 
-    @Override
+    @GetMapping(consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Tag> getAllTags() {
+        return tagService.findAll();
+    }
+
     @PostMapping(consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Tag create(@RequestBody Tag tag) {
-        return tagService.addTag(tag);
+    public Tag addTag(@RequestBody Tag tag) {
+        return tagService.add(tag);
     }
 
-    @Override
     @GetMapping(value = "/{id}", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Tag read(@PathVariable("id") int id) {
-        return tagService.findTagById(id);
+    public Tag getTagById(@PathVariable("id") long id) {
+        return tagService.findById(id);
     }
 
-    @Override
     @DeleteMapping("/{id}")
-    public boolean delete(@PathVariable("id") int id) {
-        return tagService.removeTagById(id);
+    public boolean deleteTag(@PathVariable("id") long id) {
+        return tagService.removeById(id);
     }
 
     // TODO: 12/1/2021

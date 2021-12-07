@@ -4,18 +4,13 @@ import com.epam.esm.entity.GiftCertificate;
 
 import java.util.List;
 
-public interface GiftCertificateDao {
+public interface GiftCertificateDao extends BaseDao<GiftCertificate>{
 
-    GiftCertificate addGiftCertificate(GiftCertificate giftCertificate);
+    GiftCertificate update(GiftCertificate giftCertificate);
 
-    GiftCertificate findGiftCertificateById(int id);
+    List<GiftCertificate> findAllCertificateByTagId(long tagId);
 
-    List<GiftCertificate> findAllGiftCertificates();
+    void addTagToCertificate(long giftCertificateId, long tagId);
 
-    GiftCertificate updateGiftCertificate(int id, GiftCertificate giftCertificate);
-
-    boolean removeGiftCertificateById(int id);
-
-    List<GiftCertificate> readAllCertificateByTagId(int tagId);
-
+    void removeTagByCertificateId(long giftCertificateId);
 }
