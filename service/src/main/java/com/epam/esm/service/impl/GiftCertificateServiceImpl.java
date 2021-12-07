@@ -89,7 +89,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         tagList.stream()
                 .distinct()
                 .filter(e -> !existingTags.contains(e))
-                .map(tag -> tagService.findByName(tag.getName()).orElseGet(() -> tagService.add(convertToTagDto(tag))).getId())
+                .map(tag -> tagService.findByName(tag.getName()).orElseGet(() ->
+                        convertToTagEntity(tagService.add(convertToTagDto(tag)))).getId())
                 .forEach(id -> addTagToCertificate(giftCertificateId, id));
     }
 

@@ -5,6 +5,7 @@ import com.epam.esm.dao.mapper.GiftCertificateMapper;
 import com.epam.esm.dao.mapper.TagMapper;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -12,7 +13,6 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,16 +35,15 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             "   LEFT JOIN gift_certificate_tag_include gcti on tag.id = gcti.tag\n" +
             "WHERE gcti.giftCertificate = ?";
 
-    private final GiftCertificateMapper giftCertificateBeanPropertyRowMapper;
+    @Autowired
+    private GiftCertificateMapper giftCertificateBeanPropertyRowMapper;
 
-    private final TagMapper tagBeanPropertyRowMapper;
+    @Autowired
+    private TagMapper tagBeanPropertyRowMapper;
 
     private final JdbcTemplate jdbcTemplate;
 
-    public GiftCertificateDaoImpl(GiftCertificateMapper giftCertificateBeanPropertyRowMapper,
-                                  TagMapper tagBeanPropertyRowMapper, JdbcTemplate jdbcTemplate) {
-        this.giftCertificateBeanPropertyRowMapper = giftCertificateBeanPropertyRowMapper;
-        this.tagBeanPropertyRowMapper = tagBeanPropertyRowMapper;
+    public GiftCertificateDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -75,8 +74,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     public List<GiftCertificate> findAll() {
         List<GiftCertificate> query = jdbcTemplate.query(FIND_ALL_GIFT_CERTIFICATE_SQL,
                 giftCertificateBeanPropertyRowMapper);
-       // System.out.println(Arrays.asList(query));// TODO: 12/6/2021 all in console
-        return query; // TODO: 12/6/2021 return only 1 GC in postman
+        return query;
     }
 
     @Override

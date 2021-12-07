@@ -5,7 +5,6 @@ import com.epam.esm.dao.mapper.TagMapper;
 import com.epam.esm.entity.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -27,12 +26,12 @@ public class TagDaoImpl implements TagDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    private final TagMapper tagBeanPropertyRowMapper;
+    @Autowired
+    private TagMapper tagBeanPropertyRowMapper;
 
     @Autowired
-    public TagDaoImpl(JdbcTemplate jdbcTemplate, TagMapper tagBeanPropertyRowMapper) {
+    public TagDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.tagBeanPropertyRowMapper = tagBeanPropertyRowMapper;
     }
 
     @Override

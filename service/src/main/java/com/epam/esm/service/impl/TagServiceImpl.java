@@ -48,8 +48,8 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public Optional<TagDto> findByName(String name) {
-        return Optional.of(convertToTagDto(tagDao.findTagByName(name).get()));
+    public Optional<Tag> findByName(String name) {
+        return tagDao.findTagByName(name);
     }
 
     private Tag convertToTagEntity(TagDto tagDto) {
