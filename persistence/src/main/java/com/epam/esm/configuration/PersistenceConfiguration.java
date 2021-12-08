@@ -9,22 +9,21 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.sql.DataSource;
 
 @Configuration
 @ComponentScan("com.epam.esm")
 @PropertySource("classpath:database/mysql.properties")
-public class PersistenceConfiguration implements WebMvcConfigurer {
+public class PersistenceConfiguration {
 
-    @Value("${db.pool_driver_class_name}")
+    @Value("${db.driver_class_name}")
     String DB_DRIVER;
-    @Value("${db.pool_url}")
+    @Value("${db.url}")
     String DB_URL;
-    @Value("${db.pool_username}")
+    @Value("${db.username}")
     String DB_USERNAME;
-    @Value("${db.pool_password}")
+    @Value("${db.password}")
     String DB_PASSWORD;
     @Value("${db.pool_initial_size}")
     int DB_POOL_SIZE;
