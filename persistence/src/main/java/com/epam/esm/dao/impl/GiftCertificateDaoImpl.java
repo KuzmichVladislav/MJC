@@ -11,13 +11,14 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
 public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
-    private static final String ADD_GIFT_CERTIFICATE = "INSERT INTO gift_certificate (name, description, price, duration) VALUES(?,?,?,?)";
+    private static final String ADD_GIFT_CERTIFICATE = "INSERT INTO gift_certificate (name, description, price, duration, createDate, lastUpdateDate) VALUES(?,?,?,?,?,?)";
     private static final String FIND_GIFT_CERTIFICATE = "SELECT id, name, description, price, duration, createDate, lastUpdateDate FROM gift_certificate WHERE id=?";
     private static final String FIND_ALL_GIFT_CERTIFICATE = "SELECT id, name, description, price, duration, createDate, lastUpdateDate FROM gift_certificate";
     private static final String UPDATE_GIFT_CERTIFICATE = "UPDATE gift_certificate SET name = IFNULL(?, name), description = IFNULL(?, description), price = IFNULL(?, price), duration = IFNULL(?, duration), lastUpdateDate=? WHERE id=?";
@@ -46,6 +47,8 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             preparedStatement.setString(2, giftCertificate.getDescription());
             preparedStatement.setBigDecimal(3, giftCertificate.getPrice());
             preparedStatement.setInt(4, giftCertificate.getDuration());
+            preparedStatement.setTimestamp(5, Timestamp.valueOf(giftCertificate.getCreateDate()));
+            preparedStatement.setTimestamp(6, Timestamp.valueOf(giftCertificate.getLastUpdateDate()));
             return preparedStatement;
         }, keyHolder);
         giftCertificate.setId(keyHolder.getKey().longValue());
