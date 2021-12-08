@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class GiftCertificateServiceImpl implements GiftCertificateService {
@@ -50,13 +49,14 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     public List<GiftCertificateDto> findAll() {
-        return MapperUtil.convertList(giftCertificateDao.findAll(), this::convertToGiftCertificateDto);
+        return MapperUtil.convertList(giftCertificateDao.findAll(),
+                this::convertToGiftCertificateDto);
     }
 
     @Override
     public GiftCertificateDto update(GiftCertificateDto giftCertificateDto) {
         long giftCertificateId = giftCertificateDto.getId();
-        removeTagByCertificateId(giftCertificateId);
+        removeFromTableGiftCertificateIncludeTag(giftCertificateId);
         addGiftCertificateTags(giftCertificateDto, giftCertificateId);
         GiftCertificate giftCertificate = convertToGiftCertificateEntity(giftCertificateDto);
         giftCertificate.setLastUpdateDate(LocalDateTime.now());
@@ -69,8 +69,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public void removeTagByCertificateId(long giftCertificateId) {
-        giftCertificateDao.removeTagByCertificateId(giftCertificateId);
+    public void removeFromTableGiftCertificateIncludeTag(long giftCertificateId) {
+        giftCertificateDao.removeFromTableGiftCertificateIncludeTag(giftCertificateId);
     }
 
     @Override

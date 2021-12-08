@@ -2,7 +2,6 @@ package com.epam.esm.service;
 
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.TagDto;
-import com.epam.esm.entity.Tag;
 
 import java.util.List;
 
@@ -12,7 +11,7 @@ public interface GiftCertificateService extends BaseService<GiftCertificateDto> 
 
     void addTagToCertificate(long giftCertificateId, long tagId);
 
-    void removeTagByCertificateId(long giftCertificateId);
+    void removeFromTableGiftCertificateIncludeTag(long giftCertificateId);
 
     List<TagDto> readAllTagsByCertificateId(long giftCertificateId);
 }

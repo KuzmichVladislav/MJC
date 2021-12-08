@@ -13,7 +13,7 @@ public interface GiftCertificateDao extends BaseDao<GiftCertificate>{
 
     void addTagToCertificate(long giftCertificateId, long tagId);
 
-    void removeTagByCertificateId(long giftCertificateId);
+    void removeFromTableGiftCertificateIncludeTag(long giftCertificateId);
 
     List<Tag> readAllTagsByCertificateId(long giftCertificateId);
 }
