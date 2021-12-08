@@ -1,10 +1,10 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.util.MapperUtil;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.service.TagService;
+import com.epam.esm.util.MapperUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,17 +16,15 @@ import java.util.Optional;
 public class TagServiceImpl implements TagService {
 
     private final TagDao tagDao;
+    private final ModelMapper modelMapper;
+    private final MapperUtil mapperUtilInstance;
 
     @Autowired
-    private ModelMapper modelMapper;
-
-    @Autowired
-    public TagServiceImpl(TagDao tagDao) {
+    public TagServiceImpl(TagDao tagDao, ModelMapper modelMapper, MapperUtil mapperUtilInstance) {
         this.tagDao = tagDao;
+        this.modelMapper = modelMapper;
+        this.mapperUtilInstance = mapperUtilInstance;
     }
-
-    @Autowired
-    private MapperUtil mapperUtilInstance;
 
     @Override
     public TagDto add(TagDto tagDto) {
@@ -48,6 +46,12 @@ public class TagServiceImpl implements TagService {
     @Override
     public boolean removeById(long id) {
         return tagDao.removeById(id);
+    }
+
+    @Override
+    public List<TagDto> findByCertificateId(long giftCertificateId) {
+        return mapperUtilInstance.convertList(tagDao.findByCertificateId(giftCertificateId),
+                this::convertToTagDto);
     }
 
     @Override

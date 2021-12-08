@@ -29,13 +29,12 @@ public class TagDaoImpl implements TagDao {
             "WHERE gcti.giftCertificate = ?";
 
     private final JdbcTemplate jdbcTemplate;
+    private final TagMapper tagMapper;
 
     @Autowired
-    private TagMapper tagMapper;
-
-    @Autowired
-    public TagDaoImpl(JdbcTemplate jdbcTemplate) {
+    public TagDaoImpl(JdbcTemplate jdbcTemplate, TagMapper tagMapper) {
         this.jdbcTemplate = jdbcTemplate;
+        this.tagMapper = tagMapper;
     }
 
     @Override

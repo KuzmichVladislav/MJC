@@ -30,11 +30,11 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     private static final String ADD_TAG_TO_CERTIFICATE = "INSERT INTO gift_certificate_tag_include VALUES(?, ?)";
     private static final String REMOVE_TAG_BY_CERTIFICATE_ID = "DELETE FROM gift_certificate_tag_include WHERE giftCertificate=?";
     private final JdbcTemplate jdbcTemplate;
-    @Autowired
-    private GiftCertificateMapper giftCertificateMapper;
+    private final GiftCertificateMapper giftCertificateMapper;
 
-    public GiftCertificateDaoImpl(JdbcTemplate jdbcTemplate) {
+    public GiftCertificateDaoImpl(JdbcTemplate jdbcTemplate, GiftCertificateMapper giftCertificateMapper) {
         this.jdbcTemplate = jdbcTemplate;
+        this.giftCertificateMapper = giftCertificateMapper;
     }
 
     @Override

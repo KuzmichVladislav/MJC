@@ -20,19 +20,20 @@ import java.util.List;
 public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     private final GiftCertificateDao giftCertificateDao;
-    @Autowired
-    private TagService tagService;
-    @Autowired
-    private TagDao tagDao;
-    @Autowired
-    private ModelMapper modelMapper;
+    private final TagService tagService;
+    private final TagDao tagDao;
+    private final ModelMapper modelMapper;
+    private final MapperUtil mapperUtilInstance;
 
     @Autowired
-    private MapperUtil mapperUtilInstance;
-
-    @Autowired
-    public GiftCertificateServiceImpl(GiftCertificateDao giftCertificateDao) {
+    public GiftCertificateServiceImpl(GiftCertificateDao giftCertificateDao,
+                                      TagService tagService, TagDao tagDao,
+                                      ModelMapper modelMapper, MapperUtil mapperUtilInstance) {
         this.giftCertificateDao = giftCertificateDao;
+        this.tagService = tagService;
+        this.tagDao = tagDao;
+        this.modelMapper = modelMapper;
+        this.mapperUtilInstance = mapperUtilInstance;
     }
 
     @Override
@@ -63,16 +64,15 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     public GiftCertificateDto update(GiftCertificateDto giftCertificateDto) {
         long giftCertificateId = giftCertificateDto.getId();
+        giftCertificateDto.setLastUpdateDate(LocalDateTime.now());
         giftCertificateDao.removeFromTableGiftCertificateIncludeTag(giftCertificateId);
-        GiftCertificate giftCertificate = convertToGiftCertificateEntity(giftCertificateDto);
-        addGiftCertificateTags(giftCertificate, giftCertificateId);
-        giftCertificate.setLastUpdateDate(LocalDateTime.now());
-        return convertToGiftCertificateDto(giftCertificateDao.update(giftCertificate));
+        addGiftCertificateTags(convertToGiftCertificateEntity(giftCertificateDto), giftCertificateId);
+        return giftCertificateDto;
     }
 
     @Override
     public List<TagDto> findByCertificateId(long giftCertificateId) {
-        return mapperUtilInstance.convertList(tagDao.findByCertificateId(giftCertificateId), this::convertToTagDto);
+        return tagService.findByCertificateId(giftCertificateId);
     }
 
     @Override
@@ -85,7 +85,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         tagList.stream()
                 .distinct()
                 .map(tag -> tagService.findByName(tag.getName()).orElseGet(() ->
-                        tagDao.add(tag)).getId())
+                        tagDao.add(tag)).getId())// FIXME: 12/8/2021 can I use tagDao?
                 .forEach(id -> giftCertificateDao.addTagToCertificate(giftCertificateId, id));
     }
 
