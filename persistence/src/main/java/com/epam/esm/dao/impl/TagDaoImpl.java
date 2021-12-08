@@ -18,11 +18,11 @@ import java.util.Optional;
 @Repository
 public class TagDaoImpl implements TagDao {
 
-    public static final String ADD_TAG_SQL = "INSERT INTO tag (name) VALUES(?)";
-    public static final String FIND_TAG_SQL = "SELECT id, name FROM tag WHERE id=?";
-    public static final String FIND_ALL_TAG_SQL = "SELECT id, name FROM tag";
-    public static final String REMOVE_TAG_SQL = "DELETE FROM tag WHERE id=?";
-    public static final String FIND_TAG_BY_NAME_SQL = "SELECT id, name FROM tag WHERE name=?";
+    private static final String ADD_TAG = "INSERT INTO tag (name) VALUES(?)";
+    private static final String FIND_TAG = "SELECT id, name FROM tag WHERE id=?";
+    private static final String FIND_ALL_TAG = "SELECT id, name FROM tag";
+    private static final String REMOVE_TAG = "DELETE FROM tag WHERE id=?";
+    private static final String FIND_TAG_BY_NAME = "SELECT id, name FROM tag WHERE name=?";
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -38,7 +38,7 @@ public class TagDaoImpl implements TagDao {
     public Tag add(Tag tag) throws DuplicateKeyException {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
-            PreparedStatement preparedStatement = connection.prepareStatement(ADD_TAG_SQL,
+            PreparedStatement preparedStatement = connection.prepareStatement(ADD_TAG,
                     Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1, tag.getName());
             return preparedStatement;
@@ -49,23 +49,23 @@ public class TagDaoImpl implements TagDao {
 
     @Override
     public Optional<Tag> findById(long id) {
-        return jdbcTemplate.query(FIND_TAG_SQL, tagBeanPropertyRowMapper, id)
+        return jdbcTemplate.query(FIND_TAG, tagBeanPropertyRowMapper, id)
                 .stream()
                 .findAny();
     }
 
     @Override
     public List<Tag> findAll() {
-        return jdbcTemplate.query(FIND_ALL_TAG_SQL, tagBeanPropertyRowMapper);
+        return jdbcTemplate.query(FIND_ALL_TAG, tagBeanPropertyRowMapper);
     }
 
     @Override
     public boolean removeById(long id) {
-        return jdbcTemplate.update(REMOVE_TAG_SQL, id) > 0;
+        return jdbcTemplate.update(REMOVE_TAG, id) > 0;
     }
 
     public Optional<Tag> findByName(String name) {
-        return jdbcTemplate.query(FIND_TAG_BY_NAME_SQL,
+        return jdbcTemplate.query(FIND_TAG_BY_NAME,
                 tagBeanPropertyRowMapper, name).stream().findAny();
     }
 }
