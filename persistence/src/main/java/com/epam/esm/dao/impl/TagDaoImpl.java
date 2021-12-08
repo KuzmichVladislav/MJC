@@ -27,7 +27,7 @@ public class TagDaoImpl implements TagDao {
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
-    private TagMapper tagBeanPropertyRowMapper;
+    private TagMapper tagMapper;
 
     @Autowired
     public TagDaoImpl(JdbcTemplate jdbcTemplate) {
@@ -49,14 +49,14 @@ public class TagDaoImpl implements TagDao {
 
     @Override
     public Optional<Tag> findById(long id) {
-        return jdbcTemplate.query(FIND_TAG, tagBeanPropertyRowMapper, id)
+        return jdbcTemplate.query(FIND_TAG, tagMapper, id)
                 .stream()
-                .findAny();
+                .findFirst();
     }
 
     @Override
     public List<Tag> findAll() {
-        return jdbcTemplate.query(FIND_ALL_TAG, tagBeanPropertyRowMapper);
+        return jdbcTemplate.query(FIND_ALL_TAG, tagMapper);
     }
 
     @Override
@@ -66,6 +66,6 @@ public class TagDaoImpl implements TagDao {
 
     public Optional<Tag> findByName(String name) {
         return jdbcTemplate.query(FIND_TAG_BY_NAME,
-                tagBeanPropertyRowMapper, name).stream().findAny();
+                tagMapper, name).stream().findAny();
     }
 }

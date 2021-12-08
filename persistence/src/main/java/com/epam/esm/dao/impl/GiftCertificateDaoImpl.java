@@ -30,16 +30,16 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             "WHERE gcti.tag = ?";
     private static final String ADD_TAG_TO_CERTIFICATE = "INSERT INTO gift_certificate_tag_include VALUES(?, ?)";
     private static final String REMOVE_TAG_BY_CERTIFICATE_ID = "DELETE FROM gift_certificate_tag_include WHERE giftCertificate=?";
-    private static final String READ_ALL_TAG_BY_CERTIFICATE_ID = "SELECT id, name\n" +
+    private static final String FIND_ALL_TAG_BY_CERTIFICATE_ID = "SELECT id, name\n" +
             "FROM tag\n" +
             "   LEFT JOIN gift_certificate_tag_include gcti on tag.id = gcti.tag\n" +
             "WHERE gcti.giftCertificate = ?";
 
     @Autowired
-    private GiftCertificateMapper giftCertificateBeanPropertyRowMapper;
+    private GiftCertificateMapper giftCertificateMapper;
 
     @Autowired
-    private TagMapper tagBeanPropertyRowMapper;
+    private TagMapper tagMapper;
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -66,14 +66,14 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     @Override
     public Optional<GiftCertificate> findById(long id) {
         return jdbcTemplate.query(FIND_GIFT_CERTIFICATE,
-                giftCertificateBeanPropertyRowMapper, id)
-                .stream().findAny();
+                giftCertificateMapper, id)
+                .stream().findFirst();
     }
 
     @Override
     public List<GiftCertificate> findAll() {
         return jdbcTemplate.query(FIND_ALL_GIFT_CERTIFICATE,
-                giftCertificateBeanPropertyRowMapper);
+                giftCertificateMapper);
     }
 
     @Override
@@ -92,7 +92,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
     public List<GiftCertificate> findAllCertificateByTagId(long tagId) {
         return jdbcTemplate.query(FIND_ALL_GIFT_CERTIFICATE_BY_TAG,
-                giftCertificateBeanPropertyRowMapper, tagId);
+                giftCertificateMapper, tagId);
     }
 
     @Override
@@ -107,7 +107,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
     @Override
     public List<Tag> readAllTagsByCertificateId(long giftCertificateId) {
-        return jdbcTemplate.query(READ_ALL_TAG_BY_CERTIFICATE_ID,
-                tagBeanPropertyRowMapper, giftCertificateId);
+        return jdbcTemplate.query(FIND_ALL_TAG_BY_CERTIFICATE_ID,
+                tagMapper, giftCertificateId);
     }
 }
