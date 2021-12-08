@@ -23,6 +23,10 @@ public class TagDaoImpl implements TagDao {
     private static final String FIND_ALL_TAG = "SELECT id, name FROM tag";
     private static final String REMOVE_TAG = "DELETE FROM tag WHERE id=?";
     private static final String FIND_TAG_BY_NAME = "SELECT id, name FROM tag WHERE name=?";
+    private static final String FIND_ALL_TAG_BY_CERTIFICATE_ID = "SELECT id, name\n" +
+            "FROM tag\n" +
+            "   LEFT JOIN gift_certificate_tag_include gcti on tag.id = gcti.tag\n" +
+            "WHERE gcti.giftCertificate = ?";
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -67,5 +71,11 @@ public class TagDaoImpl implements TagDao {
     public Optional<Tag> findByName(String name) {
         return jdbcTemplate.query(FIND_TAG_BY_NAME,
                 tagMapper, name).stream().findAny();
+    }
+
+    @Override
+    public List<Tag> findByCertificateId(long giftCertificateId) {
+        return jdbcTemplate.query(FIND_ALL_TAG_BY_CERTIFICATE_ID,
+                tagMapper, giftCertificateId);
     }
 }

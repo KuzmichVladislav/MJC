@@ -34,9 +34,14 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     public GiftCertificateDto add(GiftCertificateDto giftCertificateDto) {
+        // findAndSetTags - GC with tags
+        // set dates
+        // validate
         GiftCertificate giftCertificate = convertToGiftCertificateEntity(giftCertificateDto);
         long giftCertificateId = giftCertificateDao.add(giftCertificate).getId();
         addGiftCertificateTags(giftCertificateDto, giftCertificateId);
+        // GC.setId(gcCId)
+        // return giftCertificateDto
         return convertToGiftCertificateDto(giftCertificate);// TODO: 12/7/2021 date is null?
     }
 
@@ -75,7 +80,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     public List<TagDto> findByCertificateId(long giftCertificateId) {
-        return MapperUtil.convertList(giftCertificateDao.findByCertificateId(giftCertificateId), this::convertToTagDto);
+        return MapperUtil.convertList(tagDao.findByCertificateId(giftCertificateId), this::convertToTagDto);
     }
 
     @Override

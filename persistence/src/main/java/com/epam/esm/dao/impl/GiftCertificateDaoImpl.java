@@ -2,9 +2,7 @@ package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dao.mapper.GiftCertificateMapper;
-import com.epam.esm.dao.mapper.TagMapper;
 import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.entity.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -30,18 +28,9 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             "WHERE gcti.tag = ?";
     private static final String ADD_TAG_TO_CERTIFICATE = "INSERT INTO gift_certificate_tag_include VALUES(?, ?)";
     private static final String REMOVE_TAG_BY_CERTIFICATE_ID = "DELETE FROM gift_certificate_tag_include WHERE giftCertificate=?";
-    private static final String FIND_ALL_TAG_BY_CERTIFICATE_ID = "SELECT id, name\n" +
-            "FROM tag\n" +
-            "   LEFT JOIN gift_certificate_tag_include gcti on tag.id = gcti.tag\n" +
-            "WHERE gcti.giftCertificate = ?";
-
+    private final JdbcTemplate jdbcTemplate;
     @Autowired
     private GiftCertificateMapper giftCertificateMapper;
-
-    @Autowired
-    private TagMapper tagMapper;
-
-    private final JdbcTemplate jdbcTemplate;
 
     public GiftCertificateDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -103,11 +92,5 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     @Override
     public void removeFromTableGiftCertificateIncludeTag(long giftCertificateId) {
         jdbcTemplate.update(REMOVE_TAG_BY_CERTIFICATE_ID, giftCertificateId);
-    }
-
-    @Override
-    public List<Tag> findByCertificateId(long giftCertificateId) {
-        return jdbcTemplate.query(FIND_ALL_TAG_BY_CERTIFICATE_ID,
-                tagMapper, giftCertificateId);
     }
 }
