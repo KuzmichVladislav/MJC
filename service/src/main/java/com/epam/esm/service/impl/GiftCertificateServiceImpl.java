@@ -64,21 +64,11 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     public GiftCertificateDto update(GiftCertificateDto giftCertificateDto) {
         long giftCertificateId = giftCertificateDto.getId();
-        removeFromTableGiftCertificateIncludeTag(giftCertificateId);
+        giftCertificateDao.removeFromTableGiftCertificateIncludeTag(giftCertificateId);
         addGiftCertificateTags(giftCertificateDto, giftCertificateId);
         GiftCertificate giftCertificate = convertToGiftCertificateEntity(giftCertificateDto);
         giftCertificate.setLastUpdateDate(LocalDateTime.now());
         return convertToGiftCertificateDto(giftCertificateDao.update(giftCertificate));
-    }
-
-    @Override
-    public void addTagToCertificate(long giftCertificateId, long tagId) {
-        giftCertificateDao.addTagToCertificate(giftCertificateId, tagId);
-    }
-
-    @Override
-    public void removeFromTableGiftCertificateIncludeTag(long giftCertificateId) {
-        giftCertificateDao.removeFromTableGiftCertificateIncludeTag(giftCertificateId);
     }
 
     @Override
@@ -100,7 +90,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
                 .filter(e -> !existingTags.contains(e))
                 .map(tag -> tagService.findByName(tag.getName()).orElseGet(() ->
                         convertToTagEntity(tagService.add(convertToTagDto(tag)))).getId())
-                .forEach(id -> addTagToCertificate(giftCertificateId, id));
+                .forEach(id -> giftCertificateDao.addTagToCertificate(giftCertificateId, id));
     }
 
     private GiftCertificate convertToGiftCertificateEntity(GiftCertificateDto giftCertificateDto) {

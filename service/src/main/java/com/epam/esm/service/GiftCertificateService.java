@@ -9,9 +9,5 @@ public interface GiftCertificateService extends BaseService<GiftCertificateDto> 
 
     GiftCertificateDto update(GiftCertificateDto giftCertificate);
 
-    void addTagToCertificate(long giftCertificateId, long tagId);
-
-    void removeFromTableGiftCertificateIncludeTag(long giftCertificateId);
-
     List<TagDto> findByCertificateId(long giftCertificateId);
 }
