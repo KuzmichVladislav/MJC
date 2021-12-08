@@ -74,8 +74,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public List<TagDto> readAllTagsByCertificateId(long giftCertificateId) {
-        return MapperUtil.convertList(giftCertificateDao.readAllTagsByCertificateId(giftCertificateId), this::convertToTagDto);
+    public List<TagDto> findByCertificateId(long giftCertificateId) {
+        return MapperUtil.convertList(giftCertificateDao.findByCertificateId(giftCertificateId), this::convertToTagDto);
     }
 
     @Override
@@ -84,7 +84,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     private void addGiftCertificateTags(GiftCertificateDto giftCertificateDto, long giftCertificateId) {
-        List<Tag> tagList = MapperUtil.convertList(giftCertificateDto.getTagDtoList(), this::convertToTagEntity);
+        List<Tag> tagList = MapperUtil.convertList(giftCertificateDto.getTagDtoList(),
+                this::convertToTagEntity); // TODO: 12/8/2021
         List<Tag> existingTags = tagDao.findAll();
         tagList.stream()
                 .distinct()
@@ -107,7 +108,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     private GiftCertificateDto convertToGiftCertificateDto(GiftCertificate giftCertificate) {
         GiftCertificateDto giftCertificateDto = modelMapper.map(giftCertificate, GiftCertificateDto.class);
-        giftCertificateDto.setTagDtoList(readAllTagsByCertificateId(giftCertificateDto.getId()));
+        giftCertificateDto.setTagDtoList(findByCertificateId(giftCertificateDto.getId()));
         return giftCertificateDto;
     }
 

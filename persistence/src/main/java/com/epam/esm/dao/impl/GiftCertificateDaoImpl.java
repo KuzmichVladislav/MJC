@@ -106,7 +106,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
-    public List<Tag> readAllTagsByCertificateId(long giftCertificateId) {
+    public List<Tag> findByCertificateId(long giftCertificateId) {
         return jdbcTemplate.query(FIND_ALL_TAG_BY_CERTIFICATE_ID,
                 tagMapper, giftCertificateId);
     }

@@ -9,11 +9,11 @@ public interface GiftCertificateDao extends BaseDao<GiftCertificate>{
 
     GiftCertificate update(GiftCertificate giftCertificate);
 
-    List<GiftCertificate> findAllCertificateByTagId(long tagId);
+    List<GiftCertificate> findAllCertificateByTagId(long tagId); // TODO: 12/8/2021  
 
     void addTagToCertificate(long giftCertificateId, long tagId);
 
     void removeFromTableGiftCertificateIncludeTag(long giftCertificateId);
 
-    List<Tag> readAllTagsByCertificateId(long giftCertificateId);
+    List<Tag> findByCertificateId(long giftCertificateId);
 }

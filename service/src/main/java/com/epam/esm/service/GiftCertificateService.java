@@ -13,5 +13,5 @@ public interface GiftCertificateService extends BaseService<GiftCertificateDto> 
 
     void removeFromTableGiftCertificateIncludeTag(long giftCertificateId);
 
-    List<TagDto> readAllTagsByCertificateId(long giftCertificateId);
+    List<TagDto> findByCertificateId(long giftCertificateId);
 }
