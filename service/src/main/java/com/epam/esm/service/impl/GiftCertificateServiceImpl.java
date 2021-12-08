@@ -105,8 +105,4 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         giftCertificateDto.setTagDtoList(findByCertificateId(giftCertificateDto.getId()));
         return giftCertificateDto;
     }
-
-    private TagDto convertToTagDto(Tag tag) {
-        return modelMapper.map(tag, TagDto.class);
-    }
 }

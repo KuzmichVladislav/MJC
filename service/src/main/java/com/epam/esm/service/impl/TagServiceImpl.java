@@ -28,7 +28,7 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public TagDto add(TagDto tagDto) {
-        Tag tag = convertToTagEntity(tagDto);
+        Tag tag = modelMapper.map(tagDto, Tag.class);
         tagDto.setId(tagDao.add(tag).getId());
         return tagDto;
     }
@@ -57,10 +57,6 @@ public class TagServiceImpl implements TagService {
     @Override
     public Optional<Tag> findByName(String name) {
         return tagDao.findByName(name);
-    }
-
-    private Tag convertToTagEntity(TagDto tagDto) {
-        return modelMapper.map(tagDto, Tag.class);
     }
 
     private TagDto convertToTagDto(Tag tag) {
