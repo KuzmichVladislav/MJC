@@ -64,7 +64,7 @@ public class TagDaoImpl implements TagDao {
         return jdbcTemplate.update(REMOVE_TAG_SQL, id) > 0;
     }
 
-    public Optional<Tag> findTagByName(String name) {
+    public Optional<Tag> findByName(String name) {
         return jdbcTemplate.query(FIND_TAG_BY_NAME_SQL,
                 tagBeanPropertyRowMapper, name).stream().findAny();
     }
