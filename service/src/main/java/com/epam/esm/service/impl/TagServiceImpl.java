@@ -1,6 +1,6 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.configuration.MapperUtil;
+import com.epam.esm.util.MapperUtil;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.Tag;
@@ -25,6 +25,9 @@ public class TagServiceImpl implements TagService {
         this.tagDao = tagDao;
     }
 
+    @Autowired
+    private MapperUtil mapperUtilInstance;
+
     @Override
     public TagDto add(TagDto tagDto) {
         Tag tag = convertToTagEntity(tagDto);
@@ -39,7 +42,7 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public List<TagDto> findAll() {
-        return MapperUtil.convertList(tagDao.findAll(), this::convertToTagDto);
+        return mapperUtilInstance.convertList(tagDao.findAll(), this::convertToTagDto);
     }
 
     @Override

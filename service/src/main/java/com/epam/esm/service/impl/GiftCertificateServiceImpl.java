@@ -1,6 +1,6 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.configuration.MapperUtil;
+import com.epam.esm.util.MapperUtil;
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.dto.GiftCertificateDto;
@@ -26,6 +26,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     private TagDao tagDao;
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private MapperUtil mapperUtilInstance;
 
     @Autowired
     public GiftCertificateServiceImpl(GiftCertificateDao giftCertificateDao) {
@@ -54,7 +57,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     public List<GiftCertificateDto> findAll() {
-        return MapperUtil.convertList(giftCertificateDao.findAll(),
+        return mapperUtilInstance.convertList(giftCertificateDao.findAll(),
                 this::convertToGiftCertificateDto);
     }
 
@@ -80,7 +83,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     public List<TagDto> findByCertificateId(long giftCertificateId) {
-        return MapperUtil.convertList(tagDao.findByCertificateId(giftCertificateId), this::convertToTagDto);
+        return mapperUtilInstance.convertList(tagDao.findByCertificateId(giftCertificateId), this::convertToTagDto);
     }
 
     @Override
@@ -89,7 +92,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     private void addGiftCertificateTags(GiftCertificateDto giftCertificateDto, long giftCertificateId) {
-        List<Tag> tagList = MapperUtil.convertList(giftCertificateDto.getTagDtoList(),
+        List<Tag> tagList = mapperUtilInstance.convertList(giftCertificateDto.getTagDtoList(),
                 this::convertToTagEntity); // TODO: 12/8/2021
         List<Tag> existingTags = tagDao.findAll();
         tagList.stream()
@@ -102,7 +105,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     private GiftCertificate convertToGiftCertificateEntity(GiftCertificateDto giftCertificateDto) {
         GiftCertificate giftCertificate = modelMapper.map(giftCertificateDto, GiftCertificate.class);
-        giftCertificate.setTagList(MapperUtil.convertList(giftCertificateDto.getTagDtoList(),
+        giftCertificate.setTagList(mapperUtilInstance.convertList(giftCertificateDto.getTagDtoList(),
                 this::convertToTagEntity));
         return giftCertificate;
     }
