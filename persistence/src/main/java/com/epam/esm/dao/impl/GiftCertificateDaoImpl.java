@@ -3,7 +3,6 @@ package com.epam.esm.dao.impl;
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dao.mapper.GiftCertificateMapper;
 import com.epam.esm.entity.GiftCertificate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -18,6 +17,7 @@ import java.util.Optional;
 @Repository
 public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
+    private static final String FIND_GIFT_CERTIFICATES = "SELECT id, name, description, price, duration, createDate, lastUpdateDate FROM gift_certificate";
     private static final String ADD_GIFT_CERTIFICATE = "INSERT INTO gift_certificate (name, description, price, duration, createDate, lastUpdateDate) VALUES(?,?,?,?,?,?)";
     private static final String FIND_GIFT_CERTIFICATE = "SELECT id, name, description, price, duration, createDate, lastUpdateDate FROM gift_certificate WHERE id=?";
     private static final String FIND_ALL_GIFT_CERTIFICATE = "SELECT id, name, description, price, duration, createDate, lastUpdateDate FROM gift_certificate";
@@ -95,5 +95,12 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     @Override
     public void removeFromTableGiftCertificateIncludeTag(long giftCertificateId) {
         jdbcTemplate.update(REMOVE_TAG_BY_CERTIFICATE_ID, giftCertificateId);
+    }
+
+    @Override
+    public List<GiftCertificate> findAllSorted(List<String> params) {
+        String orderPostfix = params == null ? "" : (" ORDER BY " + String.join(", ", params));
+        return jdbcTemplate.query(FIND_GIFT_CERTIFICATES + orderPostfix,
+                giftCertificateMapper);
     }
 }

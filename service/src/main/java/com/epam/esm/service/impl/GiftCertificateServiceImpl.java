@@ -76,6 +76,12 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
+    public List<GiftCertificateDto> findAllSorted(List<String> params) {
+        return mapperUtilInstance.convertList(giftCertificateDao.findAllSorted(params),
+                this::convertToGiftCertificateDto);
+    }
+
+    @Override
     public boolean removeById(long id) {
         return giftCertificateDao.removeById(id);
     }

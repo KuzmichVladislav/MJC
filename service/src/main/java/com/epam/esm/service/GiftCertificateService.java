@@ -10,4 +10,6 @@ public interface GiftCertificateService extends BaseService<GiftCertificateDto> 
     GiftCertificateDto update(GiftCertificateDto giftCertificate);
 
     List<TagDto> findByCertificateId(long giftCertificateId);
+
+    List<GiftCertificateDto> findAllSorted(List<String> params);
 }

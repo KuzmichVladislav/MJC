@@ -25,10 +25,10 @@ public class GiftCertificateController {
         return giftCertificateService.add(giftCertificateDto);
     }
 
-    @GetMapping(consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<GiftCertificateDto> getAllGiftCertificates() {
-        return giftCertificateService.findAll();
-    }
+//    @GetMapping(consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+//    public List<GiftCertificateDto> getAllGiftCertificates() {
+//        return giftCertificateService.findAll();
+//    }
 
     @GetMapping(value = "/{id}", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public GiftCertificateDto getGiftCertificate(@PathVariable("id") long id) {
@@ -44,5 +44,10 @@ public class GiftCertificateController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public boolean deleteGiftCertificate(@PathVariable("id") long id) {
         return giftCertificateService.removeById(id);
+    }
+
+    @GetMapping(value = "/sort", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<GiftCertificateDto> getAllGiftCertificates(@RequestParam(value = "sort", required = false) List<String> sort) {
+        return giftCertificateService.findAllSorted(sort);
     }
 }
