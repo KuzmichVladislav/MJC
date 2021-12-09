@@ -1,5 +1,6 @@
 package com.epam.esm.configuration;
 
+import com.epam.esm.exception.ExceptionResult;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.context.annotation.Bean;
@@ -21,5 +22,10 @@ public class ServiceConfiguration {
                 .setMatchingStrategy(MatchingStrategies.STRICT)
                 .setFieldMatchingEnabled(true);
         return modelMapper;
+    }
+
+    @Bean
+    ExceptionResult getExceptionResult(){
+        return new ExceptionResult();
     }
 }

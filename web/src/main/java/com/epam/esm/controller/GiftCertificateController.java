@@ -46,12 +46,8 @@ public class GiftCertificateController {
     }
 
     @GetMapping(value = "/{id}", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public GiftCertificateDto getGiftCertificate(@PathVariable("id") long id) throws TestException {
-       try {
+    public GiftCertificateDto getGiftCertificate(@PathVariable("id") long id){
            return giftCertificateService.findById(id);
-       }catch (RuntimeException e){
-           throw new TestException("id is not valid");
-       }
     }
 
     @PatchMapping(consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

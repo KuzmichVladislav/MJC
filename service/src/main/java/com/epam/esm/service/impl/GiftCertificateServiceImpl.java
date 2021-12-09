@@ -7,6 +7,7 @@ import com.epam.esm.dto.RequestParamDto;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.TagService;
 import com.epam.esm.util.MapperUtil;
@@ -52,7 +53,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     public GiftCertificateDto findById(long id) {
         GiftCertificate giftCertificate = giftCertificateDao
-                .findById(id).orElseThrow(() -> new RuntimeException());// TODO: 12/7/2021
+                .findById(id).orElseThrow(() -> new ResourceNotFoundException("Id is not exist"));
         return convertToGiftCertificateDto(giftCertificate);
     }
 
