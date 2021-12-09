@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class GiftCertificateServiceImpl implements GiftCertificateService {
@@ -76,9 +77,19 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public List<GiftCertificateDto> findAllSorted(List<String> params) {
-        return mapperUtilInstance.convertList(giftCertificateDao.findAllSorted(params),
-                this::convertToGiftCertificateDto);
+    public List<GiftCertificateDto> findAll(Optional<List<String>> sortParams, Optional<String> sortOrder) {
+        if (sortParams.isPresent()) {
+            String sortOrderParam = sortOrder.orElse("ASC");
+            if (!sortOrderParam.equals("DESC") && !sortOrderParam.equals("ASC")) {
+                sortOrderParam = "";
+            }
+            return mapperUtilInstance.convertList(giftCertificateDao
+                            .findAllSorted(sortParams.get(), sortOrderParam),
+                    this::convertToGiftCertificateDto);
+        } else {
+            return mapperUtilInstance.convertList(giftCertificateDao.findAll(),
+                    this::convertToGiftCertificateDto);
+        }
     }
 
     @Override

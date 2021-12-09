@@ -17,7 +17,7 @@ import java.util.Optional;
 @Repository
 public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
-    private static final String FIND_GIFT_CERTIFICATES = "SELECT id, name, description, price, duration, createDate, lastUpdateDate FROM gift_certificate";
+    private static final String FIND_SORTED_GIFT_CERTIFICATES = "SELECT id, name, description, price, duration, createDate, lastUpdateDate FROM gift_certificate ORDER BY %s %s";
     private static final String ADD_GIFT_CERTIFICATE = "INSERT INTO gift_certificate (name, description, price, duration, createDate, lastUpdateDate) VALUES(?,?,?,?,?,?)";
     private static final String FIND_GIFT_CERTIFICATE = "SELECT id, name, description, price, duration, createDate, lastUpdateDate FROM gift_certificate WHERE id=?";
     private static final String FIND_ALL_GIFT_CERTIFICATE = "SELECT id, name, description, price, duration, createDate, lastUpdateDate FROM gift_certificate";
@@ -98,9 +98,9 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
-    public List<GiftCertificate> findAllSorted(List<String> params) {
-        String orderPostfix = params == null ? "" : (" ORDER BY " + String.join(", ", params));
-        return jdbcTemplate.query(FIND_GIFT_CERTIFICATES + orderPostfix,
+    public List<GiftCertificate> findAllSorted(List<String> sortParams, String sortOrderParam) {
+       return jdbcTemplate.query(String.format(FIND_SORTED_GIFT_CERTIFICATES,
+                String.join(", ", sortParams), sortOrderParam),
                 giftCertificateMapper);
     }
 }

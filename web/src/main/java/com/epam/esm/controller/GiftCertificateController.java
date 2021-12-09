@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/gift-certificates")
@@ -25,10 +26,12 @@ public class GiftCertificateController {
         return giftCertificateService.add(giftCertificateDto);
     }
 
-//    @GetMapping(consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-//    public List<GiftCertificateDto> getAllGiftCertificates() {
-//        return giftCertificateService.findAll();
-//    }
+    @GetMapping(consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<GiftCertificateDto> getAllGiftCertificates
+            (@RequestParam(value = "sort", required = false) Optional<List<String>> sortParams,
+             @RequestParam(value = "order", required = false) Optional<String> sortOrder) {
+        return giftCertificateService.findAll(sortParams, sortOrder);
+    }
 
     @GetMapping(value = "/{id}", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public GiftCertificateDto getGiftCertificate(@PathVariable("id") long id) {
@@ -46,8 +49,8 @@ public class GiftCertificateController {
         return giftCertificateService.removeById(id);
     }
 
-    @GetMapping(value = "/sort", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<GiftCertificateDto> getAllGiftCertificates(@RequestParam(value = "sort", required = false) List<String> sort) {
-        return giftCertificateService.findAllSorted(sort);
-    }
+//    @GetMapping(value = "/sort", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+//    public List<GiftCertificateDto> getAllGiftCertificates(@RequestParam(value = "sort", required = false) List<String> sort) {
+//        return giftCertificateService.findAllSorted(sort);
+//    }
 }

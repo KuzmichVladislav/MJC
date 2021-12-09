@@ -4,6 +4,7 @@ import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.TagDto;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface GiftCertificateService extends BaseService<GiftCertificateDto> {
 
@@ -11,5 +12,5 @@ public interface GiftCertificateService extends BaseService<GiftCertificateDto> 
 
     List<TagDto> findByCertificateId(long giftCertificateId);
 
-    List<GiftCertificateDto> findAllSorted(List<String> params);
+    List<GiftCertificateDto> findAll(Optional<List<String>> sortParams, Optional<String> sortOrder);
 }
