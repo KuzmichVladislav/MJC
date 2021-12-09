@@ -10,7 +10,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 public enum ErrorCode {
-    resourceNotFound(40401);
+    resourceNotFound(40401),
+    notValidParam(41201);
 
     int errorCode;
 }

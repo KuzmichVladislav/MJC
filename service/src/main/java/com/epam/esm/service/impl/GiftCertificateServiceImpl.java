@@ -8,9 +8,11 @@ import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.ResourceNotFoundException;
+import com.epam.esm.exception.ValidationException;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.TagService;
 import com.epam.esm.util.MapperUtil;
+import com.epam.esm.validator.RequestValidator;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,24 +28,28 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     private final TagDao tagDao;
     private final ModelMapper modelMapper;
     private final MapperUtil mapperUtilInstance;
+    private final RequestValidator requestValidator;
 
     @Autowired
     public GiftCertificateServiceImpl(GiftCertificateDao giftCertificateDao,
                                       TagService tagService, TagDao tagDao,
-                                      ModelMapper modelMapper, MapperUtil mapperUtilInstance) {
+                                      ModelMapper modelMapper, MapperUtil mapperUtilInstance,
+                                      RequestValidator requestValidator) {
         this.giftCertificateDao = giftCertificateDao;
         this.tagService = tagService;
         this.tagDao = tagDao;
         this.modelMapper = modelMapper;
         this.mapperUtilInstance = mapperUtilInstance;
+        this.requestValidator = requestValidator;
     }
 
     @Override
     public GiftCertificateDto add(GiftCertificateDto giftCertificateDto) {
-        // TODO: 12/8/2021 validate
+        giftCertificateValidation(giftCertificateDto);
         giftCertificateDto.setCreateDate(LocalDateTime.now());
         giftCertificateDto.setLastUpdateDate(LocalDateTime.now());
-        GiftCertificate giftCertificate = giftCertificateDao.add(convertToGiftCertificateEntity(giftCertificateDto));
+        GiftCertificate giftCertificate = giftCertificateDao
+                .add(convertToGiftCertificateEntity(giftCertificateDto));
         long giftCertificateId = giftCertificate.getId();
         giftCertificateDto.setId(giftCertificateId);
         addGiftCertificateTags(giftCertificate, giftCertificateId);
@@ -53,7 +59,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     public GiftCertificateDto findById(long id) {
         GiftCertificate giftCertificate = giftCertificateDao
-                .findById(id).orElseThrow(() -> new ResourceNotFoundException("Id is not exist"));
+                .findById(id).orElseThrow(() ->
+                        new ResourceNotFoundException
+                                (String.format("Requested resource not found (id = %d)", id)));
         return convertToGiftCertificateDto(giftCertificate);
     }
 
@@ -66,6 +74,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     public GiftCertificateDto update(GiftCertificateDto giftCertificateDto) {
         long giftCertificateId = giftCertificateDto.getId();
+        findById(giftCertificateId);
+        giftCertificateValidation(giftCertificateDto);
         giftCertificateDto.setLastUpdateDate(LocalDateTime.now());
         giftCertificateDao.removeFromTableGiftCertificateIncludeTag(giftCertificateId);
         addGiftCertificateTags(convertToGiftCertificateEntity(giftCertificateDto), giftCertificateId);
@@ -73,12 +83,13 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public List<TagDto> findByCertificateId(long giftCertificateId) {
+    public List<TagDto> findTagsByCertificateId(long giftCertificateId) {
         return tagService.findByCertificateId(giftCertificateId);
     }
 
     @Override
     public List<GiftCertificateDto> findAll(RequestParamDto requestParams) {
+        // TODO: 12/9/2021 validation?
         String sqlQueryPostfix = mapperUtilInstance.mapRequestParam(requestParams);
         return mapperUtilInstance.convertList(giftCertificateDao.findAllSorted(sqlQueryPostfix),
                 this::convertToGiftCertificateDto);
@@ -111,7 +122,26 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     private GiftCertificateDto convertToGiftCertificateDto(GiftCertificate giftCertificate) {
         GiftCertificateDto giftCertificateDto = modelMapper.map(giftCertificate, GiftCertificateDto.class);
-        giftCertificateDto.setTagDtoList(findByCertificateId(giftCertificateDto.getId()));
+        giftCertificateDto.setTagDtoList(findTagsByCertificateId(giftCertificateDto.getId()));
         return giftCertificateDto;
+    }
+
+    private void giftCertificateValidation(GiftCertificateDto giftCertificateDto) {
+        if (!requestValidator.checkName(giftCertificateDto.getName())) {
+            throw new ValidationException(String.format("Field name %s is not valid",
+                    giftCertificateDto.getName()));
+        }
+        if (!requestValidator.checkPrice(giftCertificateDto.getPrice().toString())) {
+            throw new ValidationException(String.format("Field price %s is not valid",
+                    giftCertificateDto.getPrice()));
+        }
+        if (!requestValidator.checkDuration(giftCertificateDto.getDuration())) {
+            throw new ValidationException(String.format("Field duration %d is not valid",
+                    giftCertificateDto.getDuration()));
+        }
+        if (giftCertificateDto.getTagDtoList().stream().anyMatch(t ->
+                !requestValidator.checkName(t.getName()))) {
+            throw new ValidationException("Tag names is not valid");
+        }
     }
 }
