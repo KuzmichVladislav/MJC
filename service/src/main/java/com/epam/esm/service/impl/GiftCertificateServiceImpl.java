@@ -3,6 +3,7 @@ package com.epam.esm.service.impl;
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.dto.GiftCertificateDto;
+import com.epam.esm.dto.RequestParamDto;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
@@ -15,8 +16,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class GiftCertificateServiceImpl implements GiftCertificateService {
@@ -53,7 +52,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     public GiftCertificateDto findById(long id) {
         GiftCertificate giftCertificate = giftCertificateDao
-                .findById(id).orElse(null);// TODO: 12/7/2021
+                .findById(id).orElseThrow(() -> new RuntimeException());// TODO: 12/7/2021
         return convertToGiftCertificateDto(giftCertificate);
     }
 
@@ -78,39 +77,10 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public List<GiftCertificateDto> findAll(Optional<String> partOfName, Optional<List<String>> tagNames, Optional<List<String>> sortParams, Optional<String> sortOrder) {
-        String partOfNamePostfix = "";
-        String tagNamesPostfix = "";
-        String orderParamPostfix = "";
-
-        if (partOfName.isPresent()) {
-            partOfNamePostfix = "WHERE gift_certificate.name LIKE '%" + partOfName.get() + "%'";
-            tagNamesPostfix = tagNamesPostfixWitQuotes(tagNames, tagNamesPostfix, " AND (t.name = ");
-        } else {
-            tagNamesPostfix = tagNamesPostfixWitQuotes(tagNames, tagNamesPostfix, "WHERE (t.name = ");
-        }
-        if (sortParams.isPresent()) {
-            String sortOrderParam = sortOrder.orElse("ASC");
-            if (!sortOrderParam.equals("DESC") && !sortOrderParam.equals("ASC")) {
-                sortOrderParam = "";
-            }
-            orderParamPostfix = String.format(" ORDER BY %s %s", String.join(", ",
-                    sortParams.get()), sortOrderParam);
-        }
-        String sqlQueryPostfix = partOfNamePostfix + tagNamesPostfix + orderParamPostfix;
-        System.out.println(sqlQueryPostfix);
+    public List<GiftCertificateDto> findAll(RequestParamDto requestParams) {
+        String sqlQueryPostfix = mapperUtilInstance.mapRequestParam(requestParams);
         return mapperUtilInstance.convertList(giftCertificateDao.findAllSorted(sqlQueryPostfix),
                 this::convertToGiftCertificateDto);
-    }// FIXME: 12/9/2021
-
-    private String tagNamesPostfixWitQuotes(Optional<List<String>> tagNames, String tagNamesPostfix, String s2) {
-        if (tagNames.isPresent()) {
-            List<String> tagNamesWitQuotes = tagNames.get().stream()
-                    .map(s -> "'" + s + "'").collect(Collectors.toList());
-            tagNamesPostfix = s2 +
-                    String.join(" OR t.name = ", tagNamesWitQuotes) + ")";
-        }
-        return tagNamesPostfix;
     }
 
     @Override

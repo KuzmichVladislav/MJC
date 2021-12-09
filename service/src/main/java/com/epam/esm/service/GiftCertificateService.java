@@ -1,6 +1,7 @@
 package com.epam.esm.service;
 
 import com.epam.esm.dto.GiftCertificateDto;
+import com.epam.esm.dto.RequestParamDto;
 import com.epam.esm.dto.TagDto;
 
 import java.util.List;
@@ -12,5 +13,5 @@ public interface GiftCertificateService extends BaseService<GiftCertificateDto> 
 
     List<TagDto> findByCertificateId(long giftCertificateId);
 
-    List<GiftCertificateDto> findAll(Optional<String> partOfName, Optional<List<String>> tagNames, Optional<List<String>> sortParams, Optional<String> sortOrder);
+    List<GiftCertificateDto> findAll(RequestParamDto requestParams);
 }

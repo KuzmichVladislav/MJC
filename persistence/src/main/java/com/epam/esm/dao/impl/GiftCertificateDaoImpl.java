@@ -110,6 +110,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
                 "         RIGHT JOIN gift_certificate_tag_include gcti on gift_certificate.id = gcti.giftCertificate\n" +
                 "         RIGHT JOIN tag t on t.id = gcti.tag\n" +
                 sqlQueryPostfix;
+        System.out.println(SqlQuery);
         return jdbcTemplate.query(SqlQuery, giftCertificateMapper);
     }
 }

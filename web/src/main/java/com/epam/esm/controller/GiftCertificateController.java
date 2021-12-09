@@ -1,6 +1,8 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.dto.GiftCertificateDto;
+import com.epam.esm.dto.RequestParamDto;
+import com.epam.esm.exception.TestException;
 import com.epam.esm.service.GiftCertificateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,16 +30,28 @@ public class GiftCertificateController {
 
     @GetMapping(consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<GiftCertificateDto> getAllGiftCertificates
-            (@RequestParam(value = "part-of-name", required = false) Optional <String> partOfName,
-            @RequestParam(value = "tag-name", required = false) Optional<List<String>> tagNames,
-            @RequestParam(value = "sort", required = false) Optional<List<String>> sortParams,
-             @RequestParam(value = "order", required = false) Optional<String> sortOrder) {
-        return giftCertificateService.findAll(partOfName, tagNames, sortParams, sortOrder);
+            (@RequestParam(value = "name", required = false) Optional <String> name,
+            @RequestParam(value = "description", required = false) Optional <String> description,
+            @RequestParam(value = "tag-name", required = false) Optional<String> tagName,
+            @RequestParam(value = "sort", required = false) Optional<List<String>> sort,
+             @RequestParam(value = "order-by", required = false) Optional<String> orderBy) {
+        RequestParamDto requestParams = RequestParamDto.builder()
+                .name(name)
+                .tagName(tagName)
+                .description(description)
+                .sort(sort)
+                .orderBy(orderBy)
+                .build();
+        return giftCertificateService.findAll(requestParams);
     }
 
     @GetMapping(value = "/{id}", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public GiftCertificateDto getGiftCertificate(@PathVariable("id") long id) {
-        return giftCertificateService.findById(id);
+    public GiftCertificateDto getGiftCertificate(@PathVariable("id") long id) throws TestException {
+       try {
+           return giftCertificateService.findById(id);
+       }catch (RuntimeException e){
+           throw new TestException("id is not valid");
+       }
     }
 
     @PatchMapping(consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -51,8 +65,8 @@ public class GiftCertificateController {
         return giftCertificateService.removeById(id);
     }
 
-//    @GetMapping(value = "/sort", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-//    public List<GiftCertificateDto> getAllGiftCertificates(@RequestParam(value = "sort", required = false) List<String> sort) {
-//        return giftCertificateService.findAllSorted(sort);
+//    @ExceptionHandler(RuntimeException.class)
+//    public TestException handleException(RuntimeException e) {
+//        return new TestException(e.getMessage());
 //    }
 }
