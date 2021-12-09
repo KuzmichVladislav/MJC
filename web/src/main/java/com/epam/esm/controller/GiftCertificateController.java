@@ -2,7 +2,6 @@ package com.epam.esm.controller;
 
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.RequestParamDto;
-import com.epam.esm.exception.TestException;
 import com.epam.esm.service.GiftCertificateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,10 +29,10 @@ public class GiftCertificateController {
 
     @GetMapping(consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<GiftCertificateDto> getAllGiftCertificates
-            (@RequestParam(value = "name", required = false) Optional <String> name,
-            @RequestParam(value = "description", required = false) Optional <String> description,
-            @RequestParam(value = "tag-name", required = false) Optional<String> tagName,
-            @RequestParam(value = "sort", required = false) Optional<List<String>> sort,
+            (@RequestParam(value = "name", required = false) Optional<String> name,
+             @RequestParam(value = "description", required = false) Optional<String> description,
+             @RequestParam(value = "tag-name", required = false) Optional<String> tagName,
+             @RequestParam(value = "sort", required = false) Optional<List<String>> sort,
              @RequestParam(value = "order-by", required = false) Optional<String> orderBy) {
         RequestParamDto requestParams = RequestParamDto.builder()
                 .name(name)
@@ -46,8 +45,8 @@ public class GiftCertificateController {
     }
 
     @GetMapping(value = "/{id}", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public GiftCertificateDto getGiftCertificate(@PathVariable("id") long id){
-           return giftCertificateService.findById(id);
+    public GiftCertificateDto getGiftCertificate(@PathVariable("id") long id) {
+        return giftCertificateService.findById(id);
     }
 
     @PatchMapping(consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -60,9 +59,4 @@ public class GiftCertificateController {
     public boolean deleteGiftCertificate(@PathVariable("id") long id) {
         return giftCertificateService.removeById(id);
     }
-
-//    @ExceptionHandler(RuntimeException.class)
-//    public TestException handleException(RuntimeException e) {
-//        return new TestException(e.getMessage());
-//    }
 }

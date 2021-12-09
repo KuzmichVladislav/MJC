@@ -1,29 +1,30 @@
 package com.epam.esm.exception;
 
-import com.epam.esm.exception.ErrorCode;
-import com.epam.esm.exception.ExceptionResult;
-import com.epam.esm.exception.ResourceNotFoundException;
-import com.epam.esm.exception.ValidationException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@ControllerAdvice
+import java.util.Locale;
+
+@RestControllerAdvice
 public class ErrorHandler {
 
-    final ExceptionResult result;
-
-    public ErrorHandler(ExceptionResult result) {
-        this.result = result;
-    }
+    @Autowired
+    private MessageSource messageSource;
 
     @ExceptionHandler(value = ResourceNotFoundException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    protected ExceptionResult handleHttpBusinessException(ResourceNotFoundException ex) {
-        return ExceptionResult.builder().errorMessage(ex.getMessage()).errorCode(ErrorCode.resourceNotFound.getErrorCode()).build();
+    public ExceptionResult handle(ResourceNotFoundException e, Locale locale) {
+        String errorMessage = messageSource.getMessage("exception.resource_not_found", new Object[]{}, locale);
+        return ExceptionResult.builder()
+                .errorMessage(errorMessage)
+                .errorCode(ErrorCode.resourceNotFound.getErrorCode())
+                .build();
     }
 
     @ExceptionHandler(value = ValidationException.class)
