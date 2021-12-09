@@ -28,9 +28,11 @@ public class GiftCertificateController {
 
     @GetMapping(consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<GiftCertificateDto> getAllGiftCertificates
-            (@RequestParam(value = "sort", required = false) Optional<List<String>> sortParams,
+            (@RequestParam(value = "part-of-name", required = false) Optional <String> partOfName,
+            @RequestParam(value = "tag-name", required = false) Optional<List<String>> tagNames,
+            @RequestParam(value = "sort", required = false) Optional<List<String>> sortParams,
              @RequestParam(value = "order", required = false) Optional<String> sortOrder) {
-        return giftCertificateService.findAll(sortParams, sortOrder);
+        return giftCertificateService.findAll(partOfName, tagNames, sortParams, sortOrder);
     }
 
     @GetMapping(value = "/{id}", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

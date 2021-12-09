@@ -98,9 +98,18 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
-    public List<GiftCertificate> findAllSorted(List<String> sortParams, String sortOrderParam) {
-       return jdbcTemplate.query(String.format(FIND_SORTED_GIFT_CERTIFICATES,
-                String.join(", ", sortParams), sortOrderParam),
-                giftCertificateMapper);
+    public List<GiftCertificate> findAllSorted(String sqlQueryPostfix) {
+        String SqlQuery = "SELECT DISTINCT gift_certificate.id,\n" +
+                "                gift_certificate.name,\n" +
+                "                gift_certificate.description,\n" +
+                "                gift_certificate.price,\n" +
+                "                gift_certificate.duration,\n" +
+                "                gift_certificate.createDate,\n" +
+                "                gift_certificate.lastUpdateDate\n" +
+                "FROM gift_certificate\n" +
+                "         RIGHT JOIN gift_certificate_tag_include gcti on gift_certificate.id = gcti.giftCertificate\n" +
+                "         RIGHT JOIN tag t on t.id = gcti.tag\n" +
+                sqlQueryPostfix;
+        return jdbcTemplate.query(SqlQuery, giftCertificateMapper);
     }
 }

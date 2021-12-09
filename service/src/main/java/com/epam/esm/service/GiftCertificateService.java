@@ -12,5 +12,5 @@ public interface GiftCertificateService extends BaseService<GiftCertificateDto> 
 
     List<TagDto> findByCertificateId(long giftCertificateId);
 
-    List<GiftCertificateDto> findAll(Optional<List<String>> sortParams, Optional<String> sortOrder);
+    List<GiftCertificateDto> findAll(Optional<String> partOfName, Optional<List<String>> tagNames, Optional<List<String>> sortParams, Optional<String> sortOrder);
 }
