@@ -1,21 +1,13 @@
 package com.epam.esm.util;
 
-import com.epam.esm.dto.RequestParamDto;
+import com.epam.esm.entity.RequestSqlParam;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Component
-public class MapperUtil {
-    public <R, E> List<R> convertList(List<E> list, Function<E, R> converter) {
-        return list.stream().map(converter).collect(Collectors.toList());
-    }
-
-    public String mapRequestParam(RequestParamDto requestParams){
+public class SqlParamConvertor {
+    public String mapRequestParam(RequestSqlParam requestParams){
         String partOfNamePostfix = "";
         String partOfDescriptionPostfix = "";
         String tagNamesPostfix = "";

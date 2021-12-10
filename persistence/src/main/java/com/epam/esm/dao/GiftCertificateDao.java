@@ -1,6 +1,7 @@
 package com.epam.esm.dao;
 
 import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.entity.RequestSqlParam;
 
 import java.util.List;
 
@@ -12,7 +13,7 @@ public interface GiftCertificateDao extends BaseDao<GiftCertificate>{
 
     void addTagToCertificate(long giftCertificateId, long tagId);
 
-    void removeFromTableGiftCertificateIncludeTag(long giftCertificateId);
+    void removeFromTableGiftCertificateTagInclude(long giftCertificateId);
 
-    List<GiftCertificate> findAllSorted(String sqlQueryPostfix);
+    List<GiftCertificate> findAllSorted(RequestSqlParam requestParam);
 }

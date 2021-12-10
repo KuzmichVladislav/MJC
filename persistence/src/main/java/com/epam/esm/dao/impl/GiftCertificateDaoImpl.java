@@ -3,6 +3,8 @@ package com.epam.esm.dao.impl;
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dao.mapper.GiftCertificateMapper;
 import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.entity.RequestSqlParam;
+import com.epam.esm.util.SqlParamConvertor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -17,7 +19,16 @@ import java.util.Optional;
 @Repository
 public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
-    private static final String FIND_SORTED_GIFT_CERTIFICATES = "SELECT id, name, description, price, duration, createDate, lastUpdateDate FROM gift_certificate ORDER BY %s %s";
+    private static final String FIND_SORTED_GIFT_CERTIFICATES = "SELECT DISTINCT gift_certificate.id,\n" +
+            "                gift_certificate.name,\n" +
+            "                gift_certificate.description,\n" +
+            "                gift_certificate.price,\n" +
+            "                gift_certificate.duration,\n" +
+            "                gift_certificate.createDate,\n" +
+            "                gift_certificate.lastUpdateDate\n" +
+            "FROM gift_certificate\n" +
+            "         RIGHT JOIN gift_certificate_tag_include gcti on gift_certificate.id = gcti.giftCertificate\n" +
+            "         RIGHT JOIN tag t on t.id = gcti.tag\n";
     private static final String ADD_GIFT_CERTIFICATE = "INSERT INTO gift_certificate (name, description, price, duration, createDate, lastUpdateDate) VALUES(?,?,?,?,?,?)";
     private static final String FIND_GIFT_CERTIFICATE = "SELECT id, name, description, price, duration, createDate, lastUpdateDate FROM gift_certificate WHERE id=?";
     private static final String FIND_ALL_GIFT_CERTIFICATE = "SELECT id, name, description, price, duration, createDate, lastUpdateDate FROM gift_certificate";
@@ -31,10 +42,14 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     private static final String REMOVE_TAG_BY_CERTIFICATE_ID = "DELETE FROM gift_certificate_tag_include WHERE giftCertificate=?";
     private final JdbcTemplate jdbcTemplate;
     private final GiftCertificateMapper giftCertificateMapper;
+    private final SqlParamConvertor sqlParamConvertor;
 
-    public GiftCertificateDaoImpl(JdbcTemplate jdbcTemplate, GiftCertificateMapper giftCertificateMapper) {
+    public GiftCertificateDaoImpl(JdbcTemplate jdbcTemplate,
+                                  GiftCertificateMapper giftCertificateMapper,
+                                  SqlParamConvertor sqlParamConvertor) {
         this.jdbcTemplate = jdbcTemplate;
         this.giftCertificateMapper = giftCertificateMapper;
+        this.sqlParamConvertor = sqlParamConvertor;
     }
 
     @Override
@@ -93,24 +108,14 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
-    public void removeFromTableGiftCertificateIncludeTag(long giftCertificateId) {
+    public void removeFromTableGiftCertificateTagInclude(long giftCertificateId) {
         jdbcTemplate.update(REMOVE_TAG_BY_CERTIFICATE_ID, giftCertificateId);
     }
 
     @Override
-    public List<GiftCertificate> findAllSorted(String sqlQueryPostfix) {
-        String SqlQuery = "SELECT DISTINCT gift_certificate.id,\n" +
-                "                gift_certificate.name,\n" +
-                "                gift_certificate.description,\n" +
-                "                gift_certificate.price,\n" +
-                "                gift_certificate.duration,\n" +
-                "                gift_certificate.createDate,\n" +
-                "                gift_certificate.lastUpdateDate\n" +
-                "FROM gift_certificate\n" +
-                "         RIGHT JOIN gift_certificate_tag_include gcti on gift_certificate.id = gcti.giftCertificate\n" +
-                "         RIGHT JOIN tag t on t.id = gcti.tag\n" +
-                sqlQueryPostfix;
-        System.out.println(SqlQuery);
-        return jdbcTemplate.query(SqlQuery, giftCertificateMapper);
+    public List<GiftCertificate> findAllSorted(RequestSqlParam requestParam) {
+        String sqlQuery = FIND_SORTED_GIFT_CERTIFICATES +
+                sqlParamConvertor.mapRequestParam(requestParam);
+        return jdbcTemplate.query(sqlQuery, giftCertificateMapper);
     }
 }

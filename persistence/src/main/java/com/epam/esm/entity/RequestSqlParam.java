@@ -1,4 +1,4 @@
-package com.epam.esm.dto;
+package com.epam.esm.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,7 +12,7 @@ import java.util.Optional;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class RequestParamDto {
+public class RequestSqlParam {
     Optional<String> name;
     Optional<String> description;
     Optional<String> tagName;

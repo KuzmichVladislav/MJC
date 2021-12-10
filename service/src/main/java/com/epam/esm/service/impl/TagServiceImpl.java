@@ -5,7 +5,7 @@ import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.service.TagService;
-import com.epam.esm.util.MapperUtil;
+import com.epam.esm.util.ListConvertor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,10 +18,10 @@ public class TagServiceImpl implements TagService {
 
     private final TagDao tagDao;
     private final ModelMapper modelMapper;
-    private final MapperUtil mapperUtilInstance;
+    private final ListConvertor mapperUtilInstance;
 
     @Autowired
-    public TagServiceImpl(TagDao tagDao, ModelMapper modelMapper, MapperUtil mapperUtilInstance) {
+    public TagServiceImpl(TagDao tagDao, ModelMapper modelMapper, ListConvertor mapperUtilInstance) {
         this.tagDao = tagDao;
         this.modelMapper = modelMapper;
         this.mapperUtilInstance = mapperUtilInstance;

@@ -1,7 +1,7 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.dto.GiftCertificateDto;
-import com.epam.esm.dto.RequestParamDto;
+import com.epam.esm.dto.RequestSqlParamDto;
 import com.epam.esm.service.GiftCertificateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,7 +34,7 @@ public class GiftCertificateController {
              @RequestParam(value = "tag-name", required = false) Optional<String> tagName,
              @RequestParam(value = "sort", required = false) Optional<List<String>> sort,
              @RequestParam(value = "order-by", required = false) Optional<String> orderBy) {
-        RequestParamDto requestParams = RequestParamDto.builder()
+        RequestSqlParamDto requestParams = RequestSqlParamDto.builder()
                 .name(name)
                 .tagName(tagName)
                 .description(description)
