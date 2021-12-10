@@ -1,12 +1,11 @@
 package com.epam.esm.exception;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class ExceptionResult {
-    String errorMessage;
-    int errorCode;
+    private String errorMessage;
+    private int errorCode;
 }
