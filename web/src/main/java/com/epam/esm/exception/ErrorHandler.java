@@ -1,6 +1,5 @@
 package com.epam.esm.exception;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -23,21 +22,20 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public ExceptionResult handle(ResourceNotFoundException e, Locale locale) {
-        System.out.println(e.getMessageKey());
         String errorMessage = createMessage(
                 messageSource.getMessage(e.getMessageKey(), new Object[]{}, locale),
                 e.getMessageParameter());
-        return ExceptionResult.builder()
-                .errorMessage(errorMessage)
-                .errorCode(ErrorCode.RESOURCE_NOT_FOUND.getErrorCode())
-                .build();
+        return new ExceptionResult(errorMessage, ErrorCode.RESOURCE_NOT_FOUND.getErrorCode());
     }
 
-    @ExceptionHandler(value = ValidationException.class)
-    @ResponseStatus(HttpStatus.PRECONDITION_FAILED)
+    @ExceptionHandler(value = RequestValidationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    protected ExceptionResult handleHttpBusinessException(ValidationException ex) {
-        return ExceptionResult.builder().errorMessage(ex.getMessage()).errorCode(ErrorCode.NOT_VALID_PARAM.getErrorCode()).build();
+    protected ExceptionResult handle(RequestValidationException e, Locale locale) {
+        String errorMessage = createMessage(
+                messageSource.getMessage(e.getMessageKey(), new Object[]{}, locale),
+                e.getMessageParameter());
+        return new ExceptionResult(errorMessage, ErrorCode.RESOURCE_NOT_FOUND.getErrorCode());
     }
 
     private String createMessage(String message, String param) {

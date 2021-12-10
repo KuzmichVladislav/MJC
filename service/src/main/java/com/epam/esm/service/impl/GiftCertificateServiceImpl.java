@@ -8,8 +8,8 @@ import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.RequestSqlParam;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.ExceptionKey;
+import com.epam.esm.exception.RequestValidationException;
 import com.epam.esm.exception.ResourceNotFoundException;
-import com.epam.esm.exception.ValidationException;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.TagService;
 import com.epam.esm.util.ListConvertor;
@@ -18,6 +18,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -130,21 +131,23 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     private void giftCertificateValidation(GiftCertificateDto giftCertificateDto) {
-        if (!requestValidator.checkName(giftCertificateDto.getName())) {
-            throw new ValidationException(String.format("Field name %s is not valid",
-                    giftCertificateDto.getName()));
+        String name = giftCertificateDto.getName();
+        if (name != null) {
+            requestValidator.checkName(name);
         }
-        if (!requestValidator.checkPrice(giftCertificateDto.getPrice().toString())) {
-            throw new ValidationException(String.format("Field price %s is not valid",
-                    giftCertificateDto.getPrice()));
+        Integer duration = giftCertificateDto.getDuration();
+        if (duration != null) {
+            requestValidator.checkDuration(duration);
         }
-        if (!requestValidator.checkDuration(giftCertificateDto.getDuration())) {
-            throw new ValidationException(String.format("Field duration %d is not valid",
-                    giftCertificateDto.getDuration()));
+        BigDecimal price = giftCertificateDto.getPrice();
+        if (price != null) {
+            requestValidator.checkPrice(price);
         }
-        if (giftCertificateDto.getTagDtoList().stream().anyMatch(t ->
-                !requestValidator.checkName(t.getName()))) {
-            throw new ValidationException("Tag names is not valid");
+        List<TagDto> tagDtoList = giftCertificateDto.getTagDtoList();
+        if (tagDtoList != null) {
+            tagDtoList.stream()
+                    .map(TagDto::getName)
+                    .forEach(requestValidator::checkName);
         }
     }
 }

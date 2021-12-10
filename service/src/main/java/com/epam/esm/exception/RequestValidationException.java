@@ -5,24 +5,24 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class ValidationException extends RuntimeException {
+public class RequestValidationException extends RuntimeException {
 
     private String messageKey;
     private String messageParameter;
 
-    public ValidationException() {
+    public RequestValidationException() {
         super();
     }
 
-    public ValidationException(String message) {
+    public RequestValidationException(String message) {
         super(message);
     }
 
-    public ValidationException(String message, Throwable cause) {
+    public RequestValidationException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public ValidationException(Throwable cause) {
+    public RequestValidationException(Throwable cause) {
         super(cause);
     }
 }

@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Getter
 public enum ErrorCode {
     RESOURCE_NOT_FOUND(40401),
-    NOT_VALID_PARAM(40402);
+    NOT_VALID_PARAM(40001);
 
     int errorCode;
 }
