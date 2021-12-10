@@ -24,8 +24,4 @@ public class ServiceConfiguration {
         return modelMapper;
     }
 
-    @Bean
-    RequestValidator getRequestValidator() {
-        return new RequestValidator();
-    }
 }

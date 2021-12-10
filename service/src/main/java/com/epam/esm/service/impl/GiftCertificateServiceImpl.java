@@ -1,5 +1,9 @@
 package com.epam.esm.service.impl;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.dto.GiftCertificateDto;
@@ -17,24 +21,26 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
 @Service
 public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     private final GiftCertificateDao giftCertificateDao;
+
     private final TagService tagService;
+
     private final TagDao tagDao;
+
     private final ModelMapper modelMapper;
+
     private final MapperUtil mapperUtilInstance;
+
     private final RequestValidator requestValidator;
 
     @Autowired
     public GiftCertificateServiceImpl(GiftCertificateDao giftCertificateDao,
-                                      TagService tagService, TagDao tagDao,
-                                      ModelMapper modelMapper, MapperUtil mapperUtilInstance,
-                                      RequestValidator requestValidator) {
+            TagService tagService, TagDao tagDao,
+            ModelMapper modelMapper, MapperUtil mapperUtilInstance,
+            RequestValidator requestValidator) {
         this.giftCertificateDao = giftCertificateDao;
         this.tagService = tagService;
         this.tagDao = tagDao;
@@ -45,14 +51,18 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     public GiftCertificateDto add(GiftCertificateDto giftCertificateDto) {
+        findAndSetTags(giftCertificateDto);
         giftCertificateValidation(giftCertificateDto);
         giftCertificateDto.setCreateDate(LocalDateTime.now());
         giftCertificateDto.setLastUpdateDate(LocalDateTime.now());
-        GiftCertificate giftCertificate = giftCertificateDao
-                .add(convertToGiftCertificateEntity(giftCertificateDto));
-        long giftCertificateId = giftCertificate.getId();
-        giftCertificateDto.setId(giftCertificateId);
-        addGiftCertificateTags(giftCertificate, giftCertificateId);
+        final long id = giftCertificateDao.add(modelMapper.map(giftCertificateDto, GiftCertificate.class)).getId();
+        giftCertificateDto.setId(id);
+        addToGiftCertificateIncludeTag(giftCertificateDto);
+        //        GiftCertificate giftCertificate = giftCertificateDao
+        //                .add(convertToGiftCertificateEntity(giftCertificateDto));
+        //        long giftCertificateId = giftCertificate.getId();
+        //        giftCertificateDto.setId(giftCertificateId);
+//        addGiftCertificateTags(giftCertificate, giftCertificateId);
         return giftCertificateDto;
     }
 
@@ -98,6 +108,21 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     public boolean removeById(long id) {
         return giftCertificateDao.removeById(id);
+    }
+
+    private void findAndSetTags(GiftCertificateDto giftCertificateDto) {
+        final var tagsFromDto = giftCertificateDto.getTagDtoList();
+        final var tags = tagsFromDto.stream()
+                .distinct()
+                .map(tag -> tagService.findByName(tag.getName()).orElse(tagService.add(tag)))
+                .collect(Collectors.toList());
+        giftCertificateDto.setTagDtoList(tags);
+    }
+
+    private void addToGiftCertificateIncludeTag(GiftCertificateDto giftCertificateDto) {
+        long giftCertificateId = giftCertificateDto.getId();
+        giftCertificateDto.getTagDtoList()
+                .forEach(tag -> giftCertificateDao.addTagToCertificate(giftCertificateId, tag.getId()));
     }
 
     private void addGiftCertificateTags(GiftCertificate giftCertificate, long giftCertificateId) {

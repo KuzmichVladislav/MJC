@@ -1,5 +1,8 @@
 package com.epam.esm.validator;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class RequestValidator {
     private static final String NAME_REGEX = "^[\\w_]{3,16}$";
 

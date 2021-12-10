@@ -10,5 +10,5 @@ public interface TagService extends BaseService<TagDto> {
 
     List<TagDto> findByCertificateId(long giftCertificateId);
 
-    Optional<Tag> findByName(String name);
+    Optional<TagDto> findByName(String name);
 }
