@@ -57,8 +57,9 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public Optional<TagDto> findByName(String name) {
-        return tagDao.findByName(name)
+        Optional<TagDto> tagDto = tagDao.findByName(name)
                 .map(tag -> modelMapper.map(tag, TagDto.class));
+        return tagDto;
     }
 
     private TagDto convertToTagDto(Tag tag) {
