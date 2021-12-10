@@ -1,6 +1,15 @@
 package com.epam.esm.exception;
 
-public class ResourceNotFoundException extends RuntimeException{
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@AllArgsConstructor
+@Getter
+public class ResourceNotFoundException extends RuntimeException {
+
+    private String messageKey;
+    private String messageParameter;
+
     public ResourceNotFoundException() {
         super();
     }

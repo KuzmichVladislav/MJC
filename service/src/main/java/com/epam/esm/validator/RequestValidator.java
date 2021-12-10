@@ -1,5 +1,6 @@
 package com.epam.esm.validator;
 
+import org.modelmapper.ValidationException;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -10,6 +11,9 @@ public class RequestValidator {
 
 
     public boolean checkName(String name) {
+//        if (!name.trim().matches(NAME_REGEX)){
+//            throw new ValidationException()
+//        }
         return name.matches(NAME_REGEX);
     }
 

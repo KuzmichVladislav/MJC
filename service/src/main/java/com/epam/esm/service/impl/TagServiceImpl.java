@@ -3,6 +3,7 @@ package com.epam.esm.service.impl;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.service.TagService;
 import com.epam.esm.util.MapperUtil;
 import org.modelmapper.ModelMapper;
@@ -35,7 +36,7 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public TagDto findById(long id) {
-        return convertToTagDto(tagDao.findById(id).orElse(null));// TODO: 12/7/2021
+        return convertToTagDto(tagDao.findById(id).orElseThrow(ResourceNotFoundException::new));
     }
 
     @Override

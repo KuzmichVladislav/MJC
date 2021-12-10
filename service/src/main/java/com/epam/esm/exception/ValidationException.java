@@ -1,6 +1,15 @@
 package com.epam.esm.exception;
 
-public class ValidationException extends RuntimeException{
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@AllArgsConstructor
+@Getter
+public class ValidationException extends RuntimeException {
+
+    private String messageKey;
+    private String messageParameter;
+
     public ValidationException() {
         super();
     }

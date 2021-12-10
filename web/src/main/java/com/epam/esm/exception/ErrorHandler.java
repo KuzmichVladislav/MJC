@@ -13,17 +13,23 @@ import java.util.Locale;
 @RestControllerAdvice
 public class ErrorHandler {
 
-    @Autowired
-    private MessageSource messageSource;
+    private final MessageSource messageSource;
+
+    public ErrorHandler(MessageSource messageSource) {
+        this.messageSource = messageSource;
+    }
 
     @ExceptionHandler(value = ResourceNotFoundException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public ExceptionResult handle(ResourceNotFoundException e, Locale locale) {
-        String errorMessage = messageSource.getMessage("exception.resource_not_found", new Object[]{}, locale);
+        System.out.println(e.getMessageKey());
+        String errorMessage = createMessage(
+                messageSource.getMessage(e.getMessageKey(), new Object[]{}, locale),
+                e.getMessageParameter());
         return ExceptionResult.builder()
                 .errorMessage(errorMessage)
-                .errorCode(ErrorCode.resourceNotFound.getErrorCode())
+                .errorCode(ErrorCode.RESOURCE_NOT_FOUND.getErrorCode())
                 .build();
     }
 
@@ -31,6 +37,10 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.PRECONDITION_FAILED)
     @ResponseBody
     protected ExceptionResult handleHttpBusinessException(ValidationException ex) {
-        return ExceptionResult.builder().errorMessage(ex.getMessage()).errorCode(ErrorCode.notValidParam.getErrorCode()).build();
+        return ExceptionResult.builder().errorMessage(ex.getMessage()).errorCode(ErrorCode.NOT_VALID_PARAM.getErrorCode()).build();
+    }
+
+    private String createMessage(String message, String param) {
+        return String.format(message, param);
     }
 }

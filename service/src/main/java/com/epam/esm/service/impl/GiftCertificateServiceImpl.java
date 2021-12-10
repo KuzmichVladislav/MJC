@@ -11,6 +11,7 @@ import com.epam.esm.dto.RequestParamDto;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.exception.ExceptionKey;
 import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.exception.ValidationException;
 import com.epam.esm.service.GiftCertificateService;
@@ -68,11 +69,10 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     public GiftCertificateDto findById(long id) {
-        GiftCertificate giftCertificate = giftCertificateDao
+        return convertToGiftCertificateDto(giftCertificateDao
                 .findById(id).orElseThrow(() ->
-                        new ResourceNotFoundException
-                                (String.format("Requested resource not found (id = %d)", id)));
-        return convertToGiftCertificateDto(giftCertificate);
+                        new ResourceNotFoundException(ExceptionKey.GIFT_CERTIFICATE_NOT_FOUND.getKey(),
+                                String.valueOf(id))));
     }
 
     @Override
@@ -88,7 +88,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         giftCertificateValidation(giftCertificateDto);
         giftCertificateDto.setLastUpdateDate(LocalDateTime.now());
         giftCertificateDao.removeFromTableGiftCertificateIncludeTag(giftCertificateId);
-        addGiftCertificateTags(convertToGiftCertificateEntity(giftCertificateDto), giftCertificateId);
+// TODO: 12/10/2021          addGiftCertificateTags(convertToGiftCertificateEntity(giftCertificateDto), giftCertificateId);
         return giftCertificateDto;
     }
 
@@ -125,14 +125,14 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
                 .forEach(tag -> giftCertificateDao.addTagToCertificate(giftCertificateId, tag.getId()));
     }
 
-    private void addGiftCertificateTags(GiftCertificate giftCertificate, long giftCertificateId) {
-        List<Tag> tagList = giftCertificate.getTagList();
-        tagList.stream()
-                .distinct()
-                .map(tag -> tagService.findByName(tag.getName()).orElseGet(() ->
-                        tagDao.add(tag)).getId())// FIXME: 12/8/2021 can I use tagDao?
-                .forEach(id -> giftCertificateDao.addTagToCertificate(giftCertificateId, id));
-    }
+//    private void addGiftCertificateTags(GiftCertificate giftCertificate, long giftCertificateId) {
+//        List<Tag> tagList = giftCertificate.getTagList();
+//        tagList.stream()
+//                .distinct()
+//                .map(tag -> tagService.findByName(tag.getName()).orElseGet(() ->
+//                        tagDao.add(tag)).getId())// FIXME: 12/8/2021 can I use tagDao?
+//                .forEach(id -> giftCertificateDao.addTagToCertificate(giftCertificateId, id));
+//    }
 
     private GiftCertificate convertToGiftCertificateEntity(GiftCertificateDto giftCertificateDto) {
         GiftCertificate giftCertificate = modelMapper.map(giftCertificateDto, GiftCertificate.class);

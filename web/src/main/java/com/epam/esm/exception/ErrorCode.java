@@ -1,7 +1,6 @@
 package com.epam.esm.exception;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,8 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 public enum ErrorCode {
-    resourceNotFound(40401),
-    notValidParam(41201);
+    RESOURCE_NOT_FOUND(40401),
+    NOT_VALID_PARAM(41201);
 
     int errorCode;
 }
