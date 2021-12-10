@@ -7,6 +7,7 @@ import java.util.Arrays;
 
 @Component
 public class SqlParamConvertor {
+
     public String mapRequestParam(RequestSqlParam requestParams){
         String partOfNamePostfix = "";
         String partOfDescriptionPostfix = "";

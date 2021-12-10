@@ -27,8 +27,8 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             "                gift_certificate.createDate,\n" +
             "                gift_certificate.lastUpdateDate\n" +
             "FROM gift_certificate\n" +
-            "         RIGHT JOIN gift_certificate_tag_include gcti on gift_certificate.id = gcti.giftCertificate\n" +
-            "         RIGHT JOIN tag t on t.id = gcti.tag\n";
+            "         LEFT JOIN gift_certificate_tag_include gcti on gift_certificate.id = gcti.giftCertificate\n" +
+            "         LEFT JOIN tag t on t.id = gcti.tag\n";
     private static final String ADD_GIFT_CERTIFICATE = "INSERT INTO gift_certificate (name, description, price, duration, createDate, lastUpdateDate) VALUES(?,?,?,?,?,?)";
     private static final String FIND_GIFT_CERTIFICATE = "SELECT id, name, description, price, duration, createDate, lastUpdateDate FROM gift_certificate WHERE id=?";
     private static final String FIND_ALL_GIFT_CERTIFICATE = "SELECT id, name, description, price, duration, createDate, lastUpdateDate FROM gift_certificate";

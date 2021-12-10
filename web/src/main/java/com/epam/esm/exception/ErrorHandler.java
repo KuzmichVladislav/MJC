@@ -23,20 +23,21 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public ExceptionResult handle(ResourceNotFoundException e, Locale locale) {
+        System.out.println(e.getMessageKey());
         String errorMessage = createMessage(
                 messageSource.getMessage(e.getMessageKey(), new Object[]{}, locale),
                 e.getMessageParameter());
-        return new ExceptionResult(errorMessage, ErrorCode.RESOURCE_NOT_FOUND.getErrorCode());
+        return ExceptionResult.builder()
+                .errorMessage(errorMessage)
+                .errorCode(ErrorCode.RESOURCE_NOT_FOUND.getErrorCode())
+                .build();
     }
 
     @ExceptionHandler(value = ValidationException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.PRECONDITION_FAILED)
     @ResponseBody
-    protected ExceptionResult handle(ValidationException e, Locale locale) {
-        String errorMessage = createMessage(
-                messageSource.getMessage(e.getMessageKey(), new Object[]{}, locale),
-                e.getMessageParameter());
-        return new ExceptionResult(errorMessage, ErrorCode.NOT_VALID_PARAM.getErrorCode());
+    protected ExceptionResult handleHttpBusinessException(ValidationException ex) {
+        return ExceptionResult.builder().errorMessage(ex.getMessage()).errorCode(ErrorCode.NOT_VALID_PARAM.getErrorCode()).build();
     }
 
     private String createMessage(String message, String param) {

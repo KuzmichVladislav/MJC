@@ -36,7 +36,7 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public TagDto findById(long id) {
-        return convertToTagDto(tagDao.findById(id).orElseThrow(ResourceNotFoundException::new));
+        return convertToTagDto(tagDao.findById(id).orElse(null));// TODO: 12/7/2021
     }
 
     @Override
