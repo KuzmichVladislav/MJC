@@ -1,58 +1,61 @@
 package com.epam.esm.configuration;
 
-import com.epam.esm.dao.mapper.GiftCertificateMapper;
-import com.epam.esm.dao.mapper.TagMapper;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
 
 @Configuration
 @ComponentScan("com.epam.esm")
-@PropertySource("classpath:database/mysql_dev.properties")
 public class PersistenceConfiguration {
 
-//    @Bean
-//    @Profile("dev")
-//    public static PropertySourcesPlaceholderConfigurer properties(){
-//        PropertySourcesPlaceholderConfigurer pspc
-//                = new PropertySourcesPlaceholderConfigurer();
-//        Resource[] resources = new ClassPathResource[ ]
-//                { new ClassPathResource( ) };
-//        pspc.setLocations( resources );
-//        pspc.setIgnoreUnresolvablePlaceholders( true );
-//        return pspc;
-//    }
-
-
-
     @Value("${db.driver_class_name}")
-    String DB_DRIVER;
+    private String dbDriver;
     @Value("${db.url}")
-    String DB_URL;
+    private String dbUrl;
     @Value("${db.username}")
-    String DB_USERNAME;
+    private String dbUsername;
     @Value("${db.password}")
-    String DB_PASSWORD;
+    private String dbPassword;
     @Value("${db.pool_initial_size}")
-    int DB_POOL_SIZE;
+    private int dbPoolSize;
     @Value("${db.pool_max_total}")
-    int DB_POOL_MAX_SIZE;
+    private int dbPoolMaxSize;
+
+    @Bean
+    @Profile("dev")
+    public static PropertySourcesPlaceholderConfigurer propertiesDev() {
+        PropertySourcesPlaceholderConfigurer pspc = new PropertySourcesPlaceholderConfigurer();
+        ClassPathResource classPathResource = new ClassPathResource("database/mysql_dev.properties");
+        pspc.setLocations(classPathResource);
+        return pspc;
+    }
+
+    @Bean
+    @Profile("prod")
+    public static PropertySourcesPlaceholderConfigurer propertiesProd() {
+        PropertySourcesPlaceholderConfigurer pspc = new PropertySourcesPlaceholderConfigurer();
+        ClassPathResource classPathResource = new ClassPathResource("database/mysql_prod.properties");
+        pspc.setLocations(classPathResource);
+        return pspc;
+    }
 
     @Bean
     public DataSource dataSource() {
         BasicDataSource dataSource = new BasicDataSource();
-        dataSource.setDriverClassName(DB_DRIVER);
-        dataSource.setUrl(DB_URL);
-        dataSource.setUsername(DB_USERNAME);
-        dataSource.setPassword(DB_PASSWORD);
-        dataSource.setInitialSize(DB_POOL_SIZE);
-        dataSource.setMaxTotal(DB_POOL_MAX_SIZE);
+        dataSource.setDriverClassName(dbDriver);
+        dataSource.setUrl(dbUrl);
+        dataSource.setUsername(dbUsername);
+        dataSource.setPassword(dbPassword);
+        dataSource.setInitialSize(dbPoolSize);
+        dataSource.setMaxTotal(dbPoolMaxSize);
         return dataSource;
     }
 
@@ -60,15 +63,4 @@ public class PersistenceConfiguration {
     public JdbcTemplate jdbcTemplate() {
         return new JdbcTemplate(dataSource());
     }
-
-    @Bean
-    public GiftCertificateMapper giftCertificateMapper() {
-        return new GiftCertificateMapper();
-    }
-
-    @Bean
-    public TagMapper tagMapper() {
-        return new TagMapper();
-    }
-
 }
