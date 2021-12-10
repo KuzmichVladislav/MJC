@@ -4,18 +4,32 @@ import com.epam.esm.dao.mapper.GiftCertificateMapper;
 import com.epam.esm.dao.mapper.TagMapper;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.*;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
 
 @Configuration
 @ComponentScan("com.epam.esm")
-@PropertySource("classpath:database/mysql.properties")
+@PropertySource("classpath:database/mysql_dev.properties")
 public class PersistenceConfiguration {
+
+//    @Bean
+//    @Profile("dev")
+//    public static PropertySourcesPlaceholderConfigurer properties(){
+//        PropertySourcesPlaceholderConfigurer pspc
+//                = new PropertySourcesPlaceholderConfigurer();
+//        Resource[] resources = new ClassPathResource[ ]
+//                { new ClassPathResource( ) };
+//        pspc.setLocations( resources );
+//        pspc.setIgnoreUnresolvablePlaceholders( true );
+//        return pspc;
+//    }
+
+
 
     @Value("${db.driver_class_name}")
     String DB_DRIVER;
@@ -56,4 +70,5 @@ public class PersistenceConfiguration {
     public TagMapper tagMapper() {
         return new TagMapper();
     }
+
 }
