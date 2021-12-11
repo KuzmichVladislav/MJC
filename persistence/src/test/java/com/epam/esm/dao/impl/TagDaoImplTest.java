@@ -2,8 +2,9 @@ package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.mapper.TagMapper;
 import com.epam.esm.entity.Tag;
-import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
@@ -12,29 +13,19 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 class TagDaoImplTest {
 
-    private final EmbeddedDatabase embeddedDatabase = new EmbeddedDatabaseBuilder()
-            .addDefaultScripts()
-            .setType(EmbeddedDatabaseType.H2)
-            .build();
+    private EmbeddedDatabase embeddedDatabase;
+    private TagDaoImpl tagDaoImpl;
 
-    private final JdbcTemplate jdbcTemplate = new JdbcTemplate(embeddedDatabase);
-
-    private final TagMapper tagMapper = new TagMapper();
-
-    private final TagDaoImpl tagDaoImpl = new TagDaoImpl(jdbcTemplate, tagMapper);
-
-    /*
- FIXME: 12/11/2021
-    @Before
+    @BeforeEach
     public void setUp() {
         embeddedDatabase = new EmbeddedDatabaseBuilder()
                 .addDefaultScripts()
                 .setType(EmbeddedDatabaseType.H2)
                 .build();
-        jdbcTemplate = new JdbcTemplate(embeddedDatabase);
-        tagDaoImpl = new TagDaoImpl(jdbcTemplate,tagMapper);
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(embeddedDatabase);
+        TagMapper tagMapper = new TagMapper();
+        tagDaoImpl = new TagDaoImpl(jdbcTemplate, tagMapper);
     }
-*/
 
     @Test
     void testAdd() {
@@ -79,7 +70,7 @@ class TagDaoImplTest {
         Assertions.assertEquals(4, tagDaoImpl.findByCertificateId(1L).size());
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         embeddedDatabase.shutdown();
     }
