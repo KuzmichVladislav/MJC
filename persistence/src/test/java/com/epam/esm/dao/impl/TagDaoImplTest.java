@@ -10,9 +10,6 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
-import java.util.Arrays;
-import java.util.List;
-
 class TagDaoImplTest {
 
     private final EmbeddedDatabase embeddedDatabase = new EmbeddedDatabaseBuilder()
@@ -51,14 +48,14 @@ class TagDaoImplTest {
     void testFindById() {
         Tag result = tagDaoImpl.findById(1L).get();
         Assertions.assertEquals(new Tag(1L, "name1"), result);
-        Assertions.assertTrue(tagDaoImpl.findById(999999999L).isEmpty());
+        Assertions.assertFalse(tagDaoImpl.findById(999999999L).isPresent());
         Assertions.assertTrue(tagDaoImpl.findById(1L).isPresent());
     }
 
     @Test
     void testFindAll() {
         Assertions.assertNotNull(tagDaoImpl.findAll());
-        Assertions.assertEquals(2, tagDaoImpl.findAll().size());
+        Assertions.assertEquals(20, tagDaoImpl.findAll().size());
     }
 
     @Test
@@ -77,8 +74,9 @@ class TagDaoImplTest {
 
     @Test
     void testFindByCertificateId() {
-        List<Tag> result = tagDaoImpl.findByCertificateId(0L);
-        Assertions.assertEquals(Arrays.<Tag>asList(new Tag(0L, "name")), result);
+        Assertions.assertFalse(tagDaoImpl.findByCertificateId(1L).isEmpty());
+        Assertions.assertTrue(tagDaoImpl.findByCertificateId(999999L).isEmpty());
+        Assertions.assertEquals(4, tagDaoImpl.findByCertificateId(1L).size());
     }
 
     @After
