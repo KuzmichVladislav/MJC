@@ -4,6 +4,7 @@ import com.epam.esm.dao.TagDao;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.util.ListConvertor;
+import com.epam.esm.validator.RequestValidator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
 
@@ -30,6 +32,8 @@ class TagServiceImplTest {
     ModelMapper modelMapper = new ModelMapper();
     @Mock
     ListConvertor mapperUtilInstance;
+    @Mock
+    RequestValidator requestValidator;
     @InjectMocks
     TagServiceImpl tagServiceImpl;
     Tag tag;
@@ -59,7 +63,7 @@ class TagServiceImplTest {
 
     @Test
     void testFindById() {
-        when(tagServiceImpl.findById(1L)).thenReturn(tagDto);
+        when(tagDao.findById(anyLong())).thenReturn(Optional.ofNullable(tag));
         TagDto result = tagServiceImpl.findById(1L);
         Assertions.assertEquals(tagDto, result);
     }
