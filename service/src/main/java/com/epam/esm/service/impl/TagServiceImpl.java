@@ -8,6 +8,7 @@ import com.epam.esm.exception.RequestValidationException;
 import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.service.TagService;
 import com.epam.esm.util.ListConvertor;
+import com.epam.esm.validator.RequestValidator;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,12 +22,14 @@ public class TagServiceImpl implements TagService {
     private final TagDao tagDao;
     private final ModelMapper modelMapper;
     private final ListConvertor mapperUtilInstance;
+    private final RequestValidator requestValidator;
 
     @Autowired
-    public TagServiceImpl(TagDao tagDao, ModelMapper modelMapper, ListConvertor mapperUtilInstance) {
+    public TagServiceImpl(TagDao tagDao, ModelMapper modelMapper, ListConvertor mapperUtilInstance, RequestValidator requestValidator) {
         this.tagDao = tagDao;
         this.modelMapper = modelMapper;
         this.mapperUtilInstance = mapperUtilInstance;
+        this.requestValidator = requestValidator;
     }
 
     @Override
@@ -37,13 +40,14 @@ public class TagServiceImpl implements TagService {
             tagDto.setId(tagDao.add(tag).getId());
             return tagDto;
         }else{
-            throw new RequestValidationException(ExceptionKey.TAG_NOT_FOUND.getKey(),
+            throw new RequestValidationException(ExceptionKey.TAG_EXISTS.getKey(),
                     String.valueOf(tagName));
         }
     }
 
     @Override
     public TagDto findById(long id) {
+        requestValidator.checkId(id);
         return convertToTagDto(tagDao.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException(ExceptionKey.TAG_NOT_FOUND.getKey(),
                         String.valueOf(id))));
@@ -56,6 +60,7 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public boolean removeById(long id) {
+        requestValidator.checkId(id);
         return tagDao.removeById(id);
     }
 

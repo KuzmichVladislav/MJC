@@ -18,8 +18,8 @@ public class ErrorHandler {
         this.messageSource = messageSource;
     }
 
-    @ExceptionHandler(value = ResourceNotFoundException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(ResourceNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
     public ExceptionResult handle(ResourceNotFoundException e, Locale locale) {
         String errorMessage = createMessage(
@@ -28,17 +28,41 @@ public class ErrorHandler {
         return new ExceptionResult(errorMessage, ErrorCode.RESOURCE_NOT_FOUND.getErrorCode());
     }
 
-    @ExceptionHandler(value = RequestValidationException.class)
+    @ExceptionHandler(RequestValidationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     protected ExceptionResult handle(RequestValidationException e, Locale locale) {
         String errorMessage = createMessage(
                 messageSource.getMessage(e.getMessageKey(), new Object[]{}, locale),
                 e.getMessageParameter());
-        return new ExceptionResult(errorMessage, ErrorCode.RESOURCE_NOT_FOUND.getErrorCode());
+        return new ExceptionResult(errorMessage, ErrorCode.NOT_VALID_PARAM.getErrorCode());
     }
+
+//    @ExceptionHandler(RuntimeException.class)
+//    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+//    @ResponseBody
+//    protected ExceptionResult handle(RuntimeException e, Locale locale) {
+//        String errorMessage = createMessage(
+//                messageSource.getMessage(ExceptionKey.INTERNAL_ERROR.getKey(), new Object[]{}, locale),
+//                e.getMessage());
+//        return new ExceptionResult(errorMessage, ErrorCode.INTERNAL_ERROR.getErrorCode());
+//    }
+
 
     private String createMessage(String message, String param) {
         return String.format(message, param);
     }
 }
+
+    /*
+ FIXME: 12/12/2021
+    @ExceptionHandler(NoHandlerFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseBody
+    protected ExceptionResult handle(NoHandlerFoundException e, Locale locale) {
+        String errorMessage = createMessage(
+                messageSource.getMessage(e.getMessageKey(), new Object[]{}, locale),
+                e.getMessageParameter());
+        return new ExceptionResult(errorMessage, ErrorCode.HANDLER_NOT_FOUND.getErrorCode());
+    }
+*/

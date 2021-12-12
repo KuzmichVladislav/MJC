@@ -58,13 +58,15 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     public GiftCertificateDto add(GiftCertificateDto giftCertificateDto) {
         TransactionCallback<GiftCertificateDto> transactionCallback = status -> {
-            findAndSetTags(giftCertificateDto);
             giftCertificateValidation(giftCertificateDto);
             giftCertificateDto.setCreateDate(LocalDateTime.now());
             giftCertificateDto.setLastUpdateDate(LocalDateTime.now());
             giftCertificateDto.setId(giftCertificateDao
                     .add(convertToGiftCertificateEntity(giftCertificateDto)).getId());
-            addToGiftCertificateTagInclude(giftCertificateDto);
+            if (giftCertificateDto.getTags() != null) {
+                findAndSetTags(giftCertificateDto);
+                addToGiftCertificateTagInclude(giftCertificateDto);
+            }
             return giftCertificateDto;
         };
         return transactionTemplate.execute(transactionCallback);
@@ -72,6 +74,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     public GiftCertificateDto findById(long id) {
+        requestValidator.checkId(id);
         TransactionCallback<GiftCertificateDto> transactionCallback =
                 status -> convertToGiftCertificateDto(giftCertificateDao
                         .findById(id).orElseThrow(() ->
@@ -92,11 +95,14 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     public GiftCertificateDto update(GiftCertificateDto giftCertificateDto) {
         TransactionCallback<GiftCertificateDto> transactionCallback = status -> {
             long giftCertificateId = findById(giftCertificateDto.getId()).getId();
+            requestValidator.checkId(giftCertificateId);
             giftCertificateValidation(giftCertificateDto);
             giftCertificateDto.setLastUpdateDate(LocalDateTime.now());
             giftCertificateDao.removeFromTableGiftCertificateTagInclude(giftCertificateId);
-            findAndSetTags(giftCertificateDto);
-            addToGiftCertificateTagInclude(giftCertificateDto);
+            if (giftCertificateDto.getTags() != null) {
+                findAndSetTags(giftCertificateDto);
+                addToGiftCertificateTagInclude(giftCertificateDto);
+            }
             giftCertificateDao.update(modelMapper.map(giftCertificateDto, GiftCertificate.class));
             return findById(giftCertificateId);
         };
@@ -115,6 +121,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     public boolean removeById(long id) {
+        requestValidator.checkId(id);
         return giftCertificateDao.removeById(id);
     }
 
@@ -134,8 +141,10 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     private GiftCertificate convertToGiftCertificateEntity(GiftCertificateDto giftCertificateDto) {
         GiftCertificate giftCertificate = modelMapper.map(giftCertificateDto, GiftCertificate.class);
-        giftCertificate.setTags(mapperUtilInstance.convertList(giftCertificateDto.getTags(),
-                tagDto -> modelMapper.map(tagDto, Tag.class)));
+        if (giftCertificateDto.getTags() != null) {
+            giftCertificate.setTags(mapperUtilInstance.convertList(giftCertificateDto.getTags(),
+                    tagDto -> modelMapper.map(tagDto, Tag.class)));
+        }
         return giftCertificate;
     }
 

@@ -4,13 +4,16 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.sql.SQLException;
+
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 public enum ErrorCode {
     RESOURCE_NOT_FOUND(40401),
-    NOT_VALID_PARAM(40001);
-
+    HANDLER_NOT_FOUND(40402),
+    NOT_VALID_PARAM(40001),
+    INTERNAL_ERROR(50001);
     int errorCode;
 }
