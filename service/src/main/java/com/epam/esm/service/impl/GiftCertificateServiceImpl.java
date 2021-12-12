@@ -98,7 +98,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             findAndSetTags(giftCertificateDto);
             addToGiftCertificateTagInclude(giftCertificateDto);
             giftCertificateDao.update(modelMapper.map(giftCertificateDto, GiftCertificate.class));
-            return giftCertificateDto;
+            return findById(giftCertificateId);
         };
         return transactionTemplate.execute(transactionCallback);
     }

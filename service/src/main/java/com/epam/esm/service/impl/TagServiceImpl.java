@@ -3,6 +3,8 @@ package com.epam.esm.service.impl;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.exception.ExceptionKey;
+import com.epam.esm.exception.RequestValidationException;
 import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.service.TagService;
 import com.epam.esm.util.ListConvertor;
@@ -29,14 +31,22 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public TagDto add(TagDto tagDto) {
-        Tag tag = modelMapper.map(tagDto, Tag.class);
-        tagDto.setId(tagDao.add(tag).getId());
-        return tagDto;
+        String tagName = tagDto.getName();
+        if(findByName(tagName).isEmpty()) {
+            Tag tag = modelMapper.map(tagDto, Tag.class);
+            tagDto.setId(tagDao.add(tag).getId());
+            return tagDto;
+        }else{
+            throw new RequestValidationException(ExceptionKey.TAG_NOT_FOUND.getKey(),
+                    String.valueOf(tagName));
+        }
     }
 
     @Override
     public TagDto findById(long id) {
-        return convertToTagDto(tagDao.findById(id).orElse(null));// TODO: 12/7/2021
+        return convertToTagDto(tagDao.findById(id).orElseThrow(() ->
+                new ResourceNotFoundException(ExceptionKey.TAG_NOT_FOUND.getKey(),
+                        String.valueOf(id))));
     }
 
     @Override
