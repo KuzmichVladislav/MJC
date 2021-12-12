@@ -24,7 +24,7 @@ public class GiftCertificateDto {
     LocalDateTime createDate;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     LocalDateTime lastUpdateDate;
-    List<TagDto> tagDtoList;
+    List<TagDto> tags;
 
     public GiftCertificateDto(long id, String name, String description, BigDecimal price, Integer duration) {
         this.id = id;

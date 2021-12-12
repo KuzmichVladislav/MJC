@@ -63,12 +63,12 @@ class GiftCertificateDaoImplTest {
                 .duration(1)
                 .createDate(LocalDateTime.now())
                 .lastUpdateDate(LocalDateTime.now())
-                .tagList(Arrays.asList(new Tag(500L, "tag500"),
+                .tags(Arrays.asList(new Tag(500L, "tag500"),
                         new Tag(500L, "tag500")))
                 .build();
         GiftCertificate result = giftCertificateDaoImpl.add(giftCertificate);
         Assertions.assertNotNull(result);
-        Assertions.assertEquals(2, result.getTagList().size());
+        Assertions.assertEquals(2, result.getTags().size());
         Assertions.assertEquals("result", result.getName());
     }
 

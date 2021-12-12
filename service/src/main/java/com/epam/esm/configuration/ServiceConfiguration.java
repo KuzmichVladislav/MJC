@@ -1,6 +1,5 @@
 package com.epam.esm.configuration;
 
-import com.epam.esm.validator.RequestValidator;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.context.annotation.Bean;
@@ -23,5 +22,4 @@ public class ServiceConfiguration {
                 .setFieldMatchingEnabled(true);
         return modelMapper;
     }
-
 }

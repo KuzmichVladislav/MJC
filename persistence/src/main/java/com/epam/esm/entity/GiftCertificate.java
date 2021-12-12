@@ -21,5 +21,5 @@ public class GiftCertificate {
     Integer duration;
     LocalDateTime createDate;
     LocalDateTime lastUpdateDate;
-    List<Tag> tagList;
+    List<Tag> tags;
 }
