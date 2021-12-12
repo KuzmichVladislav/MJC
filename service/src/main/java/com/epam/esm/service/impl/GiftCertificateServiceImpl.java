@@ -104,11 +104,6 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public List<TagDto> findTagsByCertificateId(long giftCertificateId) {
-        return tagService.findByCertificateId(giftCertificateId);
-    }
-
-    @Override
     public List<GiftCertificateDto> findAll(RequestSqlParamDto requestParamsDto) {
         TransactionCallback<List<GiftCertificateDto>> transactionCallback = status -> {
             RequestSqlParam requestParam = modelMapper.map(requestParamsDto, RequestSqlParam.class);
@@ -148,6 +143,10 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         GiftCertificateDto giftCertificateDto = modelMapper.map(giftCertificate, GiftCertificateDto.class);
         giftCertificateDto.setTags(findTagsByCertificateId(giftCertificateDto.getId()));
         return giftCertificateDto;
+    }
+
+    private List<TagDto> findTagsByCertificateId(long giftCertificateId) {
+        return tagService.findByCertificateId(giftCertificateId);
     }
 
     private void giftCertificateValidation(GiftCertificateDto giftCertificateDto) {
