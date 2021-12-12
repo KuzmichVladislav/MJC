@@ -16,6 +16,8 @@ subprojects {
         implementation "org.springframework:spring-core:$springVersion"
         implementation "org.springframework:spring-context:$springVersion"
         implementation "org.springframework:spring-web:$springVersion"
+        implementation "org.springframework:spring-tx:$springVersion"
+
 
         compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
 
