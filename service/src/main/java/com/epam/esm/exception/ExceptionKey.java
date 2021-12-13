@@ -14,6 +14,7 @@ public enum ExceptionKey {
     TAG_NOT_FOUND("tag.not.found"),
     TAG_EXISTS("tag.exists"),
     INTERNAL_ERROR("internal.error"),
-    ID_IS_NOT_VALID("id.is.not.valid");
+    ID_IS_NOT_VALID("id.is.not.valid"),
+    DESCRIPTION_IS_NOT_VALID("gift.certificate.description.is.not.valid");
     private final String key;
 }

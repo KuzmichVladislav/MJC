@@ -31,38 +31,46 @@ public class ErrorHandler {
     @ExceptionHandler(RequestValidationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    protected ExceptionResult handle(RequestValidationException e, Locale locale) {
+    public ExceptionResult handle(RequestValidationException e, Locale locale) {
         String errorMessage = createMessage(
                 messageSource.getMessage(e.getMessageKey(), new Object[]{}, locale),
                 e.getMessageParameter());
         return new ExceptionResult(errorMessage, ErrorCode.NOT_VALID_PARAM.getErrorCode());
     }
 
-//    @ExceptionHandler(RuntimeException.class)
-//    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-//    @ResponseBody
-//    protected ExceptionResult handle(RuntimeException e, Locale locale) {
-//        String errorMessage = createMessage(
-//                messageSource.getMessage(ExceptionKey.INTERNAL_ERROR.getKey(), new Object[]{}, locale),
-//                e.getMessage());
-//        return new ExceptionResult(errorMessage, ErrorCode.INTERNAL_ERROR.getErrorCode());
-//    }
-
-
     private String createMessage(String message, String param) {
         return String.format(message, param);
     }
-}
 
-    /*
- FIXME: 12/12/2021
+
     @ExceptionHandler(NoHandlerFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
-    protected ExceptionResult handle(NoHandlerFoundException e, Locale locale) {
-        String errorMessage = createMessage(
-                messageSource.getMessage(e.getMessageKey(), new Object[]{}, locale),
-                e.getMessageParameter());
-        return new ExceptionResult(errorMessage, ErrorCode.HANDLER_NOT_FOUND.getErrorCode());
+    public ExceptionResult handle(NoHandlerFoundException e, Locale locale) {
+        return new ExceptionResult(e.getMessage(), ErrorCode.HANDLER_NOT_FOUND.getErrorCode());
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseBody
+    public ExceptionResult handle(RuntimeException e, Locale locale) {
+        return new ExceptionResult(e.getMessage(), ErrorCode.INTERNAL_ERROR.getErrorCode());
+    }
+/*
+ FIXME: 12/13/2021
+    @ExceptionHandler(MethodNotAllowedException.class)
+    @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
+    @ResponseBody
+    public ExceptionResult handle(MethodNotAllowedException e, Locale locale) {
+        return new ExceptionResult(e.getLocalizedMessage(), ErrorCode.METHOD_NOT_ALLOWED.getErrorCode());
+    }
+    @ExceptionHandler(value = HttpRequestMethodNotSupportedException.class)
+    @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
+    @ResponseBody
+    public ExceptionResult handle(HttpRequestMethodNotSupportedException e, Locale locale) {
+        return new ExceptionResult(e.getLocalizedMessage(), ErrorCode.METHOD_NOT_ALLOWED.getErrorCode());
     }
 */
+
+}
+
