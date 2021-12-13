@@ -43,7 +43,6 @@ public class TagServiceImpl implements TagService {
             tagDto.setId(tagDao.add(tag).getId());
             return tagDto;
         }else{
-            // TODO: 12/13/2021 400!!
             throw new RequestValidationException(ExceptionKey.TAG_EXISTS.getKey(),
                     String.valueOf(tagName));
         }
@@ -64,9 +63,12 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public boolean removeById(long id) {
-        // TODO: 12/13/2021 404!!!
         requestValidator.checkId(id);
-        return tagDao.removeById(id);
+        boolean isRemoved = tagDao.removeById(id);
+        if(!isRemoved){
+            throw new ResourceNotFoundException(ExceptionKey.TAG_NOT_FOUND.getKey(), String.valueOf(id));
+        }
+        return isRemoved;
     }
 
     @Override

@@ -40,10 +40,4 @@ public class TagController {
     public boolean deleteTag(@PathVariable("id") long id) {
         return tagService.removeById(id);
     }
-
-    // TODO: 12/1/2021
-//    @GetMapping(value = "/hello", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<Tag> getColumnsModel() {
-//        return new ResponseEntity<>(new Tag(1) , HttpStatus.OK);
-//    }
 }

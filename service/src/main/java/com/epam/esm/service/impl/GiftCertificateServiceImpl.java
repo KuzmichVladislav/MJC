@@ -108,9 +108,12 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     public boolean removeById(long id) {
-        // TODO: 12/13/2021 404 exception
         requestValidator.checkId(id);
-        return giftCertificateDao.removeById(id);
+        boolean isRemoved = giftCertificateDao.removeById(id);
+        if (!isRemoved) {
+            throw new ResourceNotFoundException(ExceptionKey.GIFT_CERTIFICATE_NOT_FOUND.getKey(), String.valueOf(id));
+        }
+        return isRemoved;
     }
 
     private void findAndSetTags(GiftCertificateDto giftCertificateDto) {
