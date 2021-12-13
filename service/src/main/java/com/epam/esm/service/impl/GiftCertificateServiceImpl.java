@@ -154,6 +154,10 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         if (name != null) {
             requestValidator.checkName(name);
         }
+        String description = giftCertificateDto.getDescription();
+        if (description != null) {
+            requestValidator.checkDescription(description);
+        }
         Integer duration = giftCertificateDto.getDuration();
         if (duration != null) {
             requestValidator.checkDuration(duration);

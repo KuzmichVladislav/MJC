@@ -18,6 +18,7 @@ dependencies {
 
     testCompile 'junit:junit:4.11'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 
     testImplementation 'org.mockito:mockito-junit-jupiter:4.1.0'
 }
