@@ -17,8 +17,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -38,8 +37,6 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     private final RequestValidator requestValidator;
 
-    private final TransactionTemplate transactionTemplate;
-
     @Autowired
     public GiftCertificateServiceImpl(GiftCertificateDao giftCertificateDao,
                                       TagService tagService, ModelMapper modelMapper,
@@ -51,76 +48,67 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         this.modelMapper = modelMapper;
         this.mapperUtilInstance = mapperUtilInstance;
         this.requestValidator = requestValidator;
-        this.transactionTemplate = new TransactionTemplate(transactionManager);
     }
 
-
     @Override
+    @Transactional
     public GiftCertificateDto add(GiftCertificateDto giftCertificateDto) {
-        TransactionCallback<GiftCertificateDto> transactionCallback = status -> {
-            giftCertificateValidation(giftCertificateDto);
-            giftCertificateDto.setCreateDate(LocalDateTime.now());
-            giftCertificateDto.setLastUpdateDate(LocalDateTime.now());
-            giftCertificateDto.setId(giftCertificateDao
-                    .add(convertToGiftCertificateEntity(giftCertificateDto)).getId());
-            if (giftCertificateDto.getTags() != null) {
-                findAndSetTags(giftCertificateDto);
-                addToGiftCertificateTagInclude(giftCertificateDto);
-            }
-            return giftCertificateDto;
-        };
-        return transactionTemplate.execute(transactionCallback);
+        giftCertificateValidation(giftCertificateDto);
+        giftCertificateDto.setCreateDate(LocalDateTime.now());
+        giftCertificateDto.setLastUpdateDate(LocalDateTime.now());
+        giftCertificateDto.setId(giftCertificateDao
+                .add(convertToGiftCertificateEntity(giftCertificateDto)).getId());
+        if (giftCertificateDto.getTags() != null) {
+            findAndSetTags(giftCertificateDto);
+            addToGiftCertificateTagInclude(giftCertificateDto);
+        }
+        return giftCertificateDto;
     }
 
     @Override
+    @Transactional
     public GiftCertificateDto findById(long id) {
         requestValidator.checkId(id);
-        TransactionCallback<GiftCertificateDto> transactionCallback =
-                status -> convertToGiftCertificateDto(giftCertificateDao
-                        .findById(id).orElseThrow(() ->
-                                new ResourceNotFoundException(ExceptionKey.GIFT_CERTIFICATE_NOT_FOUND.getKey(),
-                                        String.valueOf(id))));
-        return transactionTemplate.execute(transactionCallback);
+        return convertToGiftCertificateDto(giftCertificateDao
+                .findById(id).orElseThrow(() ->
+                        new ResourceNotFoundException(ExceptionKey.GIFT_CERTIFICATE_NOT_FOUND.getKey(),
+                                String.valueOf(id))));
     }
 
     @Override
     public List<GiftCertificateDto> findAll() {
-        TransactionCallback<List<GiftCertificateDto>> transactionCallback =
-                status -> mapperUtilInstance.convertList(giftCertificateDao.findAll(),
-                        this::convertToGiftCertificateDto);
-        return transactionTemplate.execute(transactionCallback);
+        return mapperUtilInstance.convertList(giftCertificateDao.findAll(),
+                this::convertToGiftCertificateDto);
     }
 
     @Override
+    @Transactional
     public GiftCertificateDto update(GiftCertificateDto giftCertificateDto) {
-        TransactionCallback<GiftCertificateDto> transactionCallback = status -> {
-            long giftCertificateId = findById(giftCertificateDto.getId()).getId();
-            requestValidator.checkId(giftCertificateId);
-            giftCertificateValidation(giftCertificateDto);
-            giftCertificateDto.setLastUpdateDate(LocalDateTime.now());
-            giftCertificateDao.removeFromTableGiftCertificateTagInclude(giftCertificateId);
-            if (giftCertificateDto.getTags() != null) {
-                findAndSetTags(giftCertificateDto);
-                addToGiftCertificateTagInclude(giftCertificateDto);
-            }
-            giftCertificateDao.update(modelMapper.map(giftCertificateDto, GiftCertificate.class));
-            return findById(giftCertificateId);
-        };
-        return transactionTemplate.execute(transactionCallback);
+        long giftCertificateId = findById(giftCertificateDto.getId()).getId();
+        requestValidator.checkId(giftCertificateId);
+        giftCertificateValidation(giftCertificateDto);
+        giftCertificateDto.setLastUpdateDate(LocalDateTime.now());
+        giftCertificateDao.removeFromTableGiftCertificateTagInclude(giftCertificateId);
+        if (giftCertificateDto.getTags() != null) {
+            findAndSetTags(giftCertificateDto);
+            addToGiftCertificateTagInclude(giftCertificateDto);
+        }
+        giftCertificateDao.update(modelMapper.map(giftCertificateDto, GiftCertificate.class));
+        return findById(giftCertificateId);
     }
 
     @Override
+    @Transactional
     public List<GiftCertificateDto> findAll(RequestSqlParamDto requestParamsDto) {
-        TransactionCallback<List<GiftCertificateDto>> transactionCallback = status -> {
-            RequestSqlParam requestParam = modelMapper.map(requestParamsDto, RequestSqlParam.class);
-            return mapperUtilInstance.convertList(giftCertificateDao.findAllSorted(requestParam),
-                    this::convertToGiftCertificateDto);
-        };
-        return transactionTemplate.execute(transactionCallback);
+        RequestSqlParam requestParam = modelMapper.map(requestParamsDto, RequestSqlParam.class);
+        return mapperUtilInstance.convertList(giftCertificateDao.findAllSorted(requestParam),
+                this::convertToGiftCertificateDto);
+
     }
 
     @Override
     public boolean removeById(long id) {
+        // TODO: 12/13/2021 404 exception
         requestValidator.checkId(id);
         return giftCertificateDao.removeById(id);
     }

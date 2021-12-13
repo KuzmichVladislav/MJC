@@ -25,7 +25,10 @@ public class TagServiceImpl implements TagService {
     private final RequestValidator requestValidator;
 
     @Autowired
-    public TagServiceImpl(TagDao tagDao, ModelMapper modelMapper, ListConvertor mapperUtilInstance, RequestValidator requestValidator) {
+    public TagServiceImpl(TagDao tagDao,
+                          ModelMapper modelMapper,
+                          ListConvertor mapperUtilInstance,
+                          RequestValidator requestValidator) {
         this.tagDao = tagDao;
         this.modelMapper = modelMapper;
         this.mapperUtilInstance = mapperUtilInstance;
@@ -40,6 +43,7 @@ public class TagServiceImpl implements TagService {
             tagDto.setId(tagDao.add(tag).getId());
             return tagDto;
         }else{
+            // TODO: 12/13/2021 400!!
             throw new RequestValidationException(ExceptionKey.TAG_EXISTS.getKey(),
                     String.valueOf(tagName));
         }
@@ -60,6 +64,7 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public boolean removeById(long id) {
+        // TODO: 12/13/2021 404!!!
         requestValidator.checkId(id);
         return tagDao.removeById(id);
     }
