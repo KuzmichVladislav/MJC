@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 @Component
 public class RequestValidator {
     private static final String NAME_REGEX = "^[\\w_]{3,16}$";
+    private static final String DESCRIPTION_REGEX = "^[A-Za-z0-9\\s!@.?,&%'-]{0,250}$";
 
     public void checkId(Long id) {
         if (id < 1) {
@@ -19,6 +20,12 @@ public class RequestValidator {
     public void checkName(String name) {
         if (!name.trim().matches(NAME_REGEX)) {
             throw new RequestValidationException(ExceptionKey.NAME_IS_NOT_VALID.getKey(), name);
+        }
+    }
+
+    public void checkDescription(String description) {
+        if (!description.matches(DESCRIPTION_REGEX)) {
+            throw new RequestValidationException(ExceptionKey.DESCRIPTION_IS_NOT_VALID.getKey(), description);
         }
     }
 

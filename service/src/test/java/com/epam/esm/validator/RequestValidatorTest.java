@@ -42,7 +42,6 @@ class RequestValidatorTest {
                 () -> requestValidator.checkDuration(-1));
     }
 
-
     @Test
     void testCheckPrice() {
         requestValidator.checkPrice(new BigDecimal(100));
@@ -52,5 +51,17 @@ class RequestValidatorTest {
     void testCheckPriceException() {
         Assertions.assertThrows(RequestValidationException.class,
                 () -> requestValidator.checkPrice(new BigDecimal(-100)));
+    }
+
+    @Test
+    void testCheckDescription() {
+        requestValidator.checkDescription("Lorem ipsum dolor sit amet, " +
+                "consectetur adipiscing elit. Nunc vehicula sed est et egestas. ");
+    }
+
+    @Test
+    void testCheckDescriptionException() {
+        Assertions.assertThrows(RequestValidationException.class,
+                () -> requestValidator.checkDescription("name<>"));
     }
 }
