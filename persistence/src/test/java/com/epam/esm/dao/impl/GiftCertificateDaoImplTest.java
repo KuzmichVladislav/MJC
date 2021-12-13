@@ -5,7 +5,7 @@ import com.epam.esm.dao.mapper.GiftCertificateMapper;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.RequestSqlParam;
 import com.epam.esm.entity.Tag;
-import com.epam.esm.util.SqlParamConvertor;
+import com.epam.esm.util.QueryParamCreator;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,8 +34,8 @@ class GiftCertificateDaoImplTest {
                 .build();
         JdbcTemplate jdbcTemplate = new JdbcTemplate(embeddedDatabase);
         GiftCertificateMapper giftCertificateMapper = new GiftCertificateMapper();
-        SqlParamConvertor sqlParamConvertor = new SqlParamConvertor();
-        giftCertificateDao = new GiftCertificateDaoImpl(jdbcTemplate, giftCertificateMapper, sqlParamConvertor);
+        QueryParamCreator queryParamCreator = new QueryParamCreator();
+        giftCertificateDao = new GiftCertificateDaoImpl(jdbcTemplate, giftCertificateMapper, queryParamCreator);
     }
 
     @Test

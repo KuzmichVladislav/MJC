@@ -4,7 +4,7 @@ import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dao.mapper.GiftCertificateMapper;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.RequestSqlParam;
-import com.epam.esm.util.SqlParamConvertor;
+import com.epam.esm.util.QueryParamCreator;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -42,14 +42,14 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     private static final String REMOVE_TAG_BY_CERTIFICATE_ID = "DELETE FROM gift_certificate_tag_include WHERE giftCertificate=?";
     private final JdbcTemplate jdbcTemplate;
     private final GiftCertificateMapper giftCertificateMapper;
-    private final SqlParamConvertor sqlParamConvertor;
+    private final QueryParamCreator queryParamCreator;
 
     public GiftCertificateDaoImpl(JdbcTemplate jdbcTemplate,
                                   GiftCertificateMapper giftCertificateMapper,
-                                  SqlParamConvertor sqlParamConvertor) {
+                                  QueryParamCreator queryParamCreator) {
         this.jdbcTemplate = jdbcTemplate;
         this.giftCertificateMapper = giftCertificateMapper;
-        this.sqlParamConvertor = sqlParamConvertor;
+        this.queryParamCreator = queryParamCreator;
     }
 
     @Override
@@ -115,7 +115,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     @Override
     public List<GiftCertificate> findAllSorted(RequestSqlParam requestParam) {
         String sqlQuery = FIND_SORTED_GIFT_CERTIFICATES +
-                sqlParamConvertor.mapRequestParam(requestParam);
+                queryParamCreator.mapRequestParam(requestParam);
         return jdbcTemplate.query(sqlQuery, giftCertificateMapper);
     }
 }
