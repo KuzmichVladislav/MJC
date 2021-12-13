@@ -15,10 +15,11 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.Spy;
 import org.modelmapper.ModelMapper;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.support.TransactionTemplate;
+import org.modelmapper.config.Configuration;
+import org.modelmapper.convention.MatchingStrategies;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -30,7 +31,6 @@ import java.util.Optional;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
 class GiftCertificateServiceImplTest {
 
     @Mock
@@ -38,15 +38,11 @@ class GiftCertificateServiceImplTest {
     @Mock
     TagService tagService;
     @Mock
-    ModelMapper modelMapper = new ModelMapper();
-    @Mock
     ListConvertor mapperUtilInstance;
-    @Mock
-    RequestValidator requestValidator;
-    @Mock
-    PlatformTransactionManager transactionManager;
-    @Mock
-    TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
+    @Spy
+    ModelMapper modelMapper = new ModelMapper();
+    @Spy
+    RequestValidator requestValidator = new RequestValidator();
     @InjectMocks
     GiftCertificateServiceImpl giftCertificateServiceImpl;
     GiftCertificateDto giftCertificateDto;
@@ -56,6 +52,13 @@ class GiftCertificateServiceImplTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+
+        modelMapper.getConfiguration()
+                .setFieldAccessLevel(Configuration.AccessLevel.PRIVATE)
+                .setSkipNullEnabled(true)
+                .setMatchingStrategy(MatchingStrategies.STRICT)
+                .setFieldMatchingEnabled(true);
+
         giftCertificateDto = GiftCertificateDto.builder()
                 .id(1L)
                 .name("name")
@@ -76,10 +79,8 @@ class GiftCertificateServiceImplTest {
                 .lastUpdateDate(LocalDateTime.of(2021, Month.DECEMBER, 11, 20, 24, 43))
                 .tags(Collections.singletonList(new Tag(1L, "name")))
                 .build();
-        tagDto = new TagDto(1L, "name");
-        when(modelMapper.map(any(GiftCertificate.class), any())).thenReturn(giftCertificateDto);
-        when(modelMapper.map(any(GiftCertificateDto.class), any())).thenReturn(giftCertificate);
 
+        tagDto = new TagDto(1L, "name");
     }
 
     @Test
@@ -118,7 +119,7 @@ class GiftCertificateServiceImplTest {
         when(tagService.findByName("name")).thenReturn(Optional.empty());
         when(tagService.add(tagDto)).thenReturn(tagDto);
         GiftCertificateDto result = giftCertificateServiceImpl.update(giftCertificateDto);
-        Assertions.assertEquals(giftCertificateDto, result);
+        Assertions.assertNotEquals(giftCertificateDto.getLastUpdateDate(), result.getLastUpdateDate());
     }
 
     @Test

@@ -1,5 +1,6 @@
 package com.epam.esm.dao.impl;
 
+import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dao.mapper.GiftCertificateMapper;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.RequestSqlParam;
@@ -23,7 +24,7 @@ import java.util.Optional;
 class GiftCertificateDaoImplTest {
 
     private EmbeddedDatabase embeddedDatabase;
-    private GiftCertificateDaoImpl giftCertificateDaoImpl;
+    private GiftCertificateDao giftCertificateDao;
 
     @BeforeEach
     public void setUp() {
@@ -34,24 +35,24 @@ class GiftCertificateDaoImplTest {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(embeddedDatabase);
         GiftCertificateMapper giftCertificateMapper = new GiftCertificateMapper();
         SqlParamConvertor sqlParamConvertor = new SqlParamConvertor();
-        giftCertificateDaoImpl = new GiftCertificateDaoImpl(jdbcTemplate, giftCertificateMapper, sqlParamConvertor);
+        giftCertificateDao = new GiftCertificateDaoImpl(jdbcTemplate, giftCertificateMapper, sqlParamConvertor);
     }
 
     @Test
     void testFindById() {
-        GiftCertificate result = giftCertificateDaoImpl.findById(1L).get();
+        GiftCertificate result = giftCertificateDao.findById(1L).get();
         Assertions.assertEquals("name1", result.getName());
         Assertions.assertEquals("description1", result.getDescription());
         Assertions.assertEquals(new BigDecimal("1.00"), result.getPrice());
         Assertions.assertEquals(1, result.getDuration());
-        Assertions.assertFalse(giftCertificateDaoImpl.findById(999999999L).isPresent());
-        Assertions.assertTrue(giftCertificateDaoImpl.findById(1L).isPresent());
+        Assertions.assertFalse(giftCertificateDao.findById(999999999L).isPresent());
+        Assertions.assertTrue(giftCertificateDao.findById(1L).isPresent());
     }
 
     @Test
     void testFindAll() {
-        Assertions.assertNotNull(giftCertificateDaoImpl.findAll());
-        Assertions.assertEquals(20, giftCertificateDaoImpl.findAll().size());
+        Assertions.assertNotNull(giftCertificateDao.findAll());
+        Assertions.assertEquals(20, giftCertificateDao.findAll().size());
     }
 
     @Test
@@ -66,43 +67,42 @@ class GiftCertificateDaoImplTest {
                 .tags(Arrays.asList(new Tag(500L, "tag500"),
                         new Tag(500L, "tag500")))
                 .build();
-        GiftCertificate result = giftCertificateDaoImpl.add(giftCertificate);
+        GiftCertificate result = giftCertificateDao.add(giftCertificate);
         Assertions.assertNotNull(result);
         Assertions.assertEquals(2, result.getTags().size());
         Assertions.assertEquals("result", result.getName());
     }
 
-/*
- TODO: 12/11/2021
     @Test
-    public void testUpdate() {
+    void testUpdate() {
         GiftCertificate giftCertificate = GiftCertificate.builder()
                 .id(1)
                 .description("result")
                 .duration(1)
-                .lastUpdateDate(LocalDateTime.now())
-                .tagList(Arrays.asList(new Tag(500, "tag500"),
+                .lastUpdateDate(LocalDateTime.now()) // FIXME: 12/13/2021
+                .tags(Arrays.asList(new Tag(500, "tag500"),
                         new Tag(500, "tag500")))
                 .build();
-        GiftCertificate result = giftCertificateDaoImpl.update(giftCertificate);
-        GiftCertificate expResult = giftCertificateDaoImpl.findById(1).get();
+        GiftCertificate result = giftCertificateDao.update(giftCertificate);
+        GiftCertificate expResult = giftCertificateDao.findById(1).get();
         Assertions.assertNotNull(result);
-        Assertions.assertEquals(2, result.getTagList().size());
-        Assertions.assertEquals(result,expResult);
+        Assertions.assertEquals(1, result.getId());
+        Assertions.assertEquals("result", result.getDescription());
+        Assertions.assertEquals(1, result.getDuration());
+        Assertions.assertEquals(2, result.getTags().size());
     }
-*/
 
     @Test
     void testRemoveById() {
-        Assertions.assertTrue(giftCertificateDaoImpl.removeById(1L));
-        Assertions.assertFalse(giftCertificateDaoImpl.removeById(-1L));
+        Assertions.assertTrue(giftCertificateDao.removeById(1L));
+        Assertions.assertFalse(giftCertificateDao.removeById(-1L));
     }
 
     @Test
     void testFindAllCertificateByTagId() {
-        Assertions.assertNotNull(giftCertificateDaoImpl.findAllCertificateByTagId(1L));
-        Assertions.assertTrue(giftCertificateDaoImpl.findAllCertificateByTagId(999999999L).isEmpty());
-        Assertions.assertEquals(4, giftCertificateDaoImpl.findAllCertificateByTagId(1L).size());
+        Assertions.assertNotNull(giftCertificateDao.findAllCertificateByTagId(1L));
+        Assertions.assertTrue(giftCertificateDao.findAllCertificateByTagId(999999999L).isEmpty());
+        Assertions.assertEquals(4, giftCertificateDao.findAllCertificateByTagId(1L).size());
     }
 
     @Test
@@ -114,8 +114,8 @@ class GiftCertificateDaoImplTest {
                 .sort(Optional.empty())
                 .orderBy(Optional.empty())
                 .build();
-        List<GiftCertificate> result = giftCertificateDaoImpl.findAllSorted(requestParam);
-        Assertions.assertEquals(3, giftCertificateDaoImpl.findAllSorted(requestParam).size());
+        List<GiftCertificate> result = giftCertificateDao.findAllSorted(requestParam);
+        Assertions.assertEquals(3, giftCertificateDao.findAllSorted(requestParam).size());
     }
 
     @AfterEach
