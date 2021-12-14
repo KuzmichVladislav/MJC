@@ -69,7 +69,7 @@ public class TagDaoImpl implements TagDao {
 
     public Optional<Tag> findByName(String name) {
         return jdbcTemplate.query(FIND_TAG_BY_NAME,
-                tagMapper, name).stream().findAny();
+                tagMapper, name).stream().findFirst();
     }
 
     @Override

@@ -114,8 +114,8 @@ class GiftCertificateDaoImplTest {
                 .sort(Optional.empty())
                 .orderBy(Optional.empty())
                 .build();
-        List<GiftCertificate> result = giftCertificateDao.findAllSorted(requestParam);
-        Assertions.assertEquals(3, giftCertificateDao.findAllSorted(requestParam).size());
+        List<GiftCertificate> result = giftCertificateDao.findByParameters(requestParam);
+        Assertions.assertEquals(3, giftCertificateDao.findByParameters(requestParam).size());
     }
 
     @AfterEach

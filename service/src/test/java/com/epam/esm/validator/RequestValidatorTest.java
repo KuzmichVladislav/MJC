@@ -3,6 +3,8 @@ package com.epam.esm.validator;
 import com.epam.esm.exception.RequestValidationException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.math.BigDecimal;
 
@@ -42,6 +44,7 @@ class RequestValidatorTest {
                 () -> requestValidator.checkDuration(-1));
     }
 
+
     @Test
     void testCheckPrice() {
         requestValidator.checkPrice(new BigDecimal(100));
@@ -59,9 +62,10 @@ class RequestValidatorTest {
                 "consectetur adipiscing elit. Nunc vehicula sed est et egestas. ");
     }
 
-    @Test
-    void testCheckDescriptionException() {
+    @ParameterizedTest
+    @ValueSource(strings = {">", "<", "~"})
+    void testCheckIdException(String symbols) {
         Assertions.assertThrows(RequestValidationException.class,
-                () -> requestValidator.checkDescription("name<>"));
+                () -> requestValidator.checkDescription(symbols));
     }
 }

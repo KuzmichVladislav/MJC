@@ -15,5 +15,5 @@ public interface GiftCertificateDao extends BaseDao<GiftCertificate>{
 
     void removeFromTableGiftCertificateTagInclude(long giftCertificateId);
 
-    List<GiftCertificate> findAllSorted(RequestSqlParam requestParam);
+    List<GiftCertificate> findByParameters(RequestSqlParam requestParam);
 }

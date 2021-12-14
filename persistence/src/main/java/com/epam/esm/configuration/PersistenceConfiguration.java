@@ -33,19 +33,19 @@ public class PersistenceConfiguration {
     @Bean
     @Profile("dev")
     public static PropertySourcesPlaceholderConfigurer propertiesDev() {
-        PropertySourcesPlaceholderConfigurer pspc = new PropertySourcesPlaceholderConfigurer();
+        PropertySourcesPlaceholderConfigurer configurer = new PropertySourcesPlaceholderConfigurer();
         ClassPathResource classPathResource = new ClassPathResource("database/mysql_dev.properties");
-        pspc.setLocations(classPathResource);
-        return pspc;
+        configurer.setLocations(classPathResource);
+        return configurer;
     }
 
     @Bean
     @Profile("prod")
     public static PropertySourcesPlaceholderConfigurer propertiesProd() {
-        PropertySourcesPlaceholderConfigurer pspc = new PropertySourcesPlaceholderConfigurer();
+        PropertySourcesPlaceholderConfigurer configurer = new PropertySourcesPlaceholderConfigurer();
         ClassPathResource classPathResource = new ClassPathResource("database/mysql_prod.properties");
-        pspc.setLocations(classPathResource);
-        return pspc;
+        configurer.setLocations(classPathResource);
+        return configurer;
     }
 
     @Bean

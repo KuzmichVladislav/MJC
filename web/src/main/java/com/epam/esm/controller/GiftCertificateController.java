@@ -41,7 +41,7 @@ public class GiftCertificateController {
                 .sort(sort)
                 .orderBy(orderBy)
                 .build();
-        return giftCertificateService.findAll(requestParams);
+        return giftCertificateService.findByParameters(requestParams);
     }
 
     @GetMapping(value = "/{id}", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

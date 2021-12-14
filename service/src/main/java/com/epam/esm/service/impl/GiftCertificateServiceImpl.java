@@ -53,7 +53,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     @Transactional
     public GiftCertificateDto add(GiftCertificateDto giftCertificateDto) {
-        giftCertificateValidation(giftCertificateDto);
+        validateGiftCertificate(giftCertificateDto);
         giftCertificateDto.setCreateDate(LocalDateTime.now());
         giftCertificateDto.setLastUpdateDate(LocalDateTime.now());
         giftCertificateDto.setId(giftCertificateDao
@@ -86,7 +86,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     public GiftCertificateDto update(GiftCertificateDto giftCertificateDto) {
         long giftCertificateId = findById(giftCertificateDto.getId()).getId();
         requestValidator.checkId(giftCertificateId);
-        giftCertificateValidation(giftCertificateDto);
+        validateGiftCertificate(giftCertificateDto);
         giftCertificateDto.setLastUpdateDate(LocalDateTime.now());
         giftCertificateDao.removeFromTableGiftCertificateTagInclude(giftCertificateId);
         if (giftCertificateDto.getTags() != null) {
@@ -99,9 +99,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     @Transactional
-    public List<GiftCertificateDto> findAll(RequestSqlParamDto requestParamsDto) {
+    public List<GiftCertificateDto> findByParameters(RequestSqlParamDto requestParamsDto) {
         RequestSqlParam requestParam = modelMapper.map(requestParamsDto, RequestSqlParam.class);
-        return mapperUtilInstance.convertList(giftCertificateDao.findAllSorted(requestParam),
+        return mapperUtilInstance.convertList(giftCertificateDao.findByParameters(requestParam),
                 this::convertToGiftCertificateDto);
 
     }
@@ -149,7 +149,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         return tagService.findByCertificateId(giftCertificateId);
     }
 
-    private void giftCertificateValidation(GiftCertificateDto giftCertificateDto) {
+    private void validateGiftCertificate(GiftCertificateDto giftCertificateDto) {
         String name = giftCertificateDto.getName();
         if (name != null) {
             requestValidator.checkName(name);

@@ -5,6 +5,7 @@ import com.epam.esm.dao.mapper.GiftCertificateMapper;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.RequestSqlParam;
 import com.epam.esm.util.QueryParamCreator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -19,22 +20,22 @@ import java.util.Optional;
 @Repository
 public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
-    private static final String FIND_SORTED_GIFT_CERTIFICATES = "SELECT DISTINCT gift_certificate.id,\n" +
+    private static final String FIND_CERTIFICATES_BY_PARAMETERS = "SELECT DISTINCT gift_certificate.id,\n" +
             "                gift_certificate.name,\n" +
             "                gift_certificate.description,\n" +
             "                gift_certificate.price,\n" +
             "                gift_certificate.duration,\n" +
-            "                gift_certificate.createDate,\n" +
-            "                gift_certificate.lastUpdateDate\n" +
+            "                gift_certificate.create_date,\n" +
+            "                gift_certificate.last_update_date\n" +
             "FROM gift_certificate\n" +
             "         LEFT JOIN gift_certificate_tag_include gcti on gift_certificate.id = gcti.giftCertificate\n" +
             "         LEFT JOIN tag t on t.id = gcti.tag\n";
-    private static final String ADD_GIFT_CERTIFICATE = "INSERT INTO gift_certificate (name, description, price, duration, createDate, lastUpdateDate) VALUES(?,?,?,?,?,?)";
-    private static final String FIND_GIFT_CERTIFICATE = "SELECT id, name, description, price, duration, createDate, lastUpdateDate FROM gift_certificate WHERE id=?";
-    private static final String FIND_ALL_GIFT_CERTIFICATE = "SELECT id, name, description, price, duration, createDate, lastUpdateDate FROM gift_certificate";
-    private static final String UPDATE_GIFT_CERTIFICATE = "UPDATE gift_certificate SET name = IFNULL(?, name), description = IFNULL(?, description), price = IFNULL(?, price), duration = IFNULL(?, duration), lastUpdateDate=? WHERE id=?";
+    private static final String ADD_GIFT_CERTIFICATE = "INSERT INTO gift_certificate (name, description, price, duration, create_date, last_update_date) VALUES(?,?,?,?,?,?)";
+    private static final String FIND_GIFT_CERTIFICATE = "SELECT id, name, description, price, duration, create_date, last_update_date FROM gift_certificate WHERE id=?";
+    private static final String FIND_ALL_GIFT_CERTIFICATE = "SELECT id, name, description, price, duration, create_date, last_update_date FROM gift_certificate";
+    private static final String UPDATE_GIFT_CERTIFICATE = "UPDATE gift_certificate SET name = IFNULL(?, name), description = IFNULL(?, description), price = IFNULL(?, price), duration = IFNULL(?, duration), last_update_date=? WHERE id=?";
     private static final String REMOVE_GIFT_CERTIFICATE = "DELETE FROM gift_certificate WHERE id=?";
-    private static final String FIND_ALL_GIFT_CERTIFICATE_BY_TAG = "SELECT id, name, description, price, duration, createDate, lastUpdateDate, giftCertificate, tag\n" +
+    private static final String FIND_ALL_GIFT_CERTIFICATE_BY_TAG = "SELECT id, name, description, price, duration, create_date, last_update_date, giftCertificate, tag\n" +
             "FROM gift_certificate\n" +
             "LEFT JOIN gift_certificate_tag_include gcti on gift_certificate.id = gcti.giftCertificate\n" +
             "WHERE gcti.tag = ?";
@@ -44,6 +45,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     private final GiftCertificateMapper giftCertificateMapper;
     private final QueryParamCreator queryParamCreator;
 
+    @Autowired
     public GiftCertificateDaoImpl(JdbcTemplate jdbcTemplate,
                                   GiftCertificateMapper giftCertificateMapper,
                                   QueryParamCreator queryParamCreator) {
@@ -113,8 +115,8 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
-    public List<GiftCertificate> findAllSorted(RequestSqlParam requestParam) {
-        String sqlQuery = FIND_SORTED_GIFT_CERTIFICATES +
+    public List<GiftCertificate> findByParameters(RequestSqlParam requestParam) {
+        String sqlQuery = FIND_CERTIFICATES_BY_PARAMETERS +
                 queryParamCreator.mapRequestParam(requestParam);
         return jdbcTemplate.query(sqlQuery, giftCertificateMapper);
     }
