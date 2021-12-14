@@ -8,57 +8,57 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.math.BigDecimal;
 
-class RequestValidatorTest {
-    RequestValidator requestValidator = new RequestValidator();
+class GiftCertificateRequestValidatorTest {
+    GiftCertificateRequestValidator giftCertificateRequestValidator = new GiftCertificateRequestValidator();
 
     @Test
     void testCheckId() {
-        requestValidator.checkId(1L);
+        giftCertificateRequestValidator.checkId(1L);
     }
 
     @Test
     void testCheckIdException() {
         Assertions.assertThrows(RequestValidationException.class,
-                () -> requestValidator.checkId(-10L));
+                () -> giftCertificateRequestValidator.checkId(-10L));
     }
 
     @Test
     void testCheckName() {
-        requestValidator.checkName("name");
+        giftCertificateRequestValidator.checkName("name");
     }
 
     @Test
     void testCheckNameException() {
         Assertions.assertThrows(RequestValidationException.class,
-                () -> requestValidator.checkName("name>"));
+                () -> giftCertificateRequestValidator.checkName("name>"));
     }
 
     @Test
     void testCheckDuration() {
-        requestValidator.checkDuration(100);
+        giftCertificateRequestValidator.checkDuration(100);
     }
 
     @Test
     void testCheckDurationException() {
         Assertions.assertThrows(RequestValidationException.class,
-                () -> requestValidator.checkDuration(-1));
+                () -> giftCertificateRequestValidator.checkDuration(-1));
     }
 
 
     @Test
     void testCheckPrice() {
-        requestValidator.checkPrice(new BigDecimal(100));
+        giftCertificateRequestValidator.checkPrice(new BigDecimal(100));
     }
 
     @Test
     void testCheckPriceException() {
         Assertions.assertThrows(RequestValidationException.class,
-                () -> requestValidator.checkPrice(new BigDecimal(-100)));
+                () -> giftCertificateRequestValidator.checkPrice(new BigDecimal(-100)));
     }
 
     @Test
     void testCheckDescription() {
-        requestValidator.checkDescription("Lorem ipsum dolor sit amet, " +
+        giftCertificateRequestValidator.checkDescription("Lorem ipsum dolor sit amet, " +
                 "consectetur adipiscing elit. Nunc vehicula sed est et egestas. ");
     }
 
@@ -66,6 +66,6 @@ class RequestValidatorTest {
     @ValueSource(strings = {">", "<", "~"})
     void testCheckIdException(String symbols) {
         Assertions.assertThrows(RequestValidationException.class,
-                () -> requestValidator.checkDescription(symbols));
+                () -> giftCertificateRequestValidator.checkDescription(symbols));
     }
 }

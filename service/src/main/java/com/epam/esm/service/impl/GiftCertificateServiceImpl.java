@@ -12,7 +12,8 @@ import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.TagService;
 import com.epam.esm.util.ListConvertor;
-import com.epam.esm.validator.RequestValidator;
+import com.epam.esm.validator.GiftCertificateRequestValidator;
+import com.epam.esm.validator.TagRequestValidator;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,19 +35,23 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     private final ListConvertor listConvertor;
 
-    private final RequestValidator requestValidator;
+    private final GiftCertificateRequestValidator giftCertificateRequestValidator;
+
+    private final TagRequestValidator tagRequestValidator;
 
     @Autowired
     public GiftCertificateServiceImpl(GiftCertificateDao giftCertificateDao,
                                       TagService tagService,
                                       ModelMapper modelMapper,
                                       ListConvertor listConvertor,
-                                      RequestValidator requestValidator) {
+                                      GiftCertificateRequestValidator giftCertificateRequestValidator,
+                                      TagRequestValidator tagRequestValidator) {
         this.giftCertificateDao = giftCertificateDao;
         this.tagService = tagService;
         this.modelMapper = modelMapper;
         this.listConvertor = listConvertor;
-        this.requestValidator = requestValidator;
+        this.giftCertificateRequestValidator = giftCertificateRequestValidator;
+        this.tagRequestValidator = tagRequestValidator;
     }
 
     @Override
@@ -67,7 +72,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     @Transactional
     public GiftCertificateDto findById(long id) {
-        requestValidator.checkId(id);
+        giftCertificateRequestValidator.checkId(id);
         return convertToGiftCertificateDto(giftCertificateDao
                 .findById(id).orElseThrow(() ->
                         new ResourceNotFoundException(ExceptionKey.GIFT_CERTIFICATE_NOT_FOUND.getKey(),
@@ -84,7 +89,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Transactional
     public GiftCertificateDto update(GiftCertificateDto giftCertificateDto) {
         long giftCertificateId = findById(giftCertificateDto.getId()).getId();
-        requestValidator.checkId(giftCertificateId);
+        giftCertificateRequestValidator.checkId(giftCertificateId);
         validateGiftCertificate(giftCertificateDto);
         giftCertificateDto.setLastUpdateDate(LocalDateTime.now());
         giftCertificateDao.removeFromTableGiftCertificateTagInclude(giftCertificateId);
@@ -106,10 +111,11 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     public boolean removeById(long id) {
-        requestValidator.checkId(id);
+        giftCertificateRequestValidator.checkId(id);
         boolean isRemoved = giftCertificateDao.removeById(id);
         if (!isRemoved) {
-            throw new ResourceNotFoundException(ExceptionKey.GIFT_CERTIFICATE_NOT_FOUND.getKey(), String.valueOf(id));
+            throw new ResourceNotFoundException(ExceptionKey.GIFT_CERTIFICATE_NOT_FOUND.getKey(),
+                    String.valueOf(id));
         }
         return isRemoved;
     }
@@ -150,25 +156,25 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     private void validateGiftCertificate(GiftCertificateDto giftCertificateDto) {
         String name = giftCertificateDto.getName();
         if (name != null) {
-            requestValidator.checkName(name);
+            giftCertificateRequestValidator.checkName(name);
         }
         String description = giftCertificateDto.getDescription();
         if (description != null) {
-            requestValidator.checkDescription(description);
+            giftCertificateRequestValidator.checkDescription(description);
         }
         Integer duration = giftCertificateDto.getDuration();
         if (duration != null) {
-            requestValidator.checkDuration(duration);
+            giftCertificateRequestValidator.checkDuration(duration);
         }
         BigDecimal price = giftCertificateDto.getPrice();
         if (price != null) {
-            requestValidator.checkPrice(price);
+            giftCertificateRequestValidator.checkPrice(price);
         }
         List<TagDto> tagDtoList = giftCertificateDto.getTags();
         if (tagDtoList != null) {
             tagDtoList.stream()
                     .map(TagDto::getName)
-                    .forEach(requestValidator::checkName);
+                    .forEach(tagRequestValidator::checkName);
         }
     }
 }

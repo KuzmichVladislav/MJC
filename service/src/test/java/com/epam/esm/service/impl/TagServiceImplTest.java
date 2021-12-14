@@ -4,7 +4,8 @@ import com.epam.esm.dao.TagDao;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.util.ListConvertor;
-import com.epam.esm.validator.RequestValidator;
+import com.epam.esm.validator.GiftCertificateRequestValidator;
+import com.epam.esm.validator.TagRequestValidator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.modelmapper.ModelMapper;
 
@@ -28,12 +30,12 @@ class TagServiceImplTest {
 
     @Mock
     TagDao tagDao;
-    @Mock
+    @Spy
     ModelMapper modelMapper = new ModelMapper();
     @Mock
-    ListConvertor mapperUtilInstance;
-    @Mock
-    RequestValidator requestValidator;
+    ListConvertor listConvertor;
+    @Spy
+    TagRequestValidator tagRequestValidator = new TagRequestValidator();
     @InjectMocks
     TagServiceImpl tagServiceImpl;
     Tag tag;
@@ -50,8 +52,6 @@ class TagServiceImplTest {
                 .id(1L)
                 .name("name")
                 .build();
-        when(modelMapper.map(any(Tag.class), any())).thenReturn(tagDto);
-        when(modelMapper.map(any(TagDto.class), any())).thenReturn(tag);
     }
 
     @Test
@@ -71,7 +71,7 @@ class TagServiceImplTest {
     @Test
     void testFindAll() {
         when(tagDao.findAll()).thenReturn(Collections.singletonList(tag));
-        when(mapperUtilInstance.convertList(any(), any())).thenReturn(Collections.singletonList(tagDto));
+        when(listConvertor.convertList(any(), any())).thenReturn(Collections.singletonList(tagDto));
         List<TagDto> result = tagServiceImpl.findAll();
         Assertions.assertEquals(Collections.singletonList(tagDto), result);
     }
@@ -86,7 +86,7 @@ class TagServiceImplTest {
     @Test
     void testFindByCertificateId() {
         when(tagDao.findByCertificateId(1L)).thenReturn(Collections.singletonList(tag));
-        when(mapperUtilInstance.convertList(any(), any())).thenReturn(Collections.singletonList(tagDto));
+        when(listConvertor.convertList(any(), any())).thenReturn(Collections.singletonList(tagDto));
         List<TagDto> result = tagServiceImpl.findByCertificateId(1L);
         Assertions.assertEquals(Collections.singletonList(tagDto), result);
     }

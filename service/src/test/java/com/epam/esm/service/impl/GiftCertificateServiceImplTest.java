@@ -7,7 +7,8 @@ import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.service.TagService;
 import com.epam.esm.util.ListConvertor;
-import com.epam.esm.validator.RequestValidator;
+import com.epam.esm.validator.GiftCertificateRequestValidator;
+import com.epam.esm.validator.TagRequestValidator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,11 +37,13 @@ class GiftCertificateServiceImplTest {
     @Mock
     TagService tagService;
     @Mock
-    ListConvertor mapperUtilInstance;
+    ListConvertor listConvertor;
     @Spy
     ModelMapper modelMapper = new ModelMapper();
     @Spy
-    RequestValidator requestValidator = new RequestValidator();
+    GiftCertificateRequestValidator giftCertificateRequestValidator = new GiftCertificateRequestValidator();
+    @Spy
+    TagRequestValidator tagRequestValidator = new TagRequestValidator();
     @InjectMocks
     GiftCertificateServiceImpl giftCertificateServiceImpl;
     GiftCertificateDto giftCertificateDto;
@@ -86,7 +89,7 @@ class GiftCertificateServiceImplTest {
         when(giftCertificateDao.add(any())).thenReturn(giftCertificate);
         when(tagService.findByName("name")).thenReturn(Optional.ofNullable(tagDto));
         when(tagService.add(any())).thenReturn(tagDto);
-        when(mapperUtilInstance.convertList(any(), any()))
+        when(listConvertor.convertList(any(), any()))
                 .thenReturn(Collections.singletonList(Collections.singletonList(tagDto)));
         GiftCertificateDto result = giftCertificateServiceImpl.add(giftCertificateDto);
         Assertions.assertEquals(giftCertificateDto, result);
@@ -103,7 +106,7 @@ class GiftCertificateServiceImplTest {
     @Test
     void testFindAll() {
         when(giftCertificateDao.findAll()).thenReturn(Collections.singletonList(giftCertificate));
-        when(mapperUtilInstance.convertList(any(), any())).thenReturn(Collections.singletonList(giftCertificateDto));
+        when(listConvertor.convertList(any(), any())).thenReturn(Collections.singletonList(giftCertificateDto));
         List<GiftCertificateDto> result = giftCertificateServiceImpl.findAll();
         Assertions.assertEquals(Collections.singletonList(giftCertificateDto), result);
     }

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 
 @Component
-public class RequestValidator {
+public class GiftCertificateRequestValidator {
     private static final String NAME_REGEX = "^[\\w_]{3,16}$";
     private static final String DESCRIPTION_REGEX = "^[A-Za-z0-9\\s!@.?,&%'-]{0,250}$";
 
