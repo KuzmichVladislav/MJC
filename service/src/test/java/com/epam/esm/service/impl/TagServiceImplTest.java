@@ -1,18 +1,21 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.TagDao;
+import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.Tag;
-import com.epam.esm.util.ListConvertor;
+import com.epam.esm.exception.RequestValidationException;
+import com.epam.esm.service.TagService;
+import com.epam.esm.util.ListConverter;
 import com.epam.esm.validator.TagRequestValidator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.modelmapper.ModelMapper;
 
@@ -21,28 +24,27 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 class TagServiceImplTest {
 
-    @Spy
-    private final ListConvertor listConvertor = new ListConvertor();
     @Mock
     private TagDao tagDao;
-    @Spy
-    private ModelMapper modelMapper = new ModelMapper();
-    @Spy
-    private TagRequestValidator tagRequestValidator = new TagRequestValidator();
-    @InjectMocks
-    private TagServiceImpl tagServiceImpl;
+    private ListConverter listConverter;
+    private ModelMapper modelMapper;
+    private TagRequestValidator tagRequestValidator;
+    private TagService tagService;
     private Tag tag;
     private TagDto tagDto;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+        listConverter = new ListConverter();
+        modelMapper = new ModelMapper();
+        tagRequestValidator = new TagRequestValidator();
+        tagService = new TagServiceImpl(tagDao, modelMapper, listConverter, tagRequestValidator);
         tag = Tag.builder()
                 .id(1L)
                 .name("name")
@@ -56,42 +58,49 @@ class TagServiceImplTest {
     @Test
     void testAdd() {
         when(tagDao.add(tag)).thenReturn(tag);
-        TagDto result = tagServiceImpl.add(tagDto);
+        TagDto result = tagService.add(tagDto);
         Assertions.assertEquals(tagDto, result);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {">name", "<name", "~name", "ab", "Name with space", "NameMoreThen16Char"})
+    void testAddExceptionName(String name) {
+        Assertions.assertThrows(RequestValidationException.class,
+                () -> tagService.add(TagDto.builder().name(name).build()));
     }
 
     @Test
     void testFindById() {
         when(tagDao.findById(anyLong())).thenReturn(Optional.ofNullable(tag));
-        TagDto result = tagServiceImpl.findById(1L);
+        TagDto result = tagService.findById(1L);
         Assertions.assertEquals(tagDto, result);
     }
 
     @Test
     void testFindAll() {
         when(tagDao.findAll()).thenReturn(Collections.singletonList(tag));
-        List<TagDto> result = tagServiceImpl.findAll();
+        List<TagDto> result = tagService.findAll();
         Assertions.assertEquals(Collections.singletonList(tagDto), result);
     }
 
     @Test
     void testRemoveById() {
         when(tagDao.removeById(1L)).thenReturn(true);
-        boolean result = tagServiceImpl.removeById(1L);
+        boolean result = tagService.removeById(1L);
         Assertions.assertTrue(result);
     }
 
     @Test
     void testFindByCertificateId() {
         when(tagDao.findByCertificateId(1L)).thenReturn(Collections.singletonList(tag));
-        List<TagDto> result = tagServiceImpl.findByCertificateId(1L);
+        List<TagDto> result = tagService.findByCertificateId(1L);
         Assertions.assertEquals(Collections.singletonList(tagDto), result);
     }
 
     @Test
     void testFindByName() {
         when(tagDao.findByName("name")).thenReturn(Optional.ofNullable(tag));
-        Optional<TagDto> result = tagServiceImpl.findByName("name");
+        Optional<TagDto> result = tagService.findByName("name");
         Assertions.assertEquals(Optional.ofNullable(tagDto), result);
     }
 }
