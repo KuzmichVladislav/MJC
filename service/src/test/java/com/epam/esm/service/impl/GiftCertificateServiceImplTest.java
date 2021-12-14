@@ -126,6 +126,7 @@ class GiftCertificateServiceImplTest {
                         .price(new BigDecimal(price))
                         .build()));
     }
+
     @ParameterizedTest
     @ValueSource(ints = {-500, -1, 0, 367, 500})
     void testAddExceptionDuration(int duration) {
