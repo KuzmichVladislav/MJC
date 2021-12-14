@@ -1,13 +1,11 @@
 package com.epam.esm.validator;
 
 import com.epam.esm.dto.GiftCertificateDto;
-import com.epam.esm.dto.TagDto;
 import com.epam.esm.exception.ExceptionKey;
 import com.epam.esm.exception.RequestValidationException;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @Component
 public class GiftCertificateRequestValidator {
@@ -16,32 +14,32 @@ public class GiftCertificateRequestValidator {
 
     public void checkId(Long id) {
         if (id < 1) {
-            throw new RequestValidationException(ExceptionKey.ID_IS_NOT_VALID.getKey(), String.valueOf(id));
+            throw new RequestValidationException(ExceptionKey.CERTIFICATE_ID_IS_NOT_VALID.getKey(), String.valueOf(id));
         }
     }
 
     public void checkName(String name) {
         if (!name.trim().matches(NAME_REGEX)) {
-            throw new RequestValidationException(ExceptionKey.NAME_IS_NOT_VALID.getKey(), name);
+            throw new RequestValidationException(ExceptionKey.CERTIFICATE_NAME_IS_NOT_VALID.getKey(), name);
         }
     }
 
     public void checkDescription(String description) {
         if (!description.matches(DESCRIPTION_REGEX)) {
-            throw new RequestValidationException(ExceptionKey.DESCRIPTION_IS_NOT_VALID.getKey(), description);
+            throw new RequestValidationException(ExceptionKey.CERTIFICATE_DESCRIPTION_IS_NOT_VALID.getKey(), description);
         }
     }
 
     public void checkDuration(int duration) {
         if (duration < 1 || duration > 366) {
-            throw new RequestValidationException(ExceptionKey.DURATION_IS_NOT_VALID.getKey(),
+            throw new RequestValidationException(ExceptionKey.CERTIFICATE_DURATION_IS_NOT_VALID.getKey(),
                     String.valueOf(duration));
         }
     }
 
     public void checkPrice(BigDecimal price) {
         if (price.compareTo(new BigDecimal(0)) < 0 || price.compareTo(new BigDecimal(1_000_000)) > 0) {
-            throw new RequestValidationException(ExceptionKey.PRICE_IS_NOT_VALID.getKey(),
+            throw new RequestValidationException(ExceptionKey.CERTIFICATE_PRICE_IS_NOT_VALID.getKey(),
                     String.valueOf(price));
         }
     }
