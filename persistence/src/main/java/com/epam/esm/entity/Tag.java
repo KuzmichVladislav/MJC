@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class Tag {
-    long id;
-    String name;
+    private long id;
+    private String name;
 }

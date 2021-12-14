@@ -15,22 +15,14 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class GiftCertificateDto {
-    long id;
-    String name;
-    String description;
-    BigDecimal price;
-    Integer duration;
+    private long id;
+    private String name;
+    private String description;
+    private BigDecimal price;
+    private Integer duration;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    LocalDateTime createDate;
+    private LocalDateTime createDate;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    LocalDateTime lastUpdateDate;
-    List<TagDto> tags;
-
-    public GiftCertificateDto(long id, String name, String description, BigDecimal price, Integer duration) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.price = price;
-        this.duration = duration;
-    }
+    private LocalDateTime lastUpdateDate;
+    private List<TagDto> tags;
 }

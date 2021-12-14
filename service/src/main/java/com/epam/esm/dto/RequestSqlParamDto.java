@@ -13,9 +13,9 @@ import java.util.Optional;
 @AllArgsConstructor
 @Builder
 public class RequestSqlParamDto {
-    Optional<String> name;
-    Optional<String> description;
-    Optional<String> tagName;
-    Optional<List<String>> sort;
-    Optional<String> orderBy;
+    private Optional<String> name;
+    private Optional<String> description;
+    private Optional<String> tagName;
+    private Optional<List<String>> sort;
+    private Optional<String> orderBy;
 }

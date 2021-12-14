@@ -14,12 +14,12 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class GiftCertificate {
-    long id;
-    String name;
-    String description;
-    BigDecimal price;
-    Integer duration;
-    LocalDateTime createDate;
-    LocalDateTime lastUpdateDate;
-    List<Tag> tags;
+    private long id;
+    private String name;
+    private String description;
+    private BigDecimal price;
+    private Integer duration;
+    private LocalDateTime createDate;
+    private LocalDateTime lastUpdateDate;
+    private List<Tag> tags;
 }
