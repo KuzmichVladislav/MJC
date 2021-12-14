@@ -26,7 +26,7 @@ public class TagDaoImpl implements TagDao {
     private static final String FIND_ALL_TAG_BY_CERTIFICATE_ID = "SELECT id, name\n" +
             "FROM tag\n" +
             "   LEFT JOIN gift_certificate_tag_include gcti on tag.id = gcti.tag\n" +
-            "WHERE gcti.giftCertificate = ?";
+            "WHERE gcti.gift_certificate = ?";
 
     private final JdbcTemplate jdbcTemplate;
     private final TagMapper tagMapper;

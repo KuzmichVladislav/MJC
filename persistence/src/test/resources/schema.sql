@@ -7,8 +7,8 @@ create table gift_certificate
     description    varchar(255)   null,
     price          decimal(10, 2) null,
     duration       int            null,
-    createDate     datetime       not null,
-    lastUpdateDate datetime       not null,
+    create_date     datetime       not null,
+    last_update_date datetime       not null,
     constraint id_gift_certificate_UNIQUE
         unique (id)
 );
@@ -35,11 +35,11 @@ alter table tag
 DROP TABLE IF EXISTS gift_certificate_tag_include;
 create table gift_certificate_tag_include
 (
-    giftCertificate bigint unsigned not null,
+    gift_certificate bigint unsigned not null,
     tag             bigint unsigned not null,
-    primary key (giftCertificate, tag),
+    primary key (gift_certificate, tag),
     constraint gift_certificate_fk
-        foreign key (giftCertificate) references gift_certificate (id)
+        foreign key (gift_certificate) references gift_certificate (id)
             on update cascade on delete cascade,
     constraint tag_kf
         foreign key (tag) references tag (id)

@@ -28,19 +28,19 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             "                gift_certificate.create_date,\n" +
             "                gift_certificate.last_update_date\n" +
             "FROM gift_certificate\n" +
-            "         LEFT JOIN gift_certificate_tag_include gcti on gift_certificate.id = gcti.giftCertificate\n" +
+            "         LEFT JOIN gift_certificate_tag_include gcti on gift_certificate.id = gcti.gift_certificate\n" +
             "         LEFT JOIN tag t on t.id = gcti.tag\n";
     private static final String ADD_GIFT_CERTIFICATE = "INSERT INTO gift_certificate (name, description, price, duration, create_date, last_update_date) VALUES(?,?,?,?,?,?)";
     private static final String FIND_GIFT_CERTIFICATE = "SELECT id, name, description, price, duration, create_date, last_update_date FROM gift_certificate WHERE id=?";
     private static final String FIND_ALL_GIFT_CERTIFICATE = "SELECT id, name, description, price, duration, create_date, last_update_date FROM gift_certificate";
     private static final String UPDATE_GIFT_CERTIFICATE = "UPDATE gift_certificate SET name = IFNULL(?, name), description = IFNULL(?, description), price = IFNULL(?, price), duration = IFNULL(?, duration), last_update_date=? WHERE id=?";
     private static final String REMOVE_GIFT_CERTIFICATE = "DELETE FROM gift_certificate WHERE id=?";
-    private static final String FIND_ALL_GIFT_CERTIFICATE_BY_TAG = "SELECT id, name, description, price, duration, create_date, last_update_date, giftCertificate, tag\n" +
+    private static final String FIND_ALL_GIFT_CERTIFICATE_BY_TAG = "SELECT id, name, description, price, duration, create_date, last_update_date, gift_certificate, tag\n" +
             "FROM gift_certificate\n" +
-            "LEFT JOIN gift_certificate_tag_include gcti on gift_certificate.id = gcti.giftCertificate\n" +
+            "LEFT JOIN gift_certificate_tag_include gcti on gift_certificate.id = gcti.gift_certificate\n" +
             "WHERE gcti.tag = ?";
     private static final String ADD_TAG_TO_CERTIFICATE = "INSERT INTO gift_certificate_tag_include VALUES(?, ?)";
-    private static final String REMOVE_TAG_BY_CERTIFICATE_ID = "DELETE FROM gift_certificate_tag_include WHERE giftCertificate=?";
+    private static final String REMOVE_TAG_BY_CERTIFICATE_ID = "DELETE FROM gift_certificate_tag_include WHERE gift_certificate=?";
     private final JdbcTemplate jdbcTemplate;
     private final GiftCertificateMapper giftCertificateMapper;
     private final QueryParamCreator queryParamCreator;
