@@ -73,5 +73,6 @@ class TagDaoImplTest {
     @AfterEach
     public void tearDown() {
         embeddedDatabase.shutdown();
+        tagDaoImpl = null;
     }
 }

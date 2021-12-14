@@ -18,7 +18,6 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 class GiftCertificateDaoImplTest {
@@ -79,12 +78,11 @@ class GiftCertificateDaoImplTest {
                 .id(1)
                 .description("result")
                 .duration(1)
-                .lastUpdateDate(LocalDateTime.now()) // FIXME: 12/13/2021
+                .lastUpdateDate(LocalDateTime.now())
                 .tags(Arrays.asList(new Tag(500, "tag500"),
                         new Tag(500, "tag500")))
                 .build();
         GiftCertificate result = giftCertificateDao.update(giftCertificate);
-        GiftCertificate expResult = giftCertificateDao.findById(1).get();
         Assertions.assertNotNull(result);
         Assertions.assertEquals(1, result.getId());
         Assertions.assertEquals("result", result.getDescription());
@@ -114,12 +112,12 @@ class GiftCertificateDaoImplTest {
                 .sort(Optional.empty())
                 .orderBy(Optional.empty())
                 .build();
-        List<GiftCertificate> result = giftCertificateDao.findByParameters(requestParam);
         Assertions.assertEquals(3, giftCertificateDao.findByParameters(requestParam).size());
     }
 
     @AfterEach
     public void tearDown() {
         embeddedDatabase.shutdown();
+        giftCertificateDao = null;
     }
 }
