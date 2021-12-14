@@ -2,10 +2,13 @@ package com.epam.esm.exception;
 
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.HttpMediaTypeNotAcceptableException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.util.Locale;
 
@@ -38,11 +41,6 @@ public class ErrorHandler {
         return new ExceptionResult(errorMessage, ErrorCode.NOT_VALID_PARAM.getErrorCode());
     }
 
-    private String createMessage(String message, String param) {
-        return String.format(message, param);
-    }
-
-
     @ExceptionHandler(NoHandlerFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
@@ -56,21 +54,24 @@ public class ErrorHandler {
     public ExceptionResult handle(RuntimeException e, Locale locale) {
         return new ExceptionResult(e.getMessage(), ErrorCode.INTERNAL_ERROR.getErrorCode());
     }
-/*
- FIXME: 12/13/2021
-    @ExceptionHandler(MethodNotAllowedException.class)
-    @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
-    @ResponseBody
-    public ExceptionResult handle(MethodNotAllowedException e, Locale locale) {
-        return new ExceptionResult(e.getLocalizedMessage(), ErrorCode.METHOD_NOT_ALLOWED.getErrorCode());
-    }
-    @ExceptionHandler(value = HttpRequestMethodNotSupportedException.class)
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     @ResponseBody
     public ExceptionResult handle(HttpRequestMethodNotSupportedException e, Locale locale) {
-        return new ExceptionResult(e.getLocalizedMessage(), ErrorCode.METHOD_NOT_ALLOWED.getErrorCode());
+        return new ExceptionResult(e.getMessage(), ErrorCode.METHOD_NOT_ALLOWED.getErrorCode());
     }
-*/
+
+    @ExceptionHandler(HttpMediaTypeNotAcceptableException.class)
+    @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+    @ResponseBody
+    public ExceptionResult handle(HttpMediaTypeNotAcceptableException e, Locale locale) {
+        return new ExceptionResult(e.getMessage(), ErrorCode.UNSUPPORTED_MEDIA_TYPE.getErrorCode());
+    }
+
+    private String createMessage(String message, String param) {
+        return String.format(message, param);
+    }
 
 }
 
