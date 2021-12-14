@@ -4,7 +4,6 @@ import com.epam.esm.dao.TagDao;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.util.ListConvertor;
-import com.epam.esm.validator.GiftCertificateRequestValidator;
 import com.epam.esm.validator.TagRequestValidator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,18 +27,18 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 class TagServiceImplTest {
 
-    @Mock
-    TagDao tagDao;
     @Spy
-    ModelMapper modelMapper = new ModelMapper();
+    private final ListConvertor listConvertor = new ListConvertor();
     @Mock
-    ListConvertor listConvertor;
+    private TagDao tagDao;
     @Spy
-    TagRequestValidator tagRequestValidator = new TagRequestValidator();
+    private ModelMapper modelMapper = new ModelMapper();
+    @Spy
+    private TagRequestValidator tagRequestValidator = new TagRequestValidator();
     @InjectMocks
-    TagServiceImpl tagServiceImpl;
-    Tag tag;
-    TagDto tagDto;
+    private TagServiceImpl tagServiceImpl;
+    private Tag tag;
+    private TagDto tagDto;
 
     @BeforeEach
     void setUp() {
@@ -71,7 +70,6 @@ class TagServiceImplTest {
     @Test
     void testFindAll() {
         when(tagDao.findAll()).thenReturn(Collections.singletonList(tag));
-        when(listConvertor.convertList(any(), any())).thenReturn(Collections.singletonList(tagDto));
         List<TagDto> result = tagServiceImpl.findAll();
         Assertions.assertEquals(Collections.singletonList(tagDto), result);
     }
@@ -86,7 +84,6 @@ class TagServiceImplTest {
     @Test
     void testFindByCertificateId() {
         when(tagDao.findByCertificateId(1L)).thenReturn(Collections.singletonList(tag));
-        when(listConvertor.convertList(any(), any())).thenReturn(Collections.singletonList(tagDto));
         List<TagDto> result = tagServiceImpl.findByCertificateId(1L);
         Assertions.assertEquals(Collections.singletonList(tagDto), result);
     }
