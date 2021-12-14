@@ -7,8 +7,7 @@ import com.epam.esm.exception.ExceptionKey;
 import com.epam.esm.exception.RequestValidationException;
 import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.service.TagService;
-import com.epam.esm.util.ListConvertor;
-import com.epam.esm.validator.GiftCertificateRequestValidator;
+import com.epam.esm.util.ListConverter;
 import com.epam.esm.validator.TagRequestValidator;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,28 +21,29 @@ public class TagServiceImpl implements TagService {
 
     private final TagDao tagDao;
     private final ModelMapper modelMapper;
-    private final ListConvertor listConvertor;
+    private final ListConverter listConverter;
     private final TagRequestValidator tagRequestValidator;
 
     @Autowired
     public TagServiceImpl(TagDao tagDao,
                           ModelMapper modelMapper,
-                          ListConvertor listConvertor,
+                          ListConverter listConverter,
                           TagRequestValidator tagRequestValidator) {
         this.tagDao = tagDao;
         this.modelMapper = modelMapper;
-        this.listConvertor = listConvertor;
+        this.listConverter = listConverter;
         this.tagRequestValidator = tagRequestValidator;
     }
 
     @Override
     public TagDto add(TagDto tagDto) {
         String tagName = tagDto.getName();
-        if(findByName(tagName).isEmpty()) {
+        if (findByName(tagName).isEmpty()) {
+            tagRequestValidator.checkName(tagName);
             Tag tag = modelMapper.map(tagDto, Tag.class);
             tagDto.setId(tagDao.add(tag).getId());
             return tagDto;
-        }else{
+        } else {
             throw new RequestValidationException(ExceptionKey.TAG_EXISTS.getKey(),
                     String.valueOf(tagName));
         }
@@ -59,14 +59,14 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public List<TagDto> findAll() {
-        return listConvertor.convertList(tagDao.findAll(), this::convertToTagDto);
+        return listConverter.convertList(tagDao.findAll(), this::convertToTagDto);
     }
 
     @Override
     public boolean removeById(long id) {
         tagRequestValidator.checkId(id);
         boolean isRemoved = tagDao.removeById(id);
-        if(!isRemoved){
+        if (!isRemoved) {
             throw new ResourceNotFoundException(ExceptionKey.TAG_NOT_FOUND.getKey(), String.valueOf(id));
         }
         return isRemoved;
@@ -74,7 +74,7 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public List<TagDto> findByCertificateId(long giftCertificateId) {
-        return listConvertor.convertList(tagDao.findByCertificateId(giftCertificateId),
+        return listConverter.convertList(tagDao.findByCertificateId(giftCertificateId),
                 this::convertToTagDto);
     }
 

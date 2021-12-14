@@ -1,10 +1,13 @@
 package com.epam.esm.validator;
 
+import com.epam.esm.dto.GiftCertificateDto;
+import com.epam.esm.dto.TagDto;
 import com.epam.esm.exception.ExceptionKey;
 import com.epam.esm.exception.RequestValidationException;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Component
 public class GiftCertificateRequestValidator {
@@ -30,7 +33,7 @@ public class GiftCertificateRequestValidator {
     }
 
     public void checkDuration(int duration) {
-        if (duration < 0 || duration > 366) {
+        if (duration < 1 || duration > 366) {
             throw new RequestValidationException(ExceptionKey.DURATION_IS_NOT_VALID.getKey(),
                     String.valueOf(duration));
         }
@@ -40,6 +43,26 @@ public class GiftCertificateRequestValidator {
         if (price.compareTo(new BigDecimal(0)) < 0 || price.compareTo(new BigDecimal(1_000_000)) > 0) {
             throw new RequestValidationException(ExceptionKey.PRICE_IS_NOT_VALID.getKey(),
                     String.valueOf(price));
+        }
+    }
+
+
+    public void validateGiftCertificate(GiftCertificateDto giftCertificateDto) {
+        String name = giftCertificateDto.getName();
+        if (name != null) {
+            checkName(name);
+        }
+        String description = giftCertificateDto.getDescription();
+        if (description != null) {
+            checkDescription(description);
+        }
+        Integer duration = giftCertificateDto.getDuration();
+        if (duration != null) {
+            checkDuration(duration);
+        }
+        BigDecimal price = giftCertificateDto.getPrice();
+        if (price != null) {
+            checkPrice(price);
         }
     }
 }

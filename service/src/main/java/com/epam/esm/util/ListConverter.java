@@ -7,7 +7,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Component
-public class ListConvertor {
+public class ListConverter {
     public <R, E> List<R> convertList(List<E> list, Function<E, R> converter) {
         return list.stream().map(converter).collect(Collectors.toList());
     }
