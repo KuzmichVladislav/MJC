@@ -7,8 +7,15 @@ import org.springframework.stereotype.Component;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * The class GiftCertificateMapper is the implementation of the {@link RowMapper} interface
+ * to map the record in the database to the gift certificate entity and back.
+ *
+ * @author Vladislav Kuzmich
+ */
 @Component
 public class GiftCertificateMapper implements RowMapper<GiftCertificate> {
+
     @Override
     public GiftCertificate mapRow(ResultSet rs, int rowNum) throws SQLException {
         new GiftCertificate();

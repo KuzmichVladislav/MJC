@@ -5,6 +5,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Entity Class Tag for tag entity
+ *
+ * @author Vladislav Kuzmich
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

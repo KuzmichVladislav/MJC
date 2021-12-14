@@ -23,6 +23,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * The Class GiftCertificateServiceImpl is the implementation of the {@link GiftCertificateService} interface.
+ *
+ * @author Vladislav Kuzmich
+ */
 @Service
 public class GiftCertificateServiceImpl implements GiftCertificateService {
 

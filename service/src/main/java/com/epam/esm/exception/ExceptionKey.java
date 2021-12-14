@@ -3,6 +3,11 @@ package com.epam.esm.exception;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+/**
+ * The Enum ExceptionKey to localize the error message.
+ *
+ * @author Vladislav Kuzmich
+ */
 @AllArgsConstructor
 @Getter
 public enum ExceptionKey {

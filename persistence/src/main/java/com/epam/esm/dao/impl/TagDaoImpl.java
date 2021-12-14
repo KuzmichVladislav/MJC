@@ -15,14 +15,32 @@ import java.sql.Statement;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * The Class TagDaoImpl is the implementation of the {@link TagDao} interface.
+ *
+ * @author Vladislav Kuzmich
+ */
 @Repository
 public class TagDaoImpl implements TagDao {
 
-    private static final String ADD_TAG = "INSERT INTO tag (name) VALUES(?)";
-    private static final String FIND_TAG = "SELECT id, name FROM tag WHERE id=?";
-    private static final String FIND_ALL_TAG = "SELECT id, name FROM tag";
-    private static final String REMOVE_TAG = "DELETE FROM tag WHERE id=?";
-    private static final String FIND_TAG_BY_NAME = "SELECT id, name FROM tag WHERE name=?";
+    private static final String ADD_TAG =
+            "INSERT INTO tag (name)\n" +
+                    "VALUES (?)";
+    private static final String FIND_TAG =
+            "SELECT id, name\n" +
+                    "FROM tag\n" +
+                    "WHERE id = ?";
+    private static final String FIND_ALL_TAG =
+            "SELECT id, name\n" +
+                    "FROM tag";
+    private static final String REMOVE_TAG =
+            "DELETE\n" +
+                    "FROM tag\n" +
+                    "WHERE id = ?";
+    private static final String FIND_TAG_BY_NAME =
+            "SELECT id, name\n" +
+                    "FROM tag\n" +
+                    "WHERE name = ?";
     private static final String FIND_ALL_TAG_BY_CERTIFICATE_ID = "SELECT id, name\n" +
             "FROM tag\n" +
             "   LEFT JOIN gift_certificate_tag_include gcti on tag.id = gcti.tag\n" +

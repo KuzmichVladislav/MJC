@@ -9,6 +9,11 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Entity Class GiftCertificate for gift certificate entity
+ *
+ * @author Vladislav Kuzmich
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

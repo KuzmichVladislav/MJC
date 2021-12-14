@@ -12,6 +12,11 @@ import javax.sql.DataSource;
 
 import static org.modelmapper.config.Configuration.AccessLevel;
 
+/**
+ * The Class ServiceConfiguration enable and scan service layer.
+ *
+ * @author Vladislav Kuzmich
+ */
 @Configuration
 @ComponentScan("com.epam.esm")
 public class ServiceConfiguration {

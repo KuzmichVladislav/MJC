@@ -5,6 +5,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * The Class ExceptionResult to display error result
+ *
+ * @author Vladislav Kuzmich
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

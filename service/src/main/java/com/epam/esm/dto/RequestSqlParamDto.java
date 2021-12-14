@@ -8,6 +8,11 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * DTO Class GiftCertificate for request parameters DTO object
+ *
+ * @author Vladislav Kuzmich
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

@@ -1,6 +1,5 @@
 package com.epam.esm.validator;
 
-import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.exception.RequestValidationException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -75,6 +74,6 @@ class GiftCertificateRequestValidatorTest {
             "more then 250 characters more then 250 characters more then 250 characters more then 250 characters"})
     void testCheckDescriptionException(String description) {
         Assertions.assertThrows(RequestValidationException.class,
-                () ->  giftCertificateRequestValidator.checkDescription(description));
+                () -> giftCertificateRequestValidator.checkDescription(description));
     }
 }

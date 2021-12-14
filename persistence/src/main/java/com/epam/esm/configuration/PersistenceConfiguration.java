@@ -13,6 +13,11 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
 import javax.sql.DataSource;
 
+/**
+ * The Class PersistenceConfiguration enable and scan persistence layer.
+ *
+ * @author Vladislav Kuzmich
+ */
 @Configuration
 @ComponentScan("com.epam.esm")
 public class PersistenceConfiguration {
@@ -30,6 +35,11 @@ public class PersistenceConfiguration {
     @Value("${db.pool_max_total}")
     private int dbPoolMaxSize;
 
+    /**
+     * Properties dev to map the bean to the develop profile
+     *
+     * @return the property sources placeholder configurer
+     */
     @Bean
     @Profile("dev")
     public static PropertySourcesPlaceholderConfigurer propertiesDev() {
@@ -39,6 +49,11 @@ public class PersistenceConfiguration {
         return configurer;
     }
 
+    /**
+     * Properties prod to map the bean to the production profile
+     *
+     * @return the property sources placeholder configurer
+     */
     @Bean
     @Profile("prod")
     public static PropertySourcesPlaceholderConfigurer propertiesProd() {
@@ -61,7 +76,7 @@ public class PersistenceConfiguration {
     }
 
     @Bean
-    public DataSourceTransactionManager transactionManager(){
+    public DataSourceTransactionManager transactionManager() {
         DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
         transactionManager.setDataSource(dataSource());
         return transactionManager;

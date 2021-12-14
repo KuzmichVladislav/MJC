@@ -6,6 +6,11 @@ import org.springframework.stereotype.Component;
 import java.text.MessageFormat;
 import java.util.Collections;
 
+/**
+ * The Class QueryParamCreator for creating a query based on parameters obtained from request parameters.
+ *
+ * @author Vladislav Kuzmich
+ */
 @Component
 public class QueryParamCreator {
 
@@ -21,7 +26,6 @@ public class QueryParamCreator {
     private static final String ID = "id";
 
     public String mapRequestParam(RequestSqlParam requestParams) {
-
         StringBuilder builder = new StringBuilder();
         String orderParamPostfix;
         if (requestParams.getName().isPresent()) {

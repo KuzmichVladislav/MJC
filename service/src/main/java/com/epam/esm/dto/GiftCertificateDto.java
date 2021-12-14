@@ -10,6 +10,11 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * DTO Class GiftCertificate for gift certificate DTO object
+ *
+ * @author Vladislav Kuzmich
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
