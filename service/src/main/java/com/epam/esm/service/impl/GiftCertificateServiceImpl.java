@@ -16,7 +16,6 @@ import com.epam.esm.validator.RequestValidator;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -33,20 +32,20 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     private final ModelMapper modelMapper;
 
-    private final ListConvertor mapperUtilInstance;
+    private final ListConvertor listConvertor;
 
     private final RequestValidator requestValidator;
 
     @Autowired
     public GiftCertificateServiceImpl(GiftCertificateDao giftCertificateDao,
-                                      TagService tagService, ModelMapper modelMapper,
-                                      ListConvertor mapperUtilInstance,
-                                      RequestValidator requestValidator,
-                                      PlatformTransactionManager transactionManager) {
+                                      TagService tagService,
+                                      ModelMapper modelMapper,
+                                      ListConvertor listConvertor,
+                                      RequestValidator requestValidator) {
         this.giftCertificateDao = giftCertificateDao;
         this.tagService = tagService;
         this.modelMapper = modelMapper;
-        this.mapperUtilInstance = mapperUtilInstance;
+        this.listConvertor = listConvertor;
         this.requestValidator = requestValidator;
     }
 
@@ -77,7 +76,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     public List<GiftCertificateDto> findAll() {
-        return mapperUtilInstance.convertList(giftCertificateDao.findAll(),
+        return listConvertor.convertList(giftCertificateDao.findAll(),
                 this::convertToGiftCertificateDto);
     }
 
@@ -98,10 +97,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    @Transactional
     public List<GiftCertificateDto> findByParameters(RequestSqlParamDto requestParamsDto) {
         RequestSqlParam requestParam = modelMapper.map(requestParamsDto, RequestSqlParam.class);
-        return mapperUtilInstance.convertList(giftCertificateDao.findByParameters(requestParam),
+        return listConvertor.convertList(giftCertificateDao.findByParameters(requestParam),
                 this::convertToGiftCertificateDto);
 
     }
@@ -133,7 +131,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     private GiftCertificate convertToGiftCertificateEntity(GiftCertificateDto giftCertificateDto) {
         GiftCertificate giftCertificate = modelMapper.map(giftCertificateDto, GiftCertificate.class);
         if (giftCertificateDto.getTags() != null) {
-            giftCertificate.setTags(mapperUtilInstance.convertList(giftCertificateDto.getTags(),
+            giftCertificate.setTags(listConvertor.convertList(giftCertificateDto.getTags(),
                     tagDto -> modelMapper.map(tagDto, Tag.class)));
         }
         return giftCertificate;

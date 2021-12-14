@@ -21,17 +21,17 @@ public class TagServiceImpl implements TagService {
 
     private final TagDao tagDao;
     private final ModelMapper modelMapper;
-    private final ListConvertor mapperUtilInstance;
+    private final ListConvertor listConvertor;
     private final RequestValidator requestValidator;
 
     @Autowired
     public TagServiceImpl(TagDao tagDao,
                           ModelMapper modelMapper,
-                          ListConvertor mapperUtilInstance,
+                          ListConvertor listConvertor,
                           RequestValidator requestValidator) {
         this.tagDao = tagDao;
         this.modelMapper = modelMapper;
-        this.mapperUtilInstance = mapperUtilInstance;
+        this.listConvertor = listConvertor;
         this.requestValidator = requestValidator;
     }
 
@@ -58,7 +58,7 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public List<TagDto> findAll() {
-        return mapperUtilInstance.convertList(tagDao.findAll(), this::convertToTagDto);
+        return listConvertor.convertList(tagDao.findAll(), this::convertToTagDto);
     }
 
     @Override
@@ -73,7 +73,7 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public List<TagDto> findByCertificateId(long giftCertificateId) {
-        return mapperUtilInstance.convertList(tagDao.findByCertificateId(giftCertificateId),
+        return listConvertor.convertList(tagDao.findByCertificateId(giftCertificateId),
                 this::convertToTagDto);
     }
 
