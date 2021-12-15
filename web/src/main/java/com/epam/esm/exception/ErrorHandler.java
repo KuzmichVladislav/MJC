@@ -118,4 +118,3 @@ public class ErrorHandler {
         return String.format(message, parameter);
     }
 }
-

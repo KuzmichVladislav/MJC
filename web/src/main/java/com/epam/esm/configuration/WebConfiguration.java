@@ -37,5 +37,4 @@ public class WebConfiguration implements WebMvcConfigurer {
         source.setDefaultEncoding("UTF-8");
         return source;
     }
-
 }
