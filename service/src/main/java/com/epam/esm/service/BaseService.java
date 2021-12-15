@@ -4,11 +4,9 @@ import java.util.List;
 
 /**
  * A generic interface for the Service layer. The interface
- * describes base business logic operations for Dao object.
+ * describes base business logic operations for DTO objects.
  *
  * @param <T> the generic DTO object type
- *
- * @author Vladislav Kuzmich
  */
 
 public interface BaseService<T> {

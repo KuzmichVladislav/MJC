@@ -14,9 +14,7 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import javax.sql.DataSource;
 
 /**
- * The Class PersistenceConfiguration enable and scan persistence layer.
- *
- * @author Vladislav Kuzmich
+ * The Class PersistenceConfiguration contains a spring configuration for persistence.
  */
 @Configuration
 @ComponentScan("com.epam.esm")

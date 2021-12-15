@@ -1,7 +1,7 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.dto.GiftCertificateDto;
-import com.epam.esm.dto.RequestSqlParamDto;
+import com.epam.esm.dto.GiftCertificateQueryParameterDto;
 import com.epam.esm.service.GiftCertificateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,9 +13,7 @@ import java.util.Optional;
 
 /**
  * The Class GiftCertificateController is a Rest Controller class which will have
- * all end points for gift certificate which is includes POST, GET, GET ALL, UPDATE, DELETE.
- *
- * @author Vladislav Kuzmich
+ * all end points for gift certificate which is includes POST, GET, UPDATE, DELETE.
  */
 @RestController
 @RequestMapping("/gift-certificates")
@@ -34,7 +32,7 @@ public class GiftCertificateController {
     }
 
     /**
-     * Create a new gift certificate by POST request, end point is http://hostname:port/gift-certificates
+     * Create a new gift certificate based on POST request.
      *
      * @param giftCertificateDto the gift certificate DTO object
      * @return the gift certificate DTO object
@@ -45,13 +43,13 @@ public class GiftCertificateController {
     }
 
     /**
-     * Get list of gift certificates users based on GET request.
+     * Get list of gift certificates based on GET request.
      *
-     * @param name        the name
-     * @param description the description
-     * @param tagName     the tag name
-     * @param sort        the sort
-     * @param orderBy     the order by
+     * @param name        the name parameter
+     * @param description the description parameter
+     * @param tagName     the tag name parameter
+     * @param sortType    the sort type parameter
+     * @param sortOrder   the sort order parameter
      * @return all gift certificates
      */
     @GetMapping(consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -59,22 +57,22 @@ public class GiftCertificateController {
     (@RequestParam(value = "name", required = false) Optional<String> name,
      @RequestParam(value = "description", required = false) Optional<String> description,
      @RequestParam(value = "tag-name", required = false) Optional<String> tagName,
-     @RequestParam(value = "sort", required = false) Optional<List<String>> sort,
-     @RequestParam(value = "order-by", required = false) Optional<String> orderBy) {
-        RequestSqlParamDto requestParams = RequestSqlParamDto.builder()
+     @RequestParam(value = "sort", required = false) Optional<List<String>> sortType,
+     @RequestParam(value = "order-by", required = false) Optional<String> sortOrder) {
+        GiftCertificateQueryParameterDto queryParameterDto = GiftCertificateQueryParameterDto.builder()
                 .name(name)
                 .tagName(tagName)
                 .description(description)
-                .sort(sort)
-                .orderBy(orderBy)
+                .sortType(sortType)
+                .sortOrder(sortOrder)
                 .build();
-        return giftCertificateService.findByParameters(requestParams);
+        return giftCertificateService.findByParameters(queryParameterDto);
     }
 
     /**
-     * Get a gift certificate by id in GET request, end point is http://hostname:port/gift-certificates/id
+     * Get a gift certificate by identifier based on GET request
      *
-     * @param id the gift certificate id
+     * @param id the gift certificate identifier
      * @return the gift certificate
      */
     @GetMapping(value = "/{id}", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -94,9 +92,9 @@ public class GiftCertificateController {
     }
 
     /**
-     * Delete gift certificate based on gift certificate ID.
+     * Delete gift certificate by gift certificate identifier based on DELETE request.
      *
-     * @param id the gift certificate id
+     * @param id the gift certificate identifier
      * @return no content
      */
     @DeleteMapping("/{id}")

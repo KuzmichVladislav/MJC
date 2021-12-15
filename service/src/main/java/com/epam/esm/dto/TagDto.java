@@ -7,8 +7,6 @@ import lombok.NoArgsConstructor;
 
 /**
  * DTO Class GiftCertificate for tag DTO object
- *
- * @author Vladislav Kuzmich
  */
 @Data
 @NoArgsConstructor

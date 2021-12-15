@@ -4,10 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * The Interface BaseDao. A generic interface for DAO layer describes CRUD operations for working with database.
+ * The Interface BaseDao. A generic interface for persistence layer describes CRUD operations for working with database.
  *
  * @param <T> the generic entity type
- * @author Vladislav Kuzmich
  */
 public interface BaseDao<T> {
 

@@ -1,15 +1,13 @@
 package com.epam.esm.service;
 
 import com.epam.esm.dto.GiftCertificateDto;
-import com.epam.esm.dto.RequestSqlParamDto;
+import com.epam.esm.dto.GiftCertificateQueryParameterDto;
 
 import java.util.List;
 
 /**
  * The Interface GiftCertificateService.
  * A interface to define all required methods for gift certificate DTO object.
- *
- * @author Vladislav Kuzmich
  */
 public interface GiftCertificateService extends BaseService<GiftCertificateDto> {
 
@@ -27,5 +25,5 @@ public interface GiftCertificateService extends BaseService<GiftCertificateDto> 
      * @param requestParams the request parameters
      * @return the list of gift certificate DTO object
      */
-    List<GiftCertificateDto> findByParameters(RequestSqlParamDto requestParams);
+    List<GiftCertificateDto> findByParameters(GiftCertificateQueryParameterDto requestParams);
 }

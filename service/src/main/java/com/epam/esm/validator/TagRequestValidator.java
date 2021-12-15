@@ -11,8 +11,6 @@ import java.util.List;
 /**
  * Utility Class TagRequestValidator for validating the values received
  * from the request for the tag DTO object.
- *
- * @author Vladislav Kuzmich
  */
 @Component
 public class TagRequestValidator {

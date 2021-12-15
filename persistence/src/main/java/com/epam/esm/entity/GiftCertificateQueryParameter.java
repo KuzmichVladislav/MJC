@@ -9,18 +9,16 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Entity Class RequestSqlParam for request parameters entity
- *
- * @author Vladislav Kuzmich
+ * Entity Class GiftCertificateQueryParameter contains parameters for generation query
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class RequestSqlParam {
+public class GiftCertificateQueryParameter {
     private Optional<String> name;
     private Optional<String> description;
     private Optional<String> tagName;
-    private Optional<List<String>> sort;
-    private Optional<String> orderBy;
+    private Optional<List<String>> sortType;
+    private Optional<String> sortOrder;
 }

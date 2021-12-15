@@ -8,8 +8,6 @@ import java.util.Optional;
 /**
  * The Interface TagService.
  * A interface to define all required methods for tag DTO object.
- *
- * @author Vladislav Kuzmich
  */
 public interface TagService extends BaseService<TagDto> {
 

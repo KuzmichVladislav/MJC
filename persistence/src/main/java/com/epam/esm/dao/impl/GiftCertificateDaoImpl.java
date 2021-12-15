@@ -3,8 +3,8 @@ package com.epam.esm.dao.impl;
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dao.mapper.GiftCertificateMapper;
 import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.entity.RequestSqlParam;
-import com.epam.esm.util.QueryParamCreator;
+import com.epam.esm.entity.GiftCertificateQueryParameter;
+import com.epam.esm.util.GiftCertificateQueryCreator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -19,8 +19,6 @@ import java.util.Optional;
 
 /**
  * The Class GiftCertificateDaoImpl is the implementation of the {@link GiftCertificateDao} interface.
- *
- * @author Vladislav Kuzmich
  */
 @Repository
 public class GiftCertificateDaoImpl implements GiftCertificateDao {
@@ -71,15 +69,15 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
                     "WHERE gift_certificate = ?";
     private final JdbcTemplate jdbcTemplate;
     private final GiftCertificateMapper giftCertificateMapper;
-    private final QueryParamCreator queryParamCreator;
+    private final GiftCertificateQueryCreator giftCertificateQueryCreator;
 
     @Autowired
     public GiftCertificateDaoImpl(JdbcTemplate jdbcTemplate,
                                   GiftCertificateMapper giftCertificateMapper,
-                                  QueryParamCreator queryParamCreator) {
+                                  GiftCertificateQueryCreator giftCertificateQueryCreator) {
         this.jdbcTemplate = jdbcTemplate;
         this.giftCertificateMapper = giftCertificateMapper;
-        this.queryParamCreator = queryParamCreator;
+        this.giftCertificateQueryCreator = giftCertificateQueryCreator;
     }
 
     @Override
@@ -143,9 +141,9 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
-    public List<GiftCertificate> findByParameters(RequestSqlParam requestParam) {
+    public List<GiftCertificate> findByParameters(GiftCertificateQueryParameter requestParam) {
         String sqlQuery = FIND_CERTIFICATES_BY_PARAMETERS +
-                queryParamCreator.mapRequestParam(requestParam);
+                giftCertificateQueryCreator.mapRequestParam(requestParam);
         return jdbcTemplate.query(sqlQuery, giftCertificateMapper);
     }
 }

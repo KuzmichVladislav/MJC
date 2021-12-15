@@ -7,8 +7,6 @@ import java.util.Optional;
 
 /**
  * The Interface TagDao describes some query methods based on query object construction.
- *
- * @author Vladislav Kuzmich
  */
 public interface TagDao extends BaseDao<Tag> {
 

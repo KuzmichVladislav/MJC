@@ -18,8 +18,6 @@ import java.util.Optional;
 
 /**
  * The Class GiftCertificateServiceImpl is the implementation of the {@link TagService} interface.
- *
- * @author Vladislav Kuzmich
  */
 @Service
 public class TagServiceImpl implements TagService {

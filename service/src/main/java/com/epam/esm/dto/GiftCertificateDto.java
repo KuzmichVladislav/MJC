@@ -12,8 +12,6 @@ import java.util.List;
 
 /**
  * DTO Class GiftCertificate for gift certificate DTO object
- *
- * @author Vladislav Kuzmich
  */
 @Data
 @NoArgsConstructor

@@ -11,8 +11,6 @@ import javax.servlet.ServletRegistration;
  * The Class SpringApplicationInitializer.
  * This class bootstraps / initializes the web application.
  * WebApplicationInitializer declares onStartup ().
- *
- * @author Vladislav Kuzmich
  */
 public class SpringApplicationInitializer implements WebApplicationInitializer {
 

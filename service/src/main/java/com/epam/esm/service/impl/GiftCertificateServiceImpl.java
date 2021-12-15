@@ -2,10 +2,10 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dto.GiftCertificateDto;
-import com.epam.esm.dto.RequestSqlParamDto;
+import com.epam.esm.dto.GiftCertificateQueryParameterDto;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.entity.RequestSqlParam;
+import com.epam.esm.entity.GiftCertificateQueryParameter;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.ExceptionKey;
 import com.epam.esm.exception.ResourceNotFoundException;
@@ -25,8 +25,6 @@ import java.util.stream.Collectors;
 
 /**
  * The Class GiftCertificateServiceImpl is the implementation of the {@link GiftCertificateService} interface.
- *
- * @author Vladislav Kuzmich
  */
 @Service
 public class GiftCertificateServiceImpl implements GiftCertificateService {
@@ -108,8 +106,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public List<GiftCertificateDto> findByParameters(RequestSqlParamDto requestParamsDto) {
-        RequestSqlParam requestParam = modelMapper.map(requestParamsDto, RequestSqlParam.class);
+    public List<GiftCertificateDto> findByParameters(GiftCertificateQueryParameterDto requestParamsDto) {
+        GiftCertificateQueryParameter requestParam = modelMapper.map(requestParamsDto, GiftCertificateQueryParameter.class);
         return listConverter.convertList(giftCertificateDao.findByParameters(requestParam),
                 this::convertToGiftCertificateDto);
 

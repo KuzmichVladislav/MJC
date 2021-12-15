@@ -14,8 +14,6 @@ import java.util.Locale;
 
 /**
  * The Class ErrorHandler maps exceptions to HTTP responses
- *
- * @author Vladislav Kuzmich
  */
 @RestControllerAdvice
 public class ErrorHandler {

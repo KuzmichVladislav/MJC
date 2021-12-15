@@ -10,8 +10,6 @@ import java.math.BigDecimal;
 /**
  * Utility Class GiftCertificateRequestValidator for validating the values received
  * from the request for the gift certificate DTO object.
- *
- * @author Vladislav Kuzmich
  */
 @Component
 public class GiftCertificateRequestValidator {

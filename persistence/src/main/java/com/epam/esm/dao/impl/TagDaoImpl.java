@@ -17,8 +17,6 @@ import java.util.Optional;
 
 /**
  * The Class TagDaoImpl is the implementation of the {@link TagDao} interface.
- *
- * @author Vladislav Kuzmich
  */
 @Repository
 public class TagDaoImpl implements TagDao {

@@ -8,8 +8,6 @@ import java.util.stream.Collectors;
 
 /**
  * Utility Class ListConverter for converting list of entities to list of DTO objects and vice versa.
- *
- * @author Vladislav Kuzmich
  */
 @Component
 public class ListConverter {

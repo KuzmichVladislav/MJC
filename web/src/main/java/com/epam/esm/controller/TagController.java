@@ -11,9 +11,7 @@ import java.util.List;
 
 /**
  * The Class TagController is a Rest Controller class which will have
- * all end points for tag which is includes POST, GET, GET ALL, DELETE.
- *
- * @author Vladislav Kuzmich
+ * all end points for tag which is includes POST, GET, DELETE.
  */
 @RestController
 @RequestMapping("/tags")
@@ -42,7 +40,7 @@ public class TagController {
     }
 
     /**
-     * Create a new tag by POST request, end point is http://hostname:port/tags
+     * Create a new tag based on POST request.
      *
      * @param tagDto the tag dto
      * @return the tag dto
@@ -53,9 +51,9 @@ public class TagController {
     }
 
     /**
-     * Get a tag by id in GET request, end point is http://hostname:port/tags/id
+     * Get a tag by identifier based on GET request
      *
-     * @param id the tag id
+     * @param id the tag identifier
      * @return the tag
      */
     @GetMapping(value = "/{id}", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -64,9 +62,9 @@ public class TagController {
     }
 
     /**
-     * Delete tag.
+     * Delete tag by tag identifier based on DELETE request.
      *
-     * @param id the tag id
+     * @param id the tag identifier
      * @return no content
      */
     @DeleteMapping("/{id}")

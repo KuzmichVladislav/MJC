@@ -7,8 +7,6 @@ import lombok.NoArgsConstructor;
 
 /**
  * Entity Class Tag for tag entity
- *
- * @author Vladislav Kuzmich
  */
 @Data
 @NoArgsConstructor

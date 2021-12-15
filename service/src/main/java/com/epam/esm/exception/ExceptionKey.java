@@ -5,8 +5,6 @@ import lombok.Getter;
 
 /**
  * The Enum ExceptionKey to localize the error message.
- *
- * @author Vladislav Kuzmich
  */
 @AllArgsConstructor
 @Getter

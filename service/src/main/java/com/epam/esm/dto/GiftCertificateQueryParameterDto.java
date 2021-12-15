@@ -9,18 +9,16 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * DTO Class GiftCertificate for request parameters DTO object
- *
- * @author Vladislav Kuzmich
+ * DTO Class GiftCertificateQueryParameterDto contains parameters for generation query
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class RequestSqlParamDto {
+public class GiftCertificateQueryParameterDto {
     private Optional<String> name;
     private Optional<String> description;
     private Optional<String> tagName;
-    private Optional<List<String>> sort;
-    private Optional<String> orderBy;
+    private Optional<List<String>> sortType;
+    private Optional<String> sortOrder;
 }

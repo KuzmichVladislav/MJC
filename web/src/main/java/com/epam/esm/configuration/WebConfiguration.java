@@ -11,9 +11,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
- * The Class WebConfiguration enable and scan web layer
- *
- * @author Vladislav Kuzmich
+ * The Class WebConfiguration contains a spring configuration for web.
  */
 @Configuration
 @ComponentScan("com.epam.esm")

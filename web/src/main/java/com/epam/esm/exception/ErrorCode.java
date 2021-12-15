@@ -6,8 +6,6 @@ import lombok.NoArgsConstructor;
 
 /**
  * The Enum ErrorCode for defining the error code.
- *
- * @author Vladislav Kuzmich
  */
 @NoArgsConstructor
 @AllArgsConstructor
