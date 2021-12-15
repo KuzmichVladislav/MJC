@@ -73,7 +73,6 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    @Transactional
     public GiftCertificateDto findById(long id) {
         giftCertificateRequestValidator.checkId(id);
         return convertToGiftCertificateDto(giftCertificateDao

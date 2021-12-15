@@ -2,7 +2,3 @@ rootProject.name = 'esm'
 include 'service'
 include 'web'
 include 'persistence'
-
-project(':service')
-project(':web')
-project(':persistence')
