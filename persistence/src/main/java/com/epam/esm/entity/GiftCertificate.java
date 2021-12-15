@@ -21,7 +21,7 @@ public class GiftCertificate {
     private String name;
     private String description;
     private BigDecimal price;
-    private Integer duration;
+    private int duration;
     private LocalDateTime createDate;
     private LocalDateTime lastUpdateDate;
     private List<Tag> tags;
