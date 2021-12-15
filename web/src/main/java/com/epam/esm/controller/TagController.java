@@ -46,6 +46,7 @@ public class TagController {
      * @return the tag dto
      */
     @PostMapping(consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.CREATED)
     public TagDto addTag(@RequestBody TagDto tagDto) {
         return tagService.add(tagDto);
     }

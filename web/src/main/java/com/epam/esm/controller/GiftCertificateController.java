@@ -38,6 +38,7 @@ public class GiftCertificateController {
      * @return the gift certificate DTO object
      */
     @PostMapping(consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.CREATED)
     public GiftCertificateDto addGiftCertificate(@RequestBody GiftCertificateDto giftCertificateDto) {
         return giftCertificateService.add(giftCertificateDto);
     }
