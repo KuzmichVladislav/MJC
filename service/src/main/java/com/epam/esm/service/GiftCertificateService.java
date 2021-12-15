@@ -22,8 +22,8 @@ public interface GiftCertificateService extends BaseService<GiftCertificateDto> 
     /**
      * Find gift certificate DTO object request by parameters.
      *
-     * @param requestParams the request parameters
+     * @param requestParameter the request parameters
      * @return the list of gift certificate DTO object
      */
-    List<GiftCertificateDto> findByParameters(GiftCertificateQueryParameterDto requestParams);
+    List<GiftCertificateDto> findByParameters(GiftCertificateQueryParameterDto requestParameter);
 }

@@ -106,9 +106,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public List<GiftCertificateDto> findByParameters(GiftCertificateQueryParameterDto requestParamsDto) {
-        GiftCertificateQueryParameter requestParam = modelMapper.map(requestParamsDto, GiftCertificateQueryParameter.class);
-        return listConverter.convertList(giftCertificateDao.findByParameters(requestParam),
+    public List<GiftCertificateDto> findByParameters(GiftCertificateQueryParameterDto requestParameterDto) {
+        GiftCertificateQueryParameter requestParameter = modelMapper.map(requestParameterDto, GiftCertificateQueryParameter.class);
+        return listConverter.convertList(giftCertificateDao.findByParameters(requestParameter),
                 this::convertToGiftCertificateDto);
 
     }

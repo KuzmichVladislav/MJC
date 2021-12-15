@@ -44,8 +44,8 @@ public interface GiftCertificateDao extends BaseDao<GiftCertificate> {
     /**
      * Find gift certificate by request parameters.
      *
-     * @param requestParam the request parameters
+     * @param requestParameter the request parameters
      * @return the list of gift certificates
      */
-    List<GiftCertificate> findByParameters(GiftCertificateQueryParameter requestParam);
+    List<GiftCertificate> findByParameters(GiftCertificateQueryParameter requestParameter);
 }

@@ -65,12 +65,12 @@ public class ErrorHandler {
      * @param locale the locale
      * @return the exception result
      */
-//    @ExceptionHandler(NoHandlerFoundException.class)
-//    @ResponseStatus(HttpStatus.NOT_FOUND)
-//    @ResponseBody
-//    public ExceptionResult handle(NoHandlerFoundException e, Locale locale) {
-//        return new ExceptionResult(e.getMessage(), ErrorCode.HANDLER_NOT_FOUND.getCode());
-//    }
+    @ExceptionHandler(NoHandlerFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseBody
+    public ExceptionResult handle(NoHandlerFoundException e, Locale locale) {
+        return new ExceptionResult(e.getMessage(), ErrorCode.HANDLER_NOT_FOUND.getCode());
+    }
 
     /**
      * Handle RuntimeException.
@@ -114,8 +114,8 @@ public class ErrorHandler {
         return new ExceptionResult(e.getMessage(), ErrorCode.UNSUPPORTED_MEDIA_TYPE.getCode());
     }
 
-    private String createMessage(String message, String param) {
-        return String.format(message, param);
+    private String createMessage(String message, String parameter) {
+        return String.format(message, parameter);
     }
 }
 

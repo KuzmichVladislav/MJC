@@ -56,10 +56,11 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             "DELETE\n" +
                     "FROM gift_certificate\n" +
                     "WHERE id = ?";
-    private static final String FIND_ALL_GIFT_CERTIFICATE_BY_TAG = "SELECT id, name, description, price, duration, create_date, last_update_date, gift_certificate, tag\n" +
-            "FROM gift_certificate\n" +
-            "LEFT JOIN gift_certificate_tag_include gcti on gift_certificate.id = gcti.gift_certificate\n" +
-            "WHERE gcti.tag = ?";
+    private static final String FIND_ALL_GIFT_CERTIFICATE_BY_TAG =
+            "SELECT id, name, description, price, duration, create_date, last_update_date, gift_certificate, tag\n" +
+                    "FROM gift_certificate\n" +
+                    "LEFT JOIN gift_certificate_tag_include gcti on gift_certificate.id = gcti.gift_certificate\n" +
+                    "WHERE gcti.tag = ?";
     private static final String ADD_TAG_TO_CERTIFICATE =
             "INSERT INTO gift_certificate_tag_include\n" +
                     "VALUES (?, ?)";
@@ -141,9 +142,9 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
-    public List<GiftCertificate> findByParameters(GiftCertificateQueryParameter requestParam) {
+    public List<GiftCertificate> findByParameters(GiftCertificateQueryParameter requestParameter) {
         String sqlQuery = FIND_CERTIFICATES_BY_PARAMETERS +
-                giftCertificateQueryCreator.mapRequestParam(requestParam);
+                giftCertificateQueryCreator.mapRequestParameters(requestParameter);
         return jdbcTemplate.query(sqlQuery, giftCertificateMapper);
     }
 }

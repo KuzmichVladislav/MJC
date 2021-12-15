@@ -31,7 +31,6 @@ class TagDaoImplTest {
     void testAdd() {
         Tag result = tagDaoImpl.add(Tag.builder().name("result").build());
         Assertions.assertNotNull(result);
-        Assertions.assertNotNull(result.getId());
         Assertions.assertEquals("result", result.getName());
     }
 

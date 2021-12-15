@@ -23,21 +23,21 @@ public class GiftCertificateQueryCreator {
     private static final String WHERE = "WHERE ";
     private static final String AND = " AND ";
 
-    public String mapRequestParam(GiftCertificateQueryParameter requestParams) {
+    public String mapRequestParameters(GiftCertificateQueryParameter requestParameter) {
         StringBuilder builder = new StringBuilder();
-        if (requestParams.getName().isPresent()) {
-            builder.append(MessageFormat.format(WHERE_GIFT_CERTIFICATE_NAME_LIKE, requestParams.getName().get()));
+        if (requestParameter.getName().isPresent()) {
+            builder.append(MessageFormat.format(WHERE_GIFT_CERTIFICATE_NAME_LIKE, requestParameter.getName().get()));
         }
-        if (requestParams.getDescription().isPresent()) {
+        if (requestParameter.getDescription().isPresent()) {
             addCondition(builder);
-            builder.append(MessageFormat.format(GIFT_CERTIFICATE_DESCRIPTION_LIKE, requestParams.getDescription().get()));
+            builder.append(MessageFormat.format(GIFT_CERTIFICATE_DESCRIPTION_LIKE, requestParameter.getDescription().get()));
         }
-        if (requestParams.getTagName().isPresent()) {
+        if (requestParameter.getTagName().isPresent()) {
             addCondition(builder);
-            builder.append(MessageFormat.format(TAG_NAME, requestParams.getTagName().get()));
+            builder.append(MessageFormat.format(TAG_NAME, requestParameter.getTagName().get()));
         }
-        String sortOrderParameter = addSortOrderParameter(requestParams);
-        String orderParameterPostfix = addSortTypeParameters(requestParams, sortOrderParameter);
+        String sortOrderParameter = addSortOrderParameter(requestParameter);
+        String orderParameterPostfix = addSortTypeParameters(requestParameter, sortOrderParameter);
         return builder.append(orderParameterPostfix).toString();
     }
 
@@ -49,16 +49,16 @@ public class GiftCertificateQueryCreator {
         }
     }
 
-    private String addSortTypeParameters(GiftCertificateQueryParameter requestParams, String sortOrderParam) {
+    private String addSortTypeParameters(GiftCertificateQueryParameter requestParameter, String sortOrderParameter) {
         return String.format(ORDER_BY, String.join(DELIMITER,
-                requestParams.getSortType().orElse(Collections.singletonList(ID))), sortOrderParam);
+                requestParameter.getSortType().orElse(Collections.singletonList(ID))), sortOrderParameter);
     }
 
-    private String addSortOrderParameter(GiftCertificateQueryParameter requestParams) {
-        String sortOrderParam = requestParams.getSortOrder().orElse(ASC);
-        if (!sortOrderParam.equals(DESC) && !sortOrderParam.equals(ASC)) {
-            sortOrderParam = ASC;
+    private String addSortOrderParameter(GiftCertificateQueryParameter requestParameter) {
+        String sortOrderParameter = requestParameter.getSortOrder().orElse(ASC);
+        if (!sortOrderParameter.equals(DESC) && !sortOrderParameter.equals(ASC)) {
+            sortOrderParameter = ASC;
         }
-        return sortOrderParam;
+        return sortOrderParameter;
     }
 }
