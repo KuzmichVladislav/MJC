@@ -1,21 +1,51 @@
 package com.epam.esm.dao;
 
 import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.entity.GiftCertificateQueryParameter;
 
 import java.util.List;
 
-public interface GiftCertificateDao {
+/**
+ * The Interface GiftCertificateDao describes some query methods based on query object construction.
+ */
+public interface GiftCertificateDao extends BaseDao<GiftCertificate> {
 
-    int create(GiftCertificate giftCertificate);
+    /**
+     * Update gift certificate in database.
+     *
+     * @param giftCertificate the gift certificate entity
+     * @return the gift certificate entity
+     */
+    GiftCertificate update(GiftCertificate giftCertificate);
 
-    GiftCertificate read(int id);
+    /**
+     * Find all gift certificate by tag identifier.
+     *
+     * @param tagId the tag identifier
+     * @return the gift certificate entity
+     */
+    List<GiftCertificate> findAllCertificateByTagId(long tagId);
 
-    List<GiftCertificate> readAll();
+    /**
+     * Adds tag to certificate.
+     *
+     * @param giftCertificateId the gift certificate identifier
+     * @param tagId             the tag identifier
+     */
+    void addTagToCertificate(long giftCertificateId, long tagId);
 
-    GiftCertificate update(int id, GiftCertificate giftCertificate);
+    /**
+     * Removes the association between gift certificate and tag.
+     *
+     * @param giftCertificateId the gift certificate identifier
+     */
+    void removeFromTableGiftCertificateTagInclude(long giftCertificateId);
 
-    boolean delete(int id);
-
-    List<GiftCertificate> readAllCertificateByTagId(int tagId);
-
+    /**
+     * Find gift certificate by request parameters.
+     *
+     * @param requestParameter the request parameters
+     * @return the list of gift certificates
+     */
+    List<GiftCertificate> findByParameters(GiftCertificateQueryParameter requestParameter);
 }

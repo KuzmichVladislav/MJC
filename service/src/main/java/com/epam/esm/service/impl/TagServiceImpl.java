@@ -1,57 +1,93 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.TagDao;
+import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.exception.ExceptionKey;
+import com.epam.esm.exception.RequestValidationException;
+import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.service.TagService;
+import com.epam.esm.util.ListConverter;
+import com.epam.esm.validator.TagRequestValidator;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * The Class GiftCertificateServiceImpl is the implementation of the {@link TagService} interface.
+ */
 @Service
 public class TagServiceImpl implements TagService {
 
     private final TagDao tagDao;
-    GiftCertificateServiceImpl giftCertificateService;
+    private final ModelMapper modelMapper;
+    private final ListConverter listConverter;
+    private final TagRequestValidator tagRequestValidator;
 
     @Autowired
-    public TagServiceImpl(TagDao tagDao) {
+    public TagServiceImpl(TagDao tagDao,
+                          ModelMapper modelMapper,
+                          ListConverter listConverter,
+                          TagRequestValidator tagRequestValidator) {
         this.tagDao = tagDao;
+        this.modelMapper = modelMapper;
+        this.listConverter = listConverter;
+        this.tagRequestValidator = tagRequestValidator;
     }
 
     @Override
-    public Tag create(Tag tag) {
-        int tagId = tagDao.create(tag);
-        return tagDao.read(tagId);
+    public TagDto add(TagDto tagDto) {
+        String tagName = tagDto.getName();
+        if (findByName(tagName).isEmpty()) {
+            tagRequestValidator.checkName(tagName);
+            Tag tag = modelMapper.map(tagDto, Tag.class);
+            tagDto.setId(tagDao.add(tag).getId());
+            return tagDto;
+        } else {
+            throw new RequestValidationException(ExceptionKey.TAG_EXISTS.getKey(),
+                    String.valueOf(tagName));
+        }
     }
 
     @Override
-    public Tag read(int id) {
-        Tag tag = tagDao.read(id);
-        tag.setGiftCertificateList(giftCertificateService.readAllCertificateByTagId(id));
-        return tag;
+    public TagDto findById(long id) {
+        tagRequestValidator.checkId(id);
+        return convertToTagDto(tagDao.findById(id).orElseThrow(() ->
+                new ResourceNotFoundException(ExceptionKey.TAG_NOT_FOUND.getKey(),
+                        String.valueOf(id))));
     }
 
     @Override
-    public List<Tag> readAll() {
-        return tagDao.readAll();
+    public List<TagDto> findAll() {
+        return listConverter.convertList(tagDao.findAll(), this::convertToTagDto);
     }
 
     @Override
-    public boolean delete(int id) {
-        return tagDao.delete(id);
+    public boolean removeById(long id) {
+        tagRequestValidator.checkId(id);
+        boolean isRemoved = tagDao.removeById(id);
+        if (!isRemoved) {
+            throw new ResourceNotFoundException(ExceptionKey.TAG_NOT_FOUND.getKey(), String.valueOf(id));
+        }
+        return isRemoved;
     }
 
-    public void addTagToCertificate(int giftCertificateId, int tagId) {
-        tagDao.addTagToCertificate(giftCertificateId, tagId);
+    @Override
+    public List<TagDto> findByCertificateId(long giftCertificateId) {
+        return listConverter.convertList(tagDao.findByCertificateId(giftCertificateId),
+                this::convertToTagDto);
     }
 
-    public Optional<Tag> findByName(String name) {
-        return tagDao.findByName(name);
+    @Override
+    public Optional<TagDto> findByName(String name) {
+        return tagDao.findByName(name)
+                .map(tag -> modelMapper.map(tag, TagDto.class));
     }
 
-    public List<Tag> readAllTagsByCertificateId(int id) {
-        return tagDao.readAllTagsByCertificateId(id);
+    private TagDto convertToTagDto(Tag tag) {
+        return modelMapper.map(tag, TagDto.class);
     }
 }

@@ -13,7 +13,12 @@ repositories {
 
 dependencies {
     implementation project(':service')
-    implementation project(':persistence')
+
+    implementation "org.springframework:spring-web:$springVersion"
+    implementation "org.springframework:spring-webmvc:$springVersion"
+
+    compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
+
 }
 
 test {

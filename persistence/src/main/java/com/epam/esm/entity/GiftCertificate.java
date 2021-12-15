@@ -1,24 +1,28 @@
 package com.epam.esm.entity;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Entity Class GiftCertificate for gift certificate entity
+ */
 @Data
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
-@AllArgsConstructor(access = AccessLevel.PUBLIC)
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class GiftCertificate {
-    int id;
-    String name;
-    String description;
-    BigDecimal price;
-    int duration;
-    Date createDate;
-    Date lastUpdateDate;
-    List<Tag> tagList;
+    private long id;
+    private String name;
+    private String description;
+    private BigDecimal price;
+    private Integer duration;
+    private LocalDateTime createDate;
+    private LocalDateTime lastUpdateDate;
+    private List<Tag> tags;
 }

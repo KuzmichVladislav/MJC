@@ -1,74 +1,96 @@
 package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.TagDao;
+import com.epam.esm.dao.mapper.TagMapper;
 import com.epam.esm.entity.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * The Class TagDaoImpl is the implementation of the {@link TagDao} interface.
+ */
 @Repository
 public class TagDaoImpl implements TagDao {
 
+    private static final String ADD_TAG =
+            "INSERT INTO tag (name)\n" +
+                    "VALUES (?)";
+    private static final String FIND_TAG =
+            "SELECT id, name\n" +
+                    "FROM tag\n" +
+                    "WHERE id = ?";
+    private static final String FIND_ALL_TAG =
+            "SELECT id, name\n" +
+                    "FROM tag";
+    private static final String REMOVE_TAG =
+            "DELETE\n" +
+                    "FROM tag\n" +
+                    "WHERE id = ?";
+    private static final String FIND_TAG_BY_NAME =
+            "SELECT id, name\n" +
+                    "FROM tag\n" +
+                    "WHERE name = ?";
+    private static final String FIND_ALL_TAG_BY_CERTIFICATE_ID = "SELECT id, name\n" +
+            "FROM tag\n" +
+            "   LEFT JOIN gift_certificate_tag_include gcti on tag.id = gcti.tag\n" +
+            "WHERE gcti.gift_certificate = ?";
+
     private final JdbcTemplate jdbcTemplate;
+    private final TagMapper tagMapper;
 
     @Autowired
-    public TagDaoImpl(JdbcTemplate jdbcTemplate) {
+    public TagDaoImpl(JdbcTemplate jdbcTemplate, TagMapper tagMapper) {
         this.jdbcTemplate = jdbcTemplate;
+        this.tagMapper = tagMapper;
     }
 
     @Override
-    public int create(Tag tag) throws DuplicateKeyException { // FIXME: 12/3/2021 what return?
-        String SQL = "INSERT INTO tag (name) VALUES(?)";
+    public Tag add(Tag tag) throws DuplicateKeyException {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
-            PreparedStatement preparedStatement = connection.prepareStatement(SQL, new String[]{"id"});
+            PreparedStatement preparedStatement = connection.prepareStatement(ADD_TAG,
+                    Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1, tag.getName());
             return preparedStatement;
         }, keyHolder);
-        return keyHolder.getKey().intValue();
+        tag.setId(keyHolder.getKey().longValue());
+        return tag;
     }
 
     @Override
-    public Tag read(int id) {
-        return jdbcTemplate.query("SELECT * FROM tag WHERE id=?", new BeanPropertyRowMapper<>(Tag.class), id)
-                .stream().findAny().orElse(null);// FIXME: 12/3/2021 what return?
+    public Optional<Tag> findById(long id) {
+        return jdbcTemplate.query(FIND_TAG, tagMapper, id)
+                .stream()
+                .findFirst();
     }
 
     @Override
-    public List<Tag> readAll() {
-        return jdbcTemplate.query("SELECT * FROM tag", new BeanPropertyRowMapper<>(Tag.class));
+    public List<Tag> findAll() {
+        return jdbcTemplate.query(FIND_ALL_TAG, tagMapper);
     }
 
     @Override
-    public boolean delete(int id) { // FIXME: 12/3/2021 what return?
-        boolean isDelete = false;
-        if (jdbcTemplate.update("DELETE FROM tag WHERE id=?", id) > 0) {
-            isDelete = true;
-        }
-        return isDelete;
-    }
-
-    public void addTagToCertificate(int giftCertificate, int tag) { // FIXME: 12/3/2021 what return?
-        jdbcTemplate.update("INSERT INTO gift_certificate_tag_include VALUES(?, ?)", giftCertificate, tag);
+    public boolean removeById(long id) {
+        return jdbcTemplate.update(REMOVE_TAG, id) > 0;
     }
 
     public Optional<Tag> findByName(String name) {
-        return jdbcTemplate.query("SELECT id FROM tag WHERE name=?", new BeanPropertyRowMapper<>(Tag.class), name).stream().findAny();
+        return jdbcTemplate.query(FIND_TAG_BY_NAME,
+                tagMapper, name).stream().findFirst();
     }
 
-    public List<Tag> readAllTagsByCertificateId(int giftCertificateId) {
-        return jdbcTemplate.query("SELECT id, name\n" +
-                        "FROM tag\n" +
-                        "   LEFT JOIN gift_certificate_tag_include gcti on tag.id = gcti.tag\n" +
-                        "WHERE gcti.giftCertificate = ?",
-                new BeanPropertyRowMapper<>(Tag.class), giftCertificateId);
+    @Override
+    public List<Tag> findByCertificateId(long giftCertificateId) {
+        return jdbcTemplate.query(FIND_ALL_TAG_BY_CERTIFICATE_ID,
+                tagMapper, giftCertificateId);
     }
 }

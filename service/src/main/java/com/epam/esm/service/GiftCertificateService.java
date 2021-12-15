@@ -1,18 +1,29 @@
 package com.epam.esm.service;
 
-import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.dto.GiftCertificateDto;
+import com.epam.esm.dto.GiftCertificateQueryParameterDto;
 
 import java.util.List;
 
-public interface GiftCertificateService {
+/**
+ * The Interface GiftCertificateService.
+ * A interface to define all required methods for gift certificate DTO object.
+ */
+public interface GiftCertificateService extends BaseService<GiftCertificateDto> {
 
-    GiftCertificate create(GiftCertificate giftCertificate);
+    /**
+     * Update gift certificate DTO object.
+     *
+     * @param giftCertificate the gift certificate DTO object
+     * @return the gift certificate DTO object
+     */
+    GiftCertificateDto update(GiftCertificateDto giftCertificate);
 
-    GiftCertificate read(int id);
-
-    List<GiftCertificate> readAll();
-
-    GiftCertificate update(int id, GiftCertificate giftCertificate);
-
-    boolean delete(int id);
+    /**
+     * Find gift certificate DTO object request by parameters.
+     *
+     * @param requestParameter the request parameters
+     * @return the list of gift certificate DTO object
+     */
+    List<GiftCertificateDto> findByParameters(GiftCertificateQueryParameterDto requestParameter);
 }

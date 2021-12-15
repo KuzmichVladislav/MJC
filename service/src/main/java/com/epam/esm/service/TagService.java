@@ -1,16 +1,29 @@
 package com.epam.esm.service;
 
-import com.epam.esm.entity.Tag;
+import com.epam.esm.dto.TagDto;
 
 import java.util.List;
+import java.util.Optional;
 
-public interface TagService {
+/**
+ * The Interface TagService.
+ * A interface to define all required methods for tag DTO object.
+ */
+public interface TagService extends BaseService<TagDto> {
 
-    Tag create(Tag tag);
+    /**
+     * Find tag DTO object by certificate id.
+     *
+     * @param giftCertificateId the gift certificate id
+     * @return the list of tag DTO objects
+     */
+    List<TagDto> findByCertificateId(long giftCertificateId);
 
-    Tag read(int id);
-
-    List<Tag> readAll();
-
-    boolean delete(int id);
+    /**
+     * Find tag DTO object by name.
+     *
+     * @param name the name of tag DTO object
+     * @return the optional of tag DTO object
+     */
+    Optional<TagDto> findByName(String name);
 }

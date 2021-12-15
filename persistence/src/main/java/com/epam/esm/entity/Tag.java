@@ -1,17 +1,18 @@
 package com.epam.esm.entity;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
+/**
+ * Entity Class Tag for tag entity
+ */
 @Data
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
-@AllArgsConstructor(access = AccessLevel.PUBLIC)
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Tag {
-    int id;
-    String name;
-    List<GiftCertificate> giftCertificateList;
+    private long id;
+    private String name;
 }
