@@ -30,15 +30,10 @@ import java.util.stream.Collectors;
 public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     private final GiftCertificateDao giftCertificateDao;
-
     private final TagService tagService;
-
     private final ModelMapper modelMapper;
-
     private final ListConverter listConverter;
-
     private final GiftCertificateRequestValidator giftCertificateRequestValidator;
-
     private final TagRequestValidator tagRequestValidator;
 
     @Autowired

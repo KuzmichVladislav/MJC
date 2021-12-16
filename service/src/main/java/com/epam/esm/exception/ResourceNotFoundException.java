@@ -6,6 +6,7 @@ package com.epam.esm.exception;
  * Serves to receive localized messages about not found resource
  */
 public class ResourceNotFoundException extends RuntimeException {
+
     private String messageKey;
     private String messageParameter;
 

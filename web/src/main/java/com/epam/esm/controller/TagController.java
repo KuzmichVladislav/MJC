@@ -4,7 +4,6 @@ import com.epam.esm.dto.TagDto;
 import com.epam.esm.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,7 +13,7 @@ import java.util.List;
  * all end points for tag which is includes POST, GET, DELETE.
  */
 @RestController
-@RequestMapping("/tags")
+@RequestMapping("/v1/tags")
 public class TagController {
 
     private final TagService tagService;
@@ -34,7 +33,7 @@ public class TagController {
      *
      * @return the all tags
      */
-    @GetMapping(consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping
     public List<TagDto> getAllTags() {
         return tagService.findAll();
     }
@@ -45,7 +44,7 @@ public class TagController {
      * @param tagDto the tag dto
      * @return the tag dto
      */
-    @PostMapping(consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public TagDto addTag(@RequestBody TagDto tagDto) {
         return tagService.add(tagDto);
@@ -57,7 +56,7 @@ public class TagController {
      * @param id the tag identifier
      * @return the tag
      */
-    @GetMapping(value = "/{id}", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping("/{id}")
     public TagDto getTagById(@PathVariable("id") long id) {
         return tagService.findById(id);
     }

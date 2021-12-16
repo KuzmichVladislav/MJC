@@ -5,7 +5,6 @@ import com.epam.esm.dto.GiftCertificateQueryParameterDto;
 import com.epam.esm.service.GiftCertificateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,7 +15,7 @@ import java.util.Optional;
  * all end points for gift certificate which is includes POST, GET, UPDATE, DELETE.
  */
 @RestController
-@RequestMapping("/gift-certificates")
+@RequestMapping("/v1/gift-certificates")
 public class GiftCertificateController {
 
     private final GiftCertificateService giftCertificateService;
@@ -37,7 +36,7 @@ public class GiftCertificateController {
      * @param giftCertificateDto the gift certificate DTO object
      * @return the gift certificate DTO object
      */
-    @PostMapping(consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public GiftCertificateDto addGiftCertificate(@RequestBody GiftCertificateDto giftCertificateDto) {
         return giftCertificateService.add(giftCertificateDto);
@@ -53,7 +52,7 @@ public class GiftCertificateController {
      * @param sortOrder   the sort order parameter
      * @return all gift certificates
      */
-    @GetMapping(consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping
     public List<GiftCertificateDto> getAllGiftCertificates
     (@RequestParam(value = "name", required = false) Optional<String> name,
      @RequestParam(value = "description", required = false) Optional<String> description,
@@ -76,7 +75,7 @@ public class GiftCertificateController {
      * @param id the gift certificate identifier
      * @return the gift certificate
      */
-    @GetMapping(value = "/{id}", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping("/{id}")
     public GiftCertificateDto getGiftCertificate(@PathVariable("id") long id) {
         return giftCertificateService.findById(id);
     }
@@ -87,7 +86,7 @@ public class GiftCertificateController {
      * @param giftCertificateDto the gift certificate DTO object
      * @return the gift certificate DTO object
      */
-    @PatchMapping(consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PatchMapping
     public GiftCertificateDto updateGiftCertificate(@RequestBody GiftCertificateDto giftCertificateDto) {
         return giftCertificateService.update(giftCertificateDto);
     }

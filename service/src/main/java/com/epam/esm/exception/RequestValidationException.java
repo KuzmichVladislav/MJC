@@ -6,6 +6,7 @@ package com.epam.esm.exception;
  * Serves to receive localized messages about request parameters validation errors.
  */
 public class RequestValidationException extends RuntimeException {
+
     private String messageKey;
     private String messageParameter;
 

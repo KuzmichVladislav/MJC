@@ -14,6 +14,7 @@ import java.util.List;
  */
 @Component
 public class TagRequestValidator {
+
     private static final String NAME_REGEX = "^[\\w_]{3,16}$";
 
     /**

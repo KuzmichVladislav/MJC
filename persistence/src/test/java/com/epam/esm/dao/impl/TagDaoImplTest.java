@@ -11,6 +11,9 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
+import java.util.List;
+import java.util.Optional;
+
 class TagDaoImplTest {
 
     private EmbeddedDatabase embeddedDatabase;
@@ -28,45 +31,98 @@ class TagDaoImplTest {
     }
 
     @Test
-    void testAdd() {
-        Tag result = tagDaoImpl.add(Tag.builder().name("result").build());
+    void testAdd_AllFieldsArePopulated_SavesDataToDatabase() {
+        // Given
+        Tag tag = Tag.builder().name("result").build();
+        // When
+        Tag result = tagDaoImpl.add(tag);
+        // Then
         Assertions.assertNotNull(result);
         Assertions.assertEquals("result", result.getName());
     }
 
     @Test
-    void testFindById() {
+    void testFindById_IdExists_ReadsDataFromDatabase() {
+        // Given
+        // When
         Tag result = tagDaoImpl.findById(1L).get();
+        // Then
         Assertions.assertEquals(new Tag(1L, "name1"), result);
         Assertions.assertFalse(tagDaoImpl.findById(999999999L).isPresent());
         Assertions.assertTrue(tagDaoImpl.findById(1L).isPresent());
     }
 
     @Test
-    void testFindAll() {
-        Assertions.assertNotNull(tagDaoImpl.findAll());
-        Assertions.assertEquals(20, tagDaoImpl.findAll().size());
+    void testFindById_IdDoesNotExist_False() {
+        // Given
+        // When
+        Optional<Tag> result = tagDaoImpl.findById(999999999L);
+        // Then
+        Assertions.assertFalse(result.isPresent());
     }
 
     @Test
-    void testRemoveById() {
+    void testFindAll_DatabaseExists_ReadsDataFromDatabase() {
+        // Given
+        // When
+        List<Tag> result = tagDaoImpl.findAll();
+        // Then
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(20, result.size());
+    }
+
+    @Test
+    void testRemoveById_IdExists_RemovesDataFromDatabase() {
+        // Given
+        // When
+        // Then
         Assertions.assertTrue(tagDaoImpl.removeById(1L));
+    }
+
+    @Test
+    void testRemoveById_IdDoesNotExist_False() {
+        // Given
+        // When
+        // Then
         Assertions.assertFalse(tagDaoImpl.removeById(-1L));
     }
 
     @Test
-    void testFindByName() {
-        Tag result = tagDaoImpl.findByName("name1").get();
-        Assertions.assertEquals(new Tag(1L, "name1"), result);
-        Assertions.assertTrue(tagDaoImpl.findByName("nonexistent").isEmpty());
-        Assertions.assertTrue(tagDaoImpl.findByName("name1").isPresent());
+    void testFindByName_NameExists_ReadsDataFromDatabase() {
+        // Given
+        // When
+        Optional<Tag> result = tagDaoImpl.findByName("name1");
+        // Then
+        Assertions.assertTrue(result.isPresent());
+        Assertions.assertEquals(new Tag(1L, "name1"), result.get());
     }
 
     @Test
-    void testFindByCertificateId() {
-        Assertions.assertFalse(tagDaoImpl.findByCertificateId(1L).isEmpty());
-        Assertions.assertTrue(tagDaoImpl.findByCertificateId(999999L).isEmpty());
-        Assertions.assertEquals(4, tagDaoImpl.findByCertificateId(1L).size());
+    void testFindByName_NameDoesNotExist_False() {
+        // Given
+        // When
+        Optional<Tag> result = tagDaoImpl.findByName("nonexistent");
+        // Then
+        Assertions.assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void testFindByCertificateId_IdExists_ReadsDataFromDatabase() {
+        // Given
+        // When
+        List<Tag> result = tagDaoImpl.findByCertificateId(1L);
+        // Then
+        Assertions.assertFalse(result.isEmpty());
+        Assertions.assertEquals(4, result.size());
+    }
+
+    @Test
+    void testFindByCertificateId_IdDoesNotExist_False() {
+        // Given
+        // When
+        List<Tag> result = tagDaoImpl.findByCertificateId(999999L);
+        // Then
+        Assertions.assertTrue(result.isEmpty());
     }
 
     @AfterEach

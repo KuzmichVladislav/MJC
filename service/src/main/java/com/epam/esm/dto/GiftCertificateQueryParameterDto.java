@@ -16,6 +16,7 @@ import java.util.Optional;
 @AllArgsConstructor
 @Builder
 public class GiftCertificateQueryParameterDto {
+
     private Optional<String> name;
     private Optional<String> description;
     private Optional<String> tagName;

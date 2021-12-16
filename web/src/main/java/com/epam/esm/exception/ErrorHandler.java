@@ -35,9 +35,7 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
     public ExceptionResult handle(ResourceNotFoundException e, Locale locale) {
-        String errorMessage = createMessage(
-                messageSource.getMessage(e.getMessageKey(), new Object[]{}, locale),
-                e.getMessageParameter());
+        String errorMessage = createMessage(locale, e.getMessageKey(), e.getMessageParameter());
         return new ExceptionResult(errorMessage, ErrorCode.RESOURCE_NOT_FOUND.getCode());
     }
 
@@ -52,9 +50,7 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public ExceptionResult handle(RequestValidationException e, Locale locale) {
-        String errorMessage = createMessage(
-                messageSource.getMessage(e.getMessageKey(), new Object[]{}, locale),
-                e.getMessageParameter());
+        String errorMessage = createMessage(locale, e.getMessageKey(), e.getMessageParameter());
         return new ExceptionResult(errorMessage, ErrorCode.NOT_VALID_PARAM.getCode());
     }
 
@@ -114,7 +110,8 @@ public class ErrorHandler {
         return new ExceptionResult(e.getMessage(), ErrorCode.UNSUPPORTED_MEDIA_TYPE.getCode());
     }
 
-    private String createMessage(String message, String parameter) {
-        return String.format(message, parameter);
+    private String createMessage(Locale locale, String messageKey, String messageParameter) {
+        return String.format(messageSource.getMessage(messageKey, new Object[]{}, locale),
+                messageParameter);
     }
 }

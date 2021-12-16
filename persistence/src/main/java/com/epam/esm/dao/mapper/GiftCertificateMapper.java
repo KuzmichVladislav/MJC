@@ -17,16 +17,15 @@ import java.sql.SQLException;
 public class GiftCertificateMapper implements RowMapper<GiftCertificate> {
 
     @Override
-    public GiftCertificate mapRow(ResultSet rs, int rowNum) throws SQLException {
-        new GiftCertificate();
+    public GiftCertificate mapRow(ResultSet resultSet, int rowNumber) throws SQLException {
         return GiftCertificate.builder()
-                .id(rs.getLong("id"))
-                .name(rs.getString("name"))
-                .description(rs.getString("description"))
-                .price(rs.getBigDecimal("price"))
-                .duration(rs.getInt("duration"))
-                .createDate(rs.getTimestamp("create_date").toLocalDateTime())
-                .lastUpdateDate(rs.getTimestamp("last_update_date").toLocalDateTime())
+                .id(resultSet.getLong("id"))
+                .name(resultSet.getString("name"))
+                .description(resultSet.getString("description"))
+                .price(resultSet.getBigDecimal("price"))
+                .duration(resultSet.getInt("duration"))
+                .createDate(resultSet.getTimestamp("create_date").toLocalDateTime())
+                .lastUpdateDate(resultSet.getTimestamp("last_update_date").toLocalDateTime())
                 .build();
     }
 }

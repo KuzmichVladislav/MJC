@@ -85,7 +85,7 @@ class GiftCertificateServiceImplTest {
     }
 
     @Test
-    void testAdd() {
+    void teatAdd_AllFieldsAreValid_CreatesGiftCertificate() {
         when(giftCertificateDao.add(any())).thenReturn(giftCertificate);
         when(tagService.findByName("name")).thenReturn(Optional.ofNullable(tagDto));
         when(tagService.add(any())).thenReturn(tagDto);
@@ -95,7 +95,7 @@ class GiftCertificateServiceImplTest {
 
     @ParameterizedTest
     @ValueSource(strings = {">name", "<name", "~name", "ab", "Name with space", "NameMoreThen16Char"})
-    void testAddExceptionName(String name) {
+    void testAdd_InvalidName_ExceptionThrown(String name) {
         Assertions.assertThrows(RequestValidationException.class,
                 () -> giftCertificateService.add(GiftCertificateDto.builder().name(name).build()));
     }
@@ -108,7 +108,7 @@ class GiftCertificateServiceImplTest {
             "more then 250 characters more then 250 characters more then 250 characters more then 250 characters " +
             "more then 250 characters more then 250 characters more then 250 characters more then 250 characters " +
             "more then 250 characters more then 250 characters more then 250 characters more then 250 characters"})
-    void testAddExceptionDescription(String description) {
+    void testAdd_InvalidDescription_ExceptionThrown(String description) {
         Assertions.assertThrows(RequestValidationException.class,
                 () -> giftCertificateService.add(GiftCertificateDto.builder()
                         .name("name")
@@ -118,7 +118,7 @@ class GiftCertificateServiceImplTest {
 
     @ParameterizedTest
     @ValueSource(ints = {-500, -1, 1_000_001, 2_000_000})
-    void testAddExceptionPrice(int price) {
+    void testAdd_InvalidPrice_ExceptionThrown(int price) {
         Assertions.assertThrows(RequestValidationException.class,
                 () -> giftCertificateService.add(GiftCertificateDto.builder()
                         .name("name")
@@ -129,7 +129,7 @@ class GiftCertificateServiceImplTest {
 
     @ParameterizedTest
     @ValueSource(ints = {-500, -1, 0, 367, 500})
-    void testAddExceptionDuration(int duration) {
+    void testAdd_InvalidDuration_ExceptionThrown(int duration) {
         Assertions.assertThrows(RequestValidationException.class,
                 () -> giftCertificateService.add(GiftCertificateDto.builder()
                         .name("name")
@@ -140,42 +140,57 @@ class GiftCertificateServiceImplTest {
     }
 
     @Test
-    void testFindById() {
+    void testFindById_ValidId_findsGiftCertificate() {
+        // Given
         when(giftCertificateDao.findById(1L)).thenReturn(Optional.ofNullable(giftCertificate));
         when(tagService.findByCertificateId(1L)).thenReturn(Collections.singletonList(tagDto));
+        // When
         GiftCertificateDto result = giftCertificateService.findById(1L);
+        // Then
         Assertions.assertEquals(giftCertificateDto, result);
     }
 
     @Test
-    void testFindByIdException() {
+    void testFindById_InvalidId_ExceptionThrown() {
+        // Given
+        // When
+        // Then
         Assertions.assertThrows(RequestValidationException.class,
                 () -> giftCertificateService.findById(-10L));
     }
 
     @Test
-    void testFindAll() {
+    void testFindAll_GiftCertificatesExist_findsGiftCertificates() {
+        // Given
         when(giftCertificateDao.findAll()).thenReturn(Collections.singletonList(giftCertificate));
         when(tagService.findByCertificateId(1L)).thenReturn(Collections.singletonList(tagDto));
+        // When
         List<GiftCertificateDto> result = giftCertificateService.findAll();
+        // Then
         Assertions.assertEquals(Collections.singletonList(giftCertificateDto), result);
     }
 
 
     @Test
-    void testUpdate() {
+    void testUpdate_AllFieldsAreValid_CreatesGiftCertificate() {
+        // Given
         when(giftCertificateDao.update(any())).thenReturn(giftCertificate);
         when(giftCertificateDao.findById(1L)).thenReturn(Optional.ofNullable(giftCertificate));
         when(tagService.findByCertificateId(1L)).thenReturn(Collections.singletonList(tagDto));
         when(tagService.findByName("name")).thenReturn(Optional.empty());
         when(tagService.add(tagDto)).thenReturn(tagDto);
+        // When
         GiftCertificateDto result = giftCertificateService.update(giftCertificateDto);
+        // Then
         Assertions.assertNotEquals(giftCertificateDto.getLastUpdateDate(), result.getLastUpdateDate());
     }
 
     @ParameterizedTest
     @ValueSource(strings = {">name", "<name", "~name", "ab", "Name with space", "NameMoreThen16Char"})
-    void testUpdateExceptionName(String name) {
+    void testUpdate_InvalidName_ExceptionThrown(String name) {
+        // Given
+        // When
+        // Then
         Assertions.assertThrows(RequestValidationException.class,
                 () -> giftCertificateService.update(GiftCertificateDto.builder().name(name).build()));
     }
@@ -188,14 +203,20 @@ class GiftCertificateServiceImplTest {
             "more then 250 characters more then 250 characters more then 250 characters more then 250 characters " +
             "more then 250 characters more then 250 characters more then 250 characters more then 250 characters " +
             "more then 250 characters more then 250 characters more then 250 characters more then 250 characters"})
-    void testUpdateExceptionDescription(String description) {
+    void testUpdate_InvalidDescription_ExceptionThrown(String description) {
+        // Given
+        // When
+        // Then
         Assertions.assertThrows(RequestValidationException.class,
                 () -> giftCertificateService.update(GiftCertificateDto.builder().name("name").description(description).build()));
     }
 
     @ParameterizedTest
     @ValueSource(ints = {-500, -1, 1_000_001, 2_000_000})
-    void testUpdateExceptionPrice(int price) {
+    void testUpdate_InvalidPrice_ExceptionThrown(int price) {
+        // Given
+        // When
+        // Then
         Assertions.assertThrows(RequestValidationException.class,
                 () -> giftCertificateService.update(GiftCertificateDto.builder()
                         .name("name")
@@ -206,7 +227,10 @@ class GiftCertificateServiceImplTest {
 
     @ParameterizedTest
     @ValueSource(ints = {-500, -1, 0, 367, 500})
-    void testUpdateExceptionDuration(int duration) {
+    void testUpdate_InvalidDuration_ExceptionThrown(int duration) {
+        // Given
+        // When
+        // Then
         Assertions.assertThrows(RequestValidationException.class,
                 () -> giftCertificateService.update(GiftCertificateDto.builder()
                         .name("name")
@@ -217,14 +241,20 @@ class GiftCertificateServiceImplTest {
     }
 
     @Test
-    void testRemoveById() {
+    void testRemoveById_ValidId_True() {
+        // Given
         when(giftCertificateDao.removeById(1L)).thenReturn(true);
+        // When
         boolean result = giftCertificateService.removeById(1L);
+        // Then
         Assertions.assertTrue(result);
     }
 
     @Test
-    void testRemoveByIdException() {
+    void testRemoveById_InvalidId_ExceptionThrown() {
+        // Given
+        // When
+        // Then
         Assertions.assertThrows(RequestValidationException.class,
                 () -> giftCertificateService.removeById(-10L));
     }

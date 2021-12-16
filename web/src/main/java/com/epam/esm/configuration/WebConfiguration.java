@@ -1,6 +1,5 @@
 package com.epam.esm.configuration;
 
-import com.epam.esm.exception.ExceptionResult;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -22,11 +21,6 @@ public class WebConfiguration implements WebMvcConfigurer {
     public void configureDefaultServletHandling(
             DefaultServletHandlerConfigurer configurer) {
         configurer.enable();
-    }
-
-    @Bean
-    public ExceptionResult getExceptionResult() {
-        return new ExceptionResult();
     }
 
     @Bean

@@ -13,6 +13,8 @@ import java.math.BigDecimal;
  */
 @Component
 public class GiftCertificateRequestValidator {
+
+    public static final int ZERO_VALUE = 0;
     private static final String NAME_REGEX = "^[\\w_]{3,16}$";
     private static final String DESCRIPTION_REGEX = "^[A-Za-z0-9\\s!@.?,&%'-]{0,250}$";
 
@@ -33,7 +35,7 @@ public class GiftCertificateRequestValidator {
      * @param name the name request
      */
     public void checkName(String name) {
-        if (!name.trim().matches(NAME_REGEX)) {
+        if (name != null && !name.trim().matches(NAME_REGEX)) {
             throw new RequestValidationException(ExceptionKey.CERTIFICATE_NAME_IS_NOT_VALID.getKey(), name);
         }
     }
@@ -44,7 +46,7 @@ public class GiftCertificateRequestValidator {
      * @param description the description request
      */
     public void checkDescription(String description) {
-        if (!description.matches(DESCRIPTION_REGEX)) {
+        if (description != null && !description.matches(DESCRIPTION_REGEX)) {
             throw new RequestValidationException(ExceptionKey.CERTIFICATE_DESCRIPTION_IS_NOT_VALID.getKey(), description);
         }
     }
@@ -54,8 +56,8 @@ public class GiftCertificateRequestValidator {
      *
      * @param duration the duration request
      */
-    public void checkDuration(int duration) {
-        if (duration < 1 || duration > 366) {
+    public void checkDuration(Integer duration) {
+        if (duration != null && (duration < 1 || duration > 366)) {
             throw new RequestValidationException(ExceptionKey.CERTIFICATE_DURATION_IS_NOT_VALID.getKey(),
                     String.valueOf(duration));
         }
@@ -67,12 +69,11 @@ public class GiftCertificateRequestValidator {
      * @param price the price request
      */
     public void checkPrice(BigDecimal price) {
-        if (price.compareTo(new BigDecimal(0)) < 0 || price.compareTo(new BigDecimal(1_000_000)) > 0) {
+        if (price != null && (price.compareTo(new BigDecimal(ZERO_VALUE)) < ZERO_VALUE || price.compareTo(new BigDecimal(1_000_000)) > ZERO_VALUE)) {
             throw new RequestValidationException(ExceptionKey.CERTIFICATE_PRICE_IS_NOT_VALID.getKey(),
                     String.valueOf(price));
         }
     }
-
 
     /**
      * Validate all request parameters for a gift certificate.
@@ -80,21 +81,9 @@ public class GiftCertificateRequestValidator {
      * @param giftCertificateDto the gift certificate DTO object
      */
     public void validateGiftCertificate(GiftCertificateDto giftCertificateDto) {
-        String name = giftCertificateDto.getName();
-        if (name != null) {
-            checkName(name);
-        }
-        String description = giftCertificateDto.getDescription();
-        if (description != null) {
-            checkDescription(description);
-        }
-        Integer duration = giftCertificateDto.getDuration();
-        if (duration != null) {
-            checkDuration(duration);
-        }
-        BigDecimal price = giftCertificateDto.getPrice();
-        if (price != null) {
-            checkPrice(price);
-        }
+        checkName(giftCertificateDto.getName());
+        checkDescription(giftCertificateDto.getDescription());
+        checkDuration(giftCertificateDto.getDuration());
+        checkPrice(giftCertificateDto.getPrice());
     }
 }

@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class ExceptionResult {
+
     private String errorMessage;
     private int errorCode;
 }

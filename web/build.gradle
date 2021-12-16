@@ -2,14 +2,6 @@ plugins {
     id 'war'
 }
 
-group 'com.epam'
-version '1.0-SNAPSHOT'
-
-repositories {
-    mavenCentral()
-}
-
-
 dependencies {
     implementation project(':service')
 
@@ -17,9 +9,4 @@ dependencies {
     implementation "org.springframework:spring-webmvc:$springVersion"
 
     compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
-
-}
-
-test {
-    useJUnitPlatform()
 }

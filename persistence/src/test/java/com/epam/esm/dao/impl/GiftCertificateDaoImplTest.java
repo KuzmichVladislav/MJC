@@ -18,6 +18,7 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 class GiftCertificateDaoImplTest {
@@ -38,24 +39,41 @@ class GiftCertificateDaoImplTest {
     }
 
     @Test
-    void testFindById() {
-        GiftCertificate result = giftCertificateDao.findById(1L).get();
-        Assertions.assertEquals("name1", result.getName());
-        Assertions.assertEquals("description1", result.getDescription());
-        Assertions.assertEquals(new BigDecimal("1.00"), result.getPrice());
-        Assertions.assertEquals(1, result.getDuration());
+    void testFindById_IdExists_ReadsDataFromDatabase() {
+        // Given
+        // When
+        Optional<GiftCertificate> giftCertificate = giftCertificateDao.findById(1L);
+        // Then
+        Assertions.assertTrue(giftCertificate.isPresent());
+        Assertions.assertEquals("name1", giftCertificate.get().getName());
+        Assertions.assertEquals("description1", giftCertificate.get().getDescription());
+        Assertions.assertEquals(new BigDecimal("1.00"), giftCertificate.get().getPrice());
+        Assertions.assertEquals(1, giftCertificate.get().getDuration());
         Assertions.assertFalse(giftCertificateDao.findById(999999999L).isPresent());
-        Assertions.assertTrue(giftCertificateDao.findById(1L).isPresent());
     }
 
     @Test
-    void testFindAll() {
-        Assertions.assertNotNull(giftCertificateDao.findAll());
-        Assertions.assertEquals(20, giftCertificateDao.findAll().size());
+    void testFindById_IdDoesNotExist_False() {
+        // Given
+        // When
+        Optional<GiftCertificate> giftCertificate = giftCertificateDao.findById(999999999L);
+        // Then
+        Assertions.assertFalse(giftCertificate.isPresent());
     }
 
     @Test
-    void testAdd() {
+    void testFindAll_DatabaseExists_ReadsDataFromDatabase() {
+        // Given
+        // When
+        List<GiftCertificate> giftCertificateList = giftCertificateDao.findAll();
+        // Then
+        Assertions.assertNotNull(giftCertificateList);
+        Assertions.assertEquals(20, giftCertificateList.size());
+    }
+
+    @Test
+    void testAdd_AllFieldsArePopulated_SavesDataToDatabase() {
+        // Given
         GiftCertificate giftCertificate = GiftCertificate.builder()
                 .name("result")
                 .description("result")
@@ -66,14 +84,17 @@ class GiftCertificateDaoImplTest {
                 .tags(Arrays.asList(new Tag(500L, "tag500"),
                         new Tag(500L, "tag500")))
                 .build();
+        // When
         GiftCertificate result = giftCertificateDao.add(giftCertificate);
+        // Then
         Assertions.assertNotNull(result);
         Assertions.assertEquals(2, result.getTags().size());
         Assertions.assertEquals("result", result.getName());
     }
 
     @Test
-    void testUpdate() {
+    void testUpdate_AllFieldsArePopulated_UpdatesDataInDatabase() {
+        // Given
         GiftCertificate giftCertificate = GiftCertificate.builder()
                 .id(1)
                 .description("result")
@@ -82,7 +103,9 @@ class GiftCertificateDaoImplTest {
                 .tags(Arrays.asList(new Tag(500, "tag500"),
                         new Tag(500, "tag500")))
                 .build();
+        // When
         GiftCertificate result = giftCertificateDao.update(giftCertificate);
+        // Then
         Assertions.assertNotNull(result);
         Assertions.assertEquals(1, result.getId());
         Assertions.assertEquals("result", result.getDescription());
@@ -91,20 +114,44 @@ class GiftCertificateDaoImplTest {
     }
 
     @Test
-    void testRemoveById() {
+    void testRemoveById_IdExists_RemovesDataFromDatabase() {
+        // Given
+        // When
+        // Then
         Assertions.assertTrue(giftCertificateDao.removeById(1L));
+    }
+
+    @Test
+    void testRemoveById_IdDoesNotExist_False() {
+        // Given
+        // When
+        // Then
         Assertions.assertFalse(giftCertificateDao.removeById(-1L));
     }
 
     @Test
-    void testFindAllCertificateByTagId() {
-        Assertions.assertNotNull(giftCertificateDao.findAllCertificateByTagId(1L));
-        Assertions.assertTrue(giftCertificateDao.findAllCertificateByTagId(999999999L).isEmpty());
-        Assertions.assertEquals(4, giftCertificateDao.findAllCertificateByTagId(1L).size());
+    void testFindAllCertificateByTagId_DatabaseExists_ReadsDataFromDatabase() {
+        // Given
+        // When
+        List<GiftCertificate> allCertificateByTagId = giftCertificateDao.findAllCertificateByTagId(1L);
+        // Then
+        Assertions.assertNotNull(allCertificateByTagId);
+        Assertions.assertEquals(4, allCertificateByTagId.size());
     }
 
     @Test
-    void testFindAllSorted() {
+    void testFindAllCertificateByTagId_DatabaseExists_EmptyList() {
+        // Given
+        // When
+        List<GiftCertificate> allCertificateByTagId = giftCertificateDao.findAllCertificateByTagId(999999999L);
+        // Then
+        Assertions.assertTrue(allCertificateByTagId.isEmpty());
+    }
+
+
+    @Test
+    void testFindAllSorted_DatabaseExists_ReadsDataFromDatabase() {
+        // Given
         GiftCertificateQueryParameter requestParam = GiftCertificateQueryParameter.builder()
                 .name(Optional.of("me1"))
                 .tagName(Optional.of("name1"))
@@ -112,7 +159,10 @@ class GiftCertificateDaoImplTest {
                 .sortType(Optional.empty())
                 .sortOrder(Optional.empty())
                 .build();
-        Assertions.assertEquals(3, giftCertificateDao.findByParameters(requestParam).size());
+        // When
+        List<GiftCertificate> GiftCertificateList = giftCertificateDao.findByParameters(requestParam);
+        // Then
+        Assertions.assertEquals(3, GiftCertificateList.size());
     }
 
     @AfterEach
