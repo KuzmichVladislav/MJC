@@ -87,7 +87,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     public GiftCertificateDto update(GiftCertificateDto giftCertificateDto) {
         long giftCertificateId = findById(giftCertificateDto.getId()).getId();
         giftCertificateRequestValidator.checkId(giftCertificateId);
-        giftCertificateRequestValidator.validateGiftCertificate(giftCertificateDto);
+        giftCertificateRequestValidator.validateGiftCertificateForUpdate(giftCertificateDto);
         tagRequestValidator.validateTags(giftCertificateDto);
         giftCertificateDto.setLastUpdateDate(LocalDateTime.now());
         giftCertificateDao.removeFromTableGiftCertificateTagInclude(giftCertificateId);

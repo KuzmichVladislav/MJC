@@ -85,7 +85,7 @@ class GiftCertificateServiceImplTest {
     }
 
     @Test
-    void teatAdd_AllFieldsAreValid_CreatesGiftCertificate() {
+    void testAdd_AllFieldsAreValid_CreatesGiftCertificate() {
         when(giftCertificateDao.add(any())).thenReturn(giftCertificate);
         when(tagService.findByName("name")).thenReturn(Optional.ofNullable(tagDto));
         when(tagService.add(any())).thenReturn(tagDto);
