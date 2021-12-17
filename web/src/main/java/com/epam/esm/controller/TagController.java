@@ -65,7 +65,6 @@ public class TagController {
      * Delete tag by tag identifier based on DELETE request.
      *
      * @param id the tag identifier
-     * @return no content
      */
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

@@ -83,19 +83,20 @@ public class GiftCertificateController {
     /**
      * Update gift certificate based on PATCH request.
      *
-     * @param giftCertificateDto the gift certificate DTO object
+     * @param id                 the gift certificate identifier
+     * @param giftCertificateDto giftCertificateDto the gift certificate DTO object
      * @return the gift certificate DTO object
      */
-    @PatchMapping
-    public GiftCertificateDto updateGiftCertificate(@RequestBody GiftCertificateDto giftCertificateDto) {
-        return giftCertificateService.update(giftCertificateDto);
+    @PatchMapping("/{id}")
+    public GiftCertificateDto updateGiftCertificate(@PathVariable("id") long id,
+                                                    @RequestBody GiftCertificateDto giftCertificateDto) {
+        return giftCertificateService.update(id, giftCertificateDto);
     }
 
     /**
      * Delete gift certificate by gift certificate identifier based on DELETE request.
      *
      * @param id the gift certificate identifier
-     * @return no content
      */
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

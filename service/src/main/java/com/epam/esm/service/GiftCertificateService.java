@@ -14,10 +14,11 @@ public interface GiftCertificateService extends BaseService<GiftCertificateDto> 
     /**
      * Update gift certificate DTO object.
      *
+     * @param id              the gift certificate identifier
      * @param giftCertificate the gift certificate DTO object
      * @return the gift certificate DTO object
      */
-    GiftCertificateDto update(GiftCertificateDto giftCertificate);
+    GiftCertificateDto update(long id, GiftCertificateDto giftCertificate);
 
     /**
      * Find gift certificate DTO object request by parameters.

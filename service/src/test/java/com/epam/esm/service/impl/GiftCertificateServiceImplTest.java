@@ -180,7 +180,7 @@ class GiftCertificateServiceImplTest {
         when(tagService.findByName("name")).thenReturn(Optional.empty());
         when(tagService.add(tagDto)).thenReturn(tagDto);
         // When
-        GiftCertificateDto result = giftCertificateService.update(giftCertificateDto);
+        GiftCertificateDto result = giftCertificateService.update(1L, giftCertificateDto);
         // Then
         Assertions.assertNotEquals(giftCertificateDto.getLastUpdateDate(), result.getLastUpdateDate());
     }
@@ -192,7 +192,7 @@ class GiftCertificateServiceImplTest {
         // When
         // Then
         Assertions.assertThrows(RequestValidationException.class,
-                () -> giftCertificateService.update(GiftCertificateDto.builder().name(name).build()));
+                () -> giftCertificateService.update(1L, GiftCertificateDto.builder().name(name).build()));
     }
 
     @ParameterizedTest
@@ -208,7 +208,7 @@ class GiftCertificateServiceImplTest {
         // When
         // Then
         Assertions.assertThrows(RequestValidationException.class,
-                () -> giftCertificateService.update(GiftCertificateDto.builder().name("name").description(description).build()));
+                () -> giftCertificateService.update(1L, GiftCertificateDto.builder().name("name").description(description).build()));
     }
 
     @ParameterizedTest
@@ -218,7 +218,7 @@ class GiftCertificateServiceImplTest {
         // When
         // Then
         Assertions.assertThrows(RequestValidationException.class,
-                () -> giftCertificateService.update(GiftCertificateDto.builder()
+                () -> giftCertificateService.update(1L, GiftCertificateDto.builder()
                         .name("name")
                         .description("description")
                         .price(new BigDecimal(price))
@@ -232,7 +232,7 @@ class GiftCertificateServiceImplTest {
         // When
         // Then
         Assertions.assertThrows(RequestValidationException.class,
-                () -> giftCertificateService.update(GiftCertificateDto.builder()
+                () -> giftCertificateService.update(1L, GiftCertificateDto.builder()
                         .name("name")
                         .price(new BigDecimal(1))
                         .description("description")

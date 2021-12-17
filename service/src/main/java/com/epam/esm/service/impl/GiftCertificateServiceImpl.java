@@ -84,19 +84,19 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     @Transactional
-    public GiftCertificateDto update(GiftCertificateDto giftCertificateDto) {
-        long giftCertificateId = findById(giftCertificateDto.getId()).getId();
-        giftCertificateRequestValidator.checkId(giftCertificateId);
+    public GiftCertificateDto update(long id, GiftCertificateDto giftCertificateDto) {
+        giftCertificateRequestValidator.checkId(id);
         giftCertificateRequestValidator.validateGiftCertificateForUpdate(giftCertificateDto);
         tagRequestValidator.validateTags(giftCertificateDto);
+        giftCertificateDto.setId(id);
         giftCertificateDto.setLastUpdateDate(LocalDateTime.now());
-        giftCertificateDao.removeFromTableGiftCertificateTagInclude(giftCertificateId);
+        giftCertificateDao.removeFromTableGiftCertificateTagInclude(id);
         if (giftCertificateDto.getTags() != null) {
             findAndSetTags(giftCertificateDto);
             addToGiftCertificateTagInclude(giftCertificateDto);
         }
         giftCertificateDao.update(modelMapper.map(giftCertificateDto, GiftCertificate.class));
-        return findById(giftCertificateId);
+        return findById(id);
     }
 
     @Override
