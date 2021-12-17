@@ -69,7 +69,7 @@ public class TagController {
      */
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public boolean deleteTag(@PathVariable("id") long id) {
-        return tagService.removeById(id);
+    public void deleteTag(@PathVariable("id") long id) {
+        tagService.removeById(id);
     }
 }

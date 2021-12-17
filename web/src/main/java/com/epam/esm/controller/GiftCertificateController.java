@@ -99,7 +99,7 @@ public class GiftCertificateController {
      */
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public boolean deleteGiftCertificate(@PathVariable("id") long id) {
-        return giftCertificateService.removeById(id);
+    public void deleteGiftCertificate(@PathVariable("id") long id) {
+        giftCertificateService.removeById(id);
     }
 }
