@@ -1,0 +1,12 @@
+plugins {
+    id 'war'
+}
+
+dependencies {
+    implementation project(':service')
+
+    implementation "org.springframework:spring-web:$springVersion"
+    implementation "org.springframework:spring-webmvc:$springVersion"
+
+    compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
+}
