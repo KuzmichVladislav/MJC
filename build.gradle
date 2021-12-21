@@ -3,12 +3,13 @@ version '1.0-SNAPSHOT'
 
 subprojects {
     apply plugin: 'java'
+    apply plugin: 'idea'
 
     repositories {
         mavenCentral()
     }
 
-    ext{
+    ext {
         springVersion = '5.3.13'
         lombokVersion = '1.18.22'
         jacksonVersion = '2.13.0'

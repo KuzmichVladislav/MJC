@@ -15,6 +15,7 @@ import com.epam.esm.service.TagService;
 import com.epam.esm.util.ListConverter;
 import com.epam.esm.validator.GiftCertificateRequestValidator;
 import com.epam.esm.validator.TagRequestValidator;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,14 +30,15 @@ import java.util.stream.Collectors;
  * The Class GiftCertificateServiceImpl is the implementation of the {@link GiftCertificateService} interface.
  */
 @Service
+@NoArgsConstructor
 public class GiftCertificateServiceImpl implements GiftCertificateService {
 
-    private final GiftCertificateDao giftCertificateDao;
-    private final TagService tagService;
-    private final ModelMapper modelMapper;
-    private final ListConverter listConverter;
-    private final GiftCertificateRequestValidator giftCertificateRequestValidator;
-    private final TagRequestValidator tagRequestValidator;
+    private GiftCertificateDao giftCertificateDao;
+    private TagService tagService;
+    private ModelMapper modelMapper;
+    private ListConverter listConverter;
+    private GiftCertificateRequestValidator giftCertificateRequestValidator;
+    private TagRequestValidator tagRequestValidator;
 
     @Autowired
     public GiftCertificateServiceImpl(GiftCertificateDao giftCertificateDao,
