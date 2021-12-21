@@ -19,6 +19,7 @@ public enum ExceptionKey {
     TAG_NAME_IS_NOT_VALID("tag.name.isNotValid"),
     TAG_ID_IS_NOT_VALID("tag.id.isNotValid"),
     TAG_NOT_FOUND("tag.notFound"),
-    TAG_EXISTS("tag.exists");
+    TAG_EXISTS("tag.exists"),
+    USER_NOT_FOUND("user.notFound");
     private final String key;
 }
