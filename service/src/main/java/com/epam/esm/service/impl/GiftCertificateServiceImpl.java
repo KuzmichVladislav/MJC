@@ -8,12 +8,14 @@ import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.GiftCertificateQueryParameter;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.ExceptionKey;
+import com.epam.esm.exception.RequestValidationException;
 import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.TagService;
 import com.epam.esm.util.ListConverter;
 import com.epam.esm.validator.GiftCertificateRequestValidator;
 import com.epam.esm.validator.TagRequestValidator;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -68,10 +70,16 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public GiftCertificateDto findById(long id) {
-        giftCertificateRequestValidator.checkId(id);
+    public GiftCertificateDto findById(String id) {
+        long longId;
+            try {
+                longId = Long.parseLong(id);
+                giftCertificateRequestValidator.checkId(longId);
+            }catch (NumberFormatException e){
+                throw new RequestValidationException(ExceptionKey.CERTIFICATE_ID_IS_NOT_VALID.getKey(), String.valueOf(id));
+            }
         return convertToGiftCertificateDto(giftCertificateDao
-                .findById(id).orElseThrow(() ->
+                .findById(longId).orElseThrow(() ->
                         new ResourceNotFoundException(ExceptionKey.CERTIFICATE_NOT_FOUND.getKey(),
                                 String.valueOf(id))));
     }
@@ -84,13 +92,18 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     @Transactional
-    public GiftCertificateDto update(long id, GiftCertificateDto giftCertificateDto) {
-        giftCertificateRequestValidator.checkId(id);
-        giftCertificateRequestValidator.validateGiftCertificateForUpdate(giftCertificateDto);
+    public GiftCertificateDto update(String id, GiftCertificateDto giftCertificateDto) {
+        long longId;
+        try {
+            longId = Long.parseLong(id);
+            giftCertificateRequestValidator.checkId(longId);
+        }catch (NumberFormatException e){
+            throw new RequestValidationException(ExceptionKey.CERTIFICATE_ID_IS_NOT_VALID.getKey(), String.valueOf(id));
+        }        giftCertificateRequestValidator.validateGiftCertificateForUpdate(giftCertificateDto);
         tagRequestValidator.validateTags(giftCertificateDto);
-        giftCertificateDto.setId(id);
+        giftCertificateDto.setId(longId);
         giftCertificateDto.setLastUpdateDate(LocalDateTime.now());
-        giftCertificateDao.removeFromTableGiftCertificateTagInclude(id);
+        giftCertificateDao.removeFromTableGiftCertificateTagInclude(longId);
         if (giftCertificateDto.getTags() != null) {
             findAndSetTags(giftCertificateDto);
             addToGiftCertificateTagInclude(giftCertificateDto);

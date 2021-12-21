@@ -53,9 +53,15 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public TagDto findById(long id) {
-        tagRequestValidator.checkId(id);
-        return convertToTagDto(tagDao.findById(id).orElseThrow(() ->
+    public TagDto findById(String id) {
+        long longId;
+        try {
+            longId = Long.parseLong(id);
+            tagRequestValidator.checkId(longId);
+        }catch (NumberFormatException e){
+            throw new RequestValidationException(ExceptionKey.CERTIFICATE_ID_IS_NOT_VALID.getKey(), String.valueOf(id));
+        }
+        return convertToTagDto(tagDao.findById(longId).orElseThrow(() ->
                 new ResourceNotFoundException(ExceptionKey.TAG_NOT_FOUND.getKey(),
                         String.valueOf(id))));
     }

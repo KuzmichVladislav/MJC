@@ -76,7 +76,7 @@ class TagServiceImplTest {
         // Given
         when(tagDao.findById(anyLong())).thenReturn(Optional.ofNullable(tag));
         // When
-        TagDto result = tagService.findById(1L);
+        TagDto result = tagService.findById(String.valueOf(1L));
         // Then
         Assertions.assertEquals(tagDto, result);
     }

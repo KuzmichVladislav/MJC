@@ -5,6 +5,8 @@ import org.springframework.stereotype.Component;
 
 import java.text.MessageFormat;
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * The Class GiftCertificateQueryCreator for creating a query based on parameters obtained from request parameters.
@@ -22,6 +24,12 @@ public class GiftCertificateQueryCreator {
     private static final String ID = "id";
     private static final String WHERE = "WHERE ";
     private static final String AND = " AND ";
+    private static final String NAME = "name";
+    private static final String DURATION = "duration";
+    private static final String PRICE = "price";
+    private static final String LAST_UPDATE_DATE = "last_update_date";
+    private static final String CREATE_DATE = "create_date";
+    private static final String DESCRIPTION = "description";
 
     public String mapRequestParameters(GiftCertificateQueryParameter requestParameter) {
         StringBuilder builder = new StringBuilder();
@@ -50,8 +58,12 @@ public class GiftCertificateQueryCreator {
     }
 
     private String addSortTypeParameters(GiftCertificateQueryParameter requestParameter, String sortOrderParameter) {
-        return String.format(ORDER_BY, String.join(DELIMITER,
-                requestParameter.getSortType().orElse(Collections.singletonList(ID))), sortOrderParameter);
+        List<String> sortType = requestParameter.getSortType().orElse(Collections.singletonList(ID));
+        List<String> filterSortType = sortType.stream()
+                .filter(p -> p.equals(PRICE) || p.equals(ID) || p.equals(NAME) || p.equals(DURATION)
+                || p.equals(CREATE_DATE) || p.equals(LAST_UPDATE_DATE) || p.equals(DESCRIPTION))
+                .collect(Collectors.toList());
+        return String.format(ORDER_BY, String.join(DELIMITER, filterSortType.isEmpty() ? Collections.singletonList(ID) : filterSortType), sortOrderParameter);
     }
 
     private String addSortOrderParameter(GiftCertificateQueryParameter requestParameter) {

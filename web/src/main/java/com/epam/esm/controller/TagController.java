@@ -57,7 +57,7 @@ public class TagController {
      * @return the tag
      */
     @GetMapping("/{id}")
-    public TagDto getTagById(@PathVariable("id") long id) {
+    public TagDto getTagById(@PathVariable("id") String id) {
         return tagService.findById(id);
     }
 

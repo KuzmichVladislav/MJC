@@ -25,7 +25,7 @@ public interface BaseService<T> {
      * @param id the DTO object identifier
      * @return the DTO object
      */
-    T findById(long id);
+    T findById(String id);
 
     /**
      * Find all DTO objects.

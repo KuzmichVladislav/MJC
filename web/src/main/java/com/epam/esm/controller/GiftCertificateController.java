@@ -76,7 +76,7 @@ public class GiftCertificateController {
      * @return the gift certificate
      */
     @GetMapping("/{id}")
-    public GiftCertificateDto getGiftCertificate(@PathVariable("id") long id) {
+    public GiftCertificateDto getGiftCertificate(@PathVariable("id") String id) {
         return giftCertificateService.findById(id);
     }
 
@@ -88,7 +88,7 @@ public class GiftCertificateController {
      * @return the gift certificate DTO object
      */
     @PatchMapping("/{id}")
-    public GiftCertificateDto updateGiftCertificate(@PathVariable("id") long id,
+    public GiftCertificateDto updateGiftCertificate(@PathVariable("id") String id,
                                                     @RequestBody GiftCertificateDto giftCertificateDto) {
         return giftCertificateService.update(id, giftCertificateDto);
     }

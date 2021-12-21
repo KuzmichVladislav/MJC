@@ -2,7 +2,7 @@ package com.epam.esm.exception;
 
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.HttpMediaTypeNotAcceptableException;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -103,10 +103,10 @@ public class ErrorHandler {
      * @param locale the locale
      * @return the exception result
      */
-    @ExceptionHandler(HttpMediaTypeNotAcceptableException.class)
+    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
     @ResponseBody
-    public ExceptionResult handle(HttpMediaTypeNotAcceptableException e, Locale locale) {
+    public ExceptionResult handle(HttpMediaTypeNotSupportedException e, Locale locale) {
         return new ExceptionResult(e.getMessage(), ErrorCode.UNSUPPORTED_MEDIA_TYPE.getCode());
     }
 
