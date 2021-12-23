@@ -5,7 +5,7 @@ import com.epam.esm.entity.User;
 import java.util.List;
 import java.util.Optional;
 
-public interface UserDao {
+public interface UserDao {// FIXME: 12/22/2021 extends CrudRepository<User, Serializable> {
 
     Optional<User> findById(long id);
 

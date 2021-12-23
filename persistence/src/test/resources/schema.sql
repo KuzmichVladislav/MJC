@@ -46,4 +46,4 @@ create table gift_certificate_tag_include
 );
 
 create index tag_kf_idx
-    on gift_certificate_tag_include (tag);
+    on gift_certificate_tag_include (tag_id);

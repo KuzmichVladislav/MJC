@@ -16,13 +16,13 @@ import com.epam.esm.util.ListConverter;
 import com.epam.esm.validator.GiftCertificateRequestValidator;
 import com.epam.esm.validator.TagRequestValidator;
 import lombok.NoArgsConstructor;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -58,16 +58,12 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     @Transactional
     public GiftCertificateDto add(GiftCertificateDto giftCertificateDto) {
+        // TODO: 12/23/2021
         giftCertificateRequestValidator.validateGiftCertificate(giftCertificateDto);
         tagRequestValidator.validateTags(giftCertificateDto);
         giftCertificateDto.setCreateDate(LocalDateTime.now());
         giftCertificateDto.setLastUpdateDate(LocalDateTime.now());
-        giftCertificateDto.setId(giftCertificateDao
-                .add(convertToGiftCertificateEntity(giftCertificateDto)).getId());
-        if (giftCertificateDto.getTags() != null) {
-            findAndSetTags(giftCertificateDto);
-            addToGiftCertificateTagInclude(giftCertificateDto);
-        }
+        giftCertificateDao.add(convertToGiftCertificateEntity(giftCertificateDto));
         return giftCertificateDto;
     }
 
@@ -82,8 +78,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             }
         return convertToGiftCertificateDto(giftCertificateDao
                 .findById(longId).orElseThrow(() ->
-                        new ResourceNotFoundException(ExceptionKey.CERTIFICATE_NOT_FOUND.getKey(),
-                                String.valueOf(id))));
+                        new ResourceNotFoundException(ExceptionKey.CERTIFICATE_NOT_FOUND.getKey(), id)));
     }
 
     @Override
@@ -150,8 +145,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     private GiftCertificate convertToGiftCertificateEntity(GiftCertificateDto giftCertificateDto) {
         GiftCertificate giftCertificate = modelMapper.map(giftCertificateDto, GiftCertificate.class);
         if (giftCertificateDto.getTags() != null) {
-            giftCertificate.setTags(listConverter.convertList(giftCertificateDto.getTags(),
-                    tagDto -> modelMapper.map(tagDto, Tag.class)));
+            List<Tag> tags = listConverter.convertList(giftCertificateDto.getTags(),
+                    tagDto -> modelMapper.map(tagDto, Tag.class));
+            giftCertificate.setTags(new HashSet<>(tags));
         }
         return giftCertificate;
     }

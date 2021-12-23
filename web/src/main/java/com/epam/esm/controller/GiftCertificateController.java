@@ -39,6 +39,7 @@ public class GiftCertificateController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public GiftCertificateDto addGiftCertificate(@RequestBody GiftCertificateDto giftCertificateDto) {
+        System.out.println(giftCertificateDto);
         return giftCertificateService.add(giftCertificateDto);
     }
 

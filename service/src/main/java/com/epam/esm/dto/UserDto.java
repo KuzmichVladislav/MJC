@@ -5,8 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -14,7 +12,7 @@ import java.math.BigDecimal;
 public class UserDto {
 
     private long id;
+    private String login;
     private String firstName;
     private String lastName;
-    private BigDecimal money;
 }

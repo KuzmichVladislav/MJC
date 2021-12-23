@@ -1,4 +1,5 @@
 package com.epam.esm.dao;
 
-public interface OrderDao {
+public interface OrderDao extends BaseDao{
+
 }

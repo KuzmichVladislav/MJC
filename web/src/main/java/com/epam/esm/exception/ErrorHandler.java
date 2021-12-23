@@ -67,20 +67,20 @@ public class ErrorHandler {
     public ExceptionResult handle(NoHandlerFoundException e, Locale locale) {
         return new ExceptionResult(e.getMessage(), ErrorCode.HANDLER_NOT_FOUND.getCode());
     }
-
-    /**
-     * Handle RuntimeException.
-     *
-     * @param e      the exception
-     * @param locale the locale
-     * @return the exception result
-     */
-    @ExceptionHandler(RuntimeException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ResponseBody
-    public ExceptionResult handle(RuntimeException e, Locale locale) {
-        return new ExceptionResult(e.getMessage(), ErrorCode.INTERNAL_ERROR.getCode());
-    }
+// TODO: 12/23/2021  
+//    /**
+//     * Handle RuntimeException.
+//     *
+//     * @param e      the exception
+//     * @param locale the locale
+//     * @return the exception result
+//     */
+//    @ExceptionHandler(RuntimeException.class)
+//    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+//    @ResponseBody
+//    public ExceptionResult handle(RuntimeException e, Locale locale) {
+//        return new ExceptionResult(e.getMessage(), ErrorCode.INTERNAL_ERROR.getCode());
+//    }
 
     /**
      * Handle HttpRequestMethodNotSupportedException.

@@ -5,17 +5,28 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Entity
+@Table(name = "order")
 public class Order {
 
+    @Id
+    @GeneratedValue
     private long id;
+    @Column(name = "user_id")
     private long userId;
-    private long giftCertificateId;
-    private BigDecimal price;
-
+    @Column(name = "purchase_time")
+    private LocalDateTime purchaseTime;
+    @Transient
+    private BigDecimal totalCost;
+    @Transient
+    private List<GiftCertificate> giftCertificates;
 }

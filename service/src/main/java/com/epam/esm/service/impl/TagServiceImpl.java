@@ -12,6 +12,7 @@ import com.epam.esm.validator.TagRequestValidator;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -39,6 +40,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
+    @Transactional
     public TagDto add(TagDto tagDto) {
         String tagName = tagDto.getName();
         if (findByName(tagName).isEmpty()) {
@@ -62,8 +64,7 @@ public class TagServiceImpl implements TagService {
             throw new RequestValidationException(ExceptionKey.CERTIFICATE_ID_IS_NOT_VALID.getKey(), String.valueOf(id));
         }
         return convertToTagDto(tagDao.findById(longId).orElseThrow(() ->
-                new ResourceNotFoundException(ExceptionKey.TAG_NOT_FOUND.getKey(),
-                        String.valueOf(id))));
+                new ResourceNotFoundException(ExceptionKey.TAG_NOT_FOUND.getKey(), id)));
     }
 
     @Override

@@ -80,163 +80,163 @@ VALUES (19, 'name19', 'description19', 19.00, 19, '2021-12-06 13:03:35', '2021-1
 INSERT INTO gift_certificate (id, name, description, price, duration, create_date, last_update_date)
 VALUES (20, 'name20', 'description20', 20.00, 20, '2021-12-06 15:38:23', '2021-12-06 15:38:23');
 
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (1, 1);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (18, 1);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (19, 1);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (20, 1);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (1, 2);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (2, 2);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (19, 2);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (20, 2);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (1, 3);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (2, 3);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (3, 3);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (20, 3);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (1, 4);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (2, 4);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (3, 4);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (4, 4);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (2, 5);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (3, 5);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (4, 5);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (5, 5);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (3, 6);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (4, 6);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (5, 6);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (6, 6);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (4, 7);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (5, 7);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (6, 7);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (7, 7);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (5, 8);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (6, 8);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (7, 8);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (8, 8);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (6, 9);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (7, 9);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (8, 9);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (9, 9);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (7, 10);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (8, 10);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (9, 10);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (10, 10);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (8, 11);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (9, 11);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (10, 11);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (11, 11);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (9, 12);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (10, 12);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (11, 12);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (12, 12);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (10, 13);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (11, 13);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (12, 13);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (13, 13);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (11, 14);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (12, 14);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (13, 14);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (14, 14);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (12, 15);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (13, 15);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (14, 15);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (15, 15);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (13, 16);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (14, 16);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (15, 16);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (16, 16);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (14, 17);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (15, 17);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (16, 17);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (17, 17);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (15, 18);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (16, 18);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (17, 18);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (18, 18);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (16, 19);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (17, 19);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (18, 19);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (19, 19);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (17, 20);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (18, 20);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (19, 20);
-INSERT INTO gift_certificate_tag_include (gift_certificate, tag)
+INSERT INTO gift_certificate_tag_include (gift_certificate_id, tag_id)
 VALUES (20, 20);
