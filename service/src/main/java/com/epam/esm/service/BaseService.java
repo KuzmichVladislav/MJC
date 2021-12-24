@@ -40,5 +40,5 @@ public interface BaseService<T> {
      * @param id the the DTO object identifier
      * @return true, if successful
      */
-    boolean removeById(long id);
+    boolean removeById(String id);
 }

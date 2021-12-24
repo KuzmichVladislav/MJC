@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -15,7 +16,8 @@ public class OrderDto {
 
     private long id;
     private long userId;
-    private long giftCertificateId;
+    private LocalDateTime purchaseTime;
     private BigDecimal price;
+
 
 }

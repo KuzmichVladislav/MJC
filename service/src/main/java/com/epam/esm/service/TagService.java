@@ -11,13 +11,14 @@ import java.util.Optional;
  */
 public interface TagService extends BaseService<TagDto> {
 
-    /**
-     * Find tag DTO object by certificate id.
-     *
-     * @param giftCertificateId the gift certificate id
-     * @return the list of tag DTO objects
-     */
-    List<TagDto> findByCertificateId(long giftCertificateId);
+    // TODO: 12/24/2021  
+//    /**
+//     * Find tag DTO object by certificate id.
+//     *
+//     * @param giftCertificateId the gift certificate id
+//     * @return the list of tag DTO objects
+//     */
+//    List<TagDto> findByCertificateId(long giftCertificateId);
 
     /**
      * Find tag DTO object by name.

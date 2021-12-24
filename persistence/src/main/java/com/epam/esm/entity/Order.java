@@ -9,6 +9,7 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -25,8 +26,7 @@ public class Order {
     private long userId;
     @Column(name = "purchase_time")
     private LocalDateTime purchaseTime;
-    @Transient
-    private BigDecimal totalCost;
-    @Transient
-    private List<GiftCertificate> giftCertificates;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<OrderCertificates> orderCertificates;
 }

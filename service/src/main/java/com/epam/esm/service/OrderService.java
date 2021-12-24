@@ -1,5 +1,7 @@
 package com.epam.esm.service;
 
-public interface OrderService {
+import com.epam.esm.dto.OrderDto;
+
+public interface OrderService extends BaseService<OrderDto> {
 
 }

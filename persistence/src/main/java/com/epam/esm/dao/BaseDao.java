@@ -33,11 +33,16 @@ public interface BaseDao<T> {
      */
     List<T> findAll();
 
+    /*
+ TODO: 12/24/2021
     /**
      * Removes the by entity identifier.
      *
      * @param id the the entity identifier
      * @return true, if successful
-     */
+     * /
     boolean removeById(long id);
+*/
+
+    boolean remove(T t);
 }

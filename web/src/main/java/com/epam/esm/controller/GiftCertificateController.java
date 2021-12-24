@@ -1,14 +1,13 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.dto.GiftCertificateDto;
-import com.epam.esm.dto.GiftCertificateQueryParameterDto;
+import com.epam.esm.dto.TagDto;
 import com.epam.esm.service.GiftCertificateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * The Class GiftCertificateController is a Rest Controller class which will have
@@ -42,7 +41,8 @@ public class GiftCertificateController {
         System.out.println(giftCertificateDto);
         return giftCertificateService.add(giftCertificateDto);
     }
-
+/*
+ TODO: 12/24/2021
     /**
      * Get list of gift certificates based on GET request.
      *
@@ -52,7 +52,7 @@ public class GiftCertificateController {
      * @param sortType    the sort type parameter
      * @param sortOrder   the sort order parameter
      * @return all gift certificates
-     */
+     * /
     @GetMapping
     public List<GiftCertificateDto> getAllGiftCertificates
     (@RequestParam(value = "name", required = false) Optional<String> name,
@@ -68,6 +68,12 @@ public class GiftCertificateController {
                 .sortOrder(sortOrder)
                 .build();
         return giftCertificateService.findByParameters(queryParameterDto);
+    }
+*/
+
+    @GetMapping
+    public List<GiftCertificateDto> getAllTags() {
+        return giftCertificateService.findAll();
     }
 
     /**
@@ -101,7 +107,7 @@ public class GiftCertificateController {
      */
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteGiftCertificate(@PathVariable("id") long id) {
+    public void deleteGiftCertificate(@PathVariable("id") String id) {
         giftCertificateService.removeById(id);
     }
 }

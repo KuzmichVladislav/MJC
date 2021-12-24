@@ -1,5 +1,6 @@
 package com.epam.esm.dao;
 
-public interface OrderDao extends BaseDao{
+import com.epam.esm.entity.Order;
 
+public interface OrderDao extends BaseDao<Order> {
 }

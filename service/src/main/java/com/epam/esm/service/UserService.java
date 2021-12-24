@@ -1,12 +1,10 @@
 package com.epam.esm.service;
 
+import com.epam.esm.dto.TagDto;
 import com.epam.esm.dto.UserDto;
 
 import java.util.List;
 
-public interface UserService {
+public interface UserService extends BaseService<UserDto> {
 
-    UserDto findById(String id);
-
-    List<UserDto> findAll();
 }

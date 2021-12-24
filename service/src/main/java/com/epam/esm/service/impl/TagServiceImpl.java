@@ -73,19 +73,10 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public boolean removeById(long id) {
-        tagRequestValidator.checkId(id);
-        boolean isRemoved = tagDao.removeById(id);
-        if (!isRemoved) {
-            throw new ResourceNotFoundException(ExceptionKey.TAG_NOT_FOUND.getKey(), String.valueOf(id));
-        }
-        return isRemoved;
-    }
-
-    @Override
-    public List<TagDto> findByCertificateId(long giftCertificateId) {
-        return listConverter.convertList(tagDao.findByCertificateId(giftCertificateId),
-                this::convertToTagDto);
+    @Transactional
+    public boolean removeById(String id) {
+        TagDto byId = findById(id);
+        return tagDao.remove(modelMapper.map(byId, Tag.class));
     }
 
     @Override

@@ -16,37 +16,8 @@ import java.util.Optional;
 @Repository
 public class TagDaoImpl implements TagDao {
 
-//    private static final String ADD_TAG =
-//            "INSERT INTO tag (name)\n" +
-//                    "VALUES (?)";
-//    private static final String FIND_TAG =
-//            "SELECT id, name\n" +
-//                    "FROM tag\n" +
-//                    "WHERE id = ?";
-//    private static final String FIND_ALL_TAG =
-//            "SELECT id, name\n" +
-//                    "FROM tag";
-//    private static final String REMOVE_TAG =
-//            "DELETE\n" +
-//                    "FROM tag\n" +
-//                    "WHERE id = ?";
-//    private static final String FIND_TAG_BY_NAME =
-//            "SELECT id, name\n" +
-//                    "FROM tag\n" +
-//                    "WHERE name = ?";
-//    private static final String FIND_ALL_TAG_BY_CERTIFICATE_ID = "SELECT id, name\n" +
-//            "FROM tag\n" +
-//            "   LEFT JOIN gift_certificate_tag_include gcti on tag.id = gcti.tag_id\n" +
-//            "WHERE gcti.gift_certificate_id = ?";
-//
-//    private final JdbcTemplate jdbcTemplate;
-//    private final TagMapper tagMapper;
-//
-//    @Autowired
-//    public TagDaoImpl(JdbcTemplate jdbcTemplate, TagMapper tagMapper) {
-//        this.jdbcTemplate = jdbcTemplate;
-//        this.tagMapper = tagMapper;
-//    }
+    private static final String FIND_ALL_TAGS = "select t from Tag t";
+    private static final String FIND_TAG_BY_NAME = "select t from Tag t where t.name = ?1";
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -65,27 +36,25 @@ public class TagDaoImpl implements TagDao {
 
     @Override
     public List<Tag> findAll() {
-        return entityManager.createQuery("select t from Tag t", Tag.class)
+        return entityManager.createQuery(FIND_ALL_TAGS, Tag.class)
                 .getResultList();
     }
 
     @Override
-    public boolean removeById(long id) {
-//        return jdbcTemplate.update(REMOVE_TAG, id) > 0;
-        return false;
+    @Transactional
+    public boolean remove(Tag tag) {
+        if (entityManager.contains(tag)) {
+            entityManager.remove(tag);
+        } else {
+            entityManager.remove(entityManager.merge(tag));
+        }
+        return tag != null;
     }
 
     @Override
     public Optional<Tag> findByName(String name) {
-        return entityManager.createQuery("select t from Tag t where t.name = ?1 ", Tag.class)
+        return entityManager.createQuery(FIND_TAG_BY_NAME, Tag.class)
                 .setParameter(1, name).getResultList()
                 .stream().findFirst();
-    }
-
-    @Override
-    public List<Tag> findByCertificateId(long giftCertificateId) {
-//        return jdbcTemplate.query(FIND_ALL_TAG_BY_CERTIFICATE_ID,
-//                tagMapper, giftCertificateId);
-        return null;
     }
 }

@@ -26,6 +26,4 @@ public class Tag {
     private long id;
     @Column(name = "name", unique = true)
     private String name;
-    @ManyToMany(mappedBy = "tags", cascade = {CascadeType.ALL})
-    private Set<GiftCertificate> giftCertificates = new HashSet<>();
 }

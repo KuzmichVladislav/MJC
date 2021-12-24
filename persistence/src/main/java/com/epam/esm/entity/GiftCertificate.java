@@ -4,12 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -38,13 +37,14 @@ public class GiftCertificate {
     private LocalDateTime createDate;
     @Column(name = "last_update_date")
     private LocalDateTime lastUpdateDate;
-    @Column(name = "is_active")
-    private boolean isActive;
-
-
-    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+    @Column(name = "removed")
+    private boolean isRemoved;
+    @ManyToMany
     @JoinTable(name = "gift_certificate_tag_include",
-            joinColumns = {@JoinColumn(name = "gift_certificate_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "tag_id", referencedColumnName = "id")})
-    private Set<Tag> tags = new HashSet<>();
+            joinColumns = @JoinColumn(name = "gift_certificate_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id"))
+    private List<Tag> tags;
+
+    @OneToMany(mappedBy = "giftCertificate", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<OrderCertificates> orderCertificates;
 }
