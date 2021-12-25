@@ -1,14 +1,14 @@
 package com.epam.esm.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode(exclude = {"order", "giftCertificate"})
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -17,8 +17,12 @@ import java.math.BigDecimal;
 public class OrderCertificates {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+//    @Column(name = "order_id")
+//    private long orderId;
+//    @Column(name = "gift_certificate_id")
+//    private long giftCertificateId;
     @Column(name = "gift_certificate_cost")
     private BigDecimal giftCertificateCost;
     @Column(name = "number_of_certificates")

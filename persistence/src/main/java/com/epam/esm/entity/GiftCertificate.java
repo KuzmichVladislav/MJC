@@ -1,9 +1,6 @@
 package com.epam.esm.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -14,7 +11,9 @@ import java.util.Set;
 /**
  * Entity Class GiftCertificate for gift certificate entity
  */
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode(exclude = {"tags", "orderCertificates"})
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -45,6 +44,11 @@ public class GiftCertificate {
             inverseJoinColumns = @JoinColumn(name = "tag_id"))
     private List<Tag> tags;
 
-    @OneToMany(mappedBy = "giftCertificate", cascade = CascadeType.ALL, orphanRemoval = true)
+
+    @OneToMany(mappedBy = "giftCertificate")
+//    @ManyToMany
+//    @JoinTable(name = "order_certificates",
+//            joinColumns = @JoinColumn(name = "gift_certificate_id"),
+//            inverseJoinColumns = @JoinColumn(name = "order_id"))
     private Set<OrderCertificates> orderCertificates;
 }

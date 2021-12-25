@@ -1,8 +1,8 @@
 package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.OrderDao;
-import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Order;
+import com.epam.esm.entity.OrderCertificates;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,8 +18,10 @@ public class OrderDaoImpl implements OrderDao {
     private EntityManager entityManager;
 
     @Override
+    @Transactional
     public Order add(Order order) {
-        return null;
+        entityManager.persist(order);
+        return order;
     }
 
     @Override
@@ -37,5 +39,12 @@ public class OrderDaoImpl implements OrderDao {
     @Override
     public boolean remove(Order order) {
         return false;
+    }
+
+    @Override
+    @Transactional
+    public void addGiftCertificateToOrder(OrderCertificates orderCertificates) {
+        System.out.println(orderCertificates.toString());
+        entityManager.persist(orderCertificates);
     }
 }

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -17,7 +18,17 @@ public class OrderDto {
     private long id;
     private long userId;
     private LocalDateTime purchaseTime;
-    private BigDecimal price;
+    //    private Map<Map<GiftCertificateDto, BigDecimal>, Integer> giftCertificateDetails;
+    private List<OrderCertificateDetails> orderCertificateDetails;
+    private BigDecimal totalCost;
 
-
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class OrderCertificateDetails {
+        long giftCertificateId;
+        BigDecimal price;
+        int numberOfCertificates;
+    }
 }
