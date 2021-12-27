@@ -19,10 +19,6 @@ public class OrderCertificates {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-//    @Column(name = "order_id")
-//    private long orderId;
-//    @Column(name = "gift_certificate_id")
-//    private long giftCertificateId;
     @Column(name = "gift_certificate_cost")
     private BigDecimal giftCertificateCost;
     @Column(name = "number_of_certificates")

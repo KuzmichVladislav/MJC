@@ -3,9 +3,11 @@ package com.epam.esm.service.impl;
 import com.epam.esm.dao.OrderDao;
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.OrderDto;
+import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Order;
 import com.epam.esm.entity.OrderCertificates;
+import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.ExceptionKey;
 import com.epam.esm.exception.RequestValidationException;
 import com.epam.esm.exception.ResourceNotFoundException;
@@ -19,8 +21,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -48,23 +52,25 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public OrderDto add(OrderDto orderDto) {
-        Order order = modelMapper.map(orderDto, Order.class);
-        order.setPurchaseTime(LocalDateTime.now());
-        OrderDto orderDto1 = modelMapper.map(orderDao.add(order), OrderDto.class);
+        orderDto.setPurchaseTime(LocalDateTime.now());
+        Order order = orderDao.add(modelMapper.map(orderDto, Order.class));
         List<GiftCertificateDto> giftCertificates = orderDto.getOrderCertificateDetails().stream()
                 .map(t -> giftCertificateService.findById(String.valueOf(t.getGiftCertificateId())))
                 .collect(Collectors.toList());
         Map<GiftCertificateDto, Long> collect = giftCertificates.stream()
                 .collect(Collectors.groupingBy(Function.identity(), counting()));
+        Set<OrderCertificates> orderCertificatesSet = new HashSet<>();
         collect.forEach((g, c) -> {
             OrderCertificates orderCertificates = new OrderCertificates();
-            orderCertificates.setOrder(modelMapper.map(orderDto1, Order.class));
+            orderCertificates.setOrder(order);
             orderCertificates.setGiftCertificate(modelMapper.map(g, GiftCertificate.class));
             orderCertificates.setGiftCertificateCost(g.getPrice());
             orderCertificates.setNumberOfCertificates(Math.toIntExact(c));
             orderDao.addGiftCertificateToOrder(orderCertificates);
+            orderCertificatesSet.add(orderCertificates);
         });
-        return orderDto1;
+        order.setOrderCertificates(orderCertificatesSet);
+        return getOrderDto(order);
     }
 
     @Override
@@ -76,22 +82,6 @@ public class OrderServiceImpl implements OrderService {
         } catch (NumberFormatException e) {
             throw new RequestValidationException(ExceptionKey.CERTIFICATE_ID_IS_NOT_VALID.getKey(), String.valueOf(id));// TODO: 12/24/2021
         }
-/*
- FIXME: 12/25/2021
-        Order order = orderDao.findById(longId).orElseThrow(() ->
-                new ResourceNotFoundException(ExceptionKey.USER_NOT_FOUND.getKey(), id));
-        Map<Map<GiftCertificateDto, BigDecimal>, Integer> giftCertificateDetails = new HashMap<>();
-        OrderDto orderDto = modelMapper.map(order, OrderDto.class);
-        order.getOrderCertificates().stream()
-                .forEach(oc -> {
-                    giftCertificateDetails.put(new HashMap<>(){{put(modelMapper.map(oc.getGiftCertificate(),
-                                    GiftCertificateDto.class), oc.getGiftCertificateCost());}}, oc.getNumberOfCertificates());
-                    totalCost[0] = totalCost[0].add((oc.getGiftCertificateCost().multiply(BigDecimal.valueOf(oc.getNumberOfCertificates()))));
-                });
-        orderDto.setGiftCertificateDetails(giftCertificateDetails);
-        orderDto.setTotalCost(totalCost[0]);
-        return orderDto;
-*/
         Order order = orderDao.findById(longId).orElseThrow(() ->
                 new ResourceNotFoundException(ExceptionKey.USER_NOT_FOUND.getKey(), id));
         return getOrderDto(order);
@@ -107,7 +97,16 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public boolean removeById(String id) {
-        return false;
+        OrderDto orderDto = findById(id);
+        return orderDao.remove(modelMapper.map(orderDto, Order.class));
+    }
+
+    @Override
+    public List<OrderDto> findOrdersByUserId(long userId) {
+        List<Order> orders = orderDao.findOrdersByUserId(userId);
+        return orders.stream()
+                .map(this::getOrderDto)
+                .collect(Collectors.toList());
     }
 
     private OrderDto getOrderDto(Order order) {

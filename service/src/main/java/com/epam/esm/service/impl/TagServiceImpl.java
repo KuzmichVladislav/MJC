@@ -60,7 +60,7 @@ public class TagServiceImpl implements TagService {
         try {
             longId = Long.parseLong(id);
             tagRequestValidator.checkId(longId);
-        }catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             throw new RequestValidationException(ExceptionKey.CERTIFICATE_ID_IS_NOT_VALID.getKey(), String.valueOf(id));
         }
         return convertToTagDto(tagDao.findById(longId).orElseThrow(() ->
@@ -75,8 +75,8 @@ public class TagServiceImpl implements TagService {
     @Override
     @Transactional
     public boolean removeById(String id) {
-        TagDto byId = findById(id);
-        return tagDao.remove(modelMapper.map(byId, Tag.class));
+        TagDto tagDto = findById(id);
+        return tagDao.remove(modelMapper.map(tagDto, Tag.class));
     }
 
     @Override

@@ -14,6 +14,7 @@ import java.util.Optional;
 @Repository
 public class OrderDaoImpl implements OrderDao {
 
+    private static final String FIND_ALL_ORDERS = "select o from Order o";
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -32,19 +33,31 @@ public class OrderDaoImpl implements OrderDao {
 
     @Override
     public List<Order> findAll() {
-        return entityManager.createQuery("select o from Order o", Order.class)
+        return entityManager.createQuery(FIND_ALL_ORDERS, Order.class)
                 .getResultList();
     }
 
     @Override
+    @Transactional
     public boolean remove(Order order) {
-        return false;
+        if (entityManager.contains(order)) {
+            entityManager.remove(order);
+        } else {
+            entityManager.remove(entityManager.merge(order));
+        }
+        return order != null; // FIXME: 12/27/2021
     }
 
     @Override
     @Transactional
     public void addGiftCertificateToOrder(OrderCertificates orderCertificates) {
-        System.out.println(orderCertificates.toString());
         entityManager.persist(orderCertificates);
+    }
+
+    @Override
+    public List<Order> findOrdersByUserId(long userId) {
+        return entityManager.createQuery("select o from Order o where o.userId = ?1", Order.class)
+                .setParameter(1, userId)
+                .getResultList();
     }
 }

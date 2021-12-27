@@ -61,7 +61,7 @@ public class GiftCertificateQueryCreator {
         List<String> sortType = requestParameter.getSortType().orElse(Collections.singletonList(ID));
         List<String> filterSortType = sortType.stream()
                 .filter(p -> p.equals(PRICE) || p.equals(ID) || p.equals(NAME) || p.equals(DURATION)
-                || p.equals(CREATE_DATE) || p.equals(LAST_UPDATE_DATE) || p.equals(DESCRIPTION))
+                        || p.equals(CREATE_DATE) || p.equals(LAST_UPDATE_DATE) || p.equals(DESCRIPTION))
                 .collect(Collectors.toList());
         return String.format(ORDER_BY, String.join(DELIMITER, filterSortType.isEmpty() ? Collections.singletonList(ID) : filterSortType), sortOrderParameter);
     }

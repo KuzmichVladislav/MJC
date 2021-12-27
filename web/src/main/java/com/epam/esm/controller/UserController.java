@@ -1,5 +1,6 @@
 package com.epam.esm.controller;
 
+import com.epam.esm.dto.OrderDto;
 import com.epam.esm.dto.UserDto;
 import com.epam.esm.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,5 +30,10 @@ public class UserController {
     @GetMapping("/{id}")
     public UserDto getUserById(@PathVariable("id") String id) {
         return userService.findById(id);
+    }
+
+    @GetMapping("/{id}/orders")
+    public List<OrderDto> getOrdersByUserId(@PathVariable("id") String userId) {
+        return userService.findOrdersByUserId(userId);
     }
 }

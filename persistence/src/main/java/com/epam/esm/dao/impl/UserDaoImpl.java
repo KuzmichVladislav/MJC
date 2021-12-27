@@ -12,6 +12,7 @@ import java.util.Optional;
 @Repository
 public class UserDaoImpl implements UserDao {
 
+    public static final String FIND_ALL_USERS = "select u from User u";
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -22,6 +23,6 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public List<User> findAll() {
-        return entityManager.createQuery("select u from " + User.class.getSimpleName() + " u", User.class).getResultList();
+        return entityManager.createQuery(FIND_ALL_USERS, User.class).getResultList();
     }
 }

@@ -3,10 +3,15 @@ package com.epam.esm.controller;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 /**
  * The Class TagController is a Rest Controller class which will have
@@ -35,7 +40,9 @@ public class TagController {
      */
     @GetMapping
     public List<TagDto> getAllTags() {
-        return tagService.findAll();
+        List<TagDto> tags = tagService.findAll();
+        tags.forEach(t -> addLinks(String.valueOf(t.getId()), t));
+        return tags;
     }
 
     /**
@@ -47,7 +54,9 @@ public class TagController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public TagDto addTag(@RequestBody TagDto tagDto) {
-        return tagService.add(tagDto);
+        TagDto resultTag = tagService.add(tagDto);
+        addLinks(String.valueOf(resultTag.getId()), resultTag);
+        return resultTag;
     }
 
     /**
@@ -58,7 +67,9 @@ public class TagController {
      */
     @GetMapping("/{id}")
     public TagDto getTagById(@PathVariable("id") String id) {
-        return tagService.findById(id);
+        TagDto tagDto = tagService.findById(id);
+        addLinks(id, tagDto);
+        return tagDto;
     }
 
     /**
@@ -67,8 +78,13 @@ public class TagController {
      * @param id the tag identifier
      */
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteTag(@PathVariable("id") String id) {
+    public HttpEntity<Void> deleteTag(@PathVariable("id") String id) {
         tagService.removeById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    private void addLinks(String id, TagDto tagDto) {
+        tagDto.add(linkTo(methodOn(TagController.class).getTagById(id)).withSelfRel());
+        tagDto.add(linkTo(methodOn(TagController.class).deleteTag(id)).withRel("delete"));
     }
 }

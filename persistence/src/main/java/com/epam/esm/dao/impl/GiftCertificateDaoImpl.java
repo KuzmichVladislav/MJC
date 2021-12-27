@@ -40,8 +40,8 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     @Override
     @Transactional
     public GiftCertificate add(GiftCertificate giftCertificate) {
-            entityManager.persist(giftCertificate);
-            return giftCertificate;
+        entityManager.persist(giftCertificate);
+        return giftCertificate;
     }
 
     @Override
