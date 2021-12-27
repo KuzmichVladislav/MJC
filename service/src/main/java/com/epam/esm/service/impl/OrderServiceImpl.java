@@ -1,13 +1,10 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.OrderDao;
-import com.epam.esm.dto.GiftCertificateDto;
-import com.epam.esm.dto.OrderDto;
-import com.epam.esm.dto.TagDto;
+import com.epam.esm.dto.*;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Order;
 import com.epam.esm.entity.OrderCertificates;
-import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.ExceptionKey;
 import com.epam.esm.exception.RequestValidationException;
 import com.epam.esm.exception.ResourceNotFoundException;
@@ -87,12 +84,15 @@ public class OrderServiceImpl implements OrderService {
         return getOrderDto(order);
     }
 
+
     @Override
-    public List<OrderDto> findAll() {
-        List<Order> orders = orderDao.findAll();
-        return orders.stream()
-                .map(this::getOrderDto)
-                .collect(Collectors.toList());
+    public List<OrderDto> findAll(int page, int size) {
+        // TODO: 12/27/2021
+//        List<Order> orders = orderDao.findAll();
+//        return orders.stream()
+//                .map(this::getOrderDto)
+//                .collect(Collectors.toList());
+        return null;
     }
 
     @Override
@@ -112,8 +112,8 @@ public class OrderServiceImpl implements OrderService {
     private OrderDto getOrderDto(Order order) {
         OrderDto orderDto = modelMapper.map(order, OrderDto.class);
         final BigDecimal[] totalCost = {new BigDecimal(0)};
-        List<OrderDto.OrderCertificateDetails> collect = order.getOrderCertificates().stream()
-                .map(t -> OrderDto.OrderCertificateDetails.builder()
+        List<OrderCertificateDetailsDto> collect = order.getOrderCertificates().stream()
+                .map(t -> OrderCertificateDetailsDto.builder()
                         .giftCertificateId(t.getGiftCertificate().getId())
                         .price(t.getGiftCertificateCost())
                         .numberOfCertificates(t.getNumberOfCertificates())

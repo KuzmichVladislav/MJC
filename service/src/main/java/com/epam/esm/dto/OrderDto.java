@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -13,22 +14,11 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class OrderDto {
+public class OrderDto extends RepresentationModel<OrderDto> {
 
     private long id;
     private long userId;
     private LocalDateTime purchaseTime;
-    //    private Map<Map<GiftCertificateDto, BigDecimal>, Integer> giftCertificateDetails;
-    private List<OrderCertificateDetails> orderCertificateDetails;
+    private List<OrderCertificateDetailsDto> orderCertificateDetails;
     private BigDecimal totalCost;
-
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Builder
-    public static class OrderCertificateDetails {
-        long giftCertificateId;
-        BigDecimal price;
-        int numberOfCertificates;
-    }
 }

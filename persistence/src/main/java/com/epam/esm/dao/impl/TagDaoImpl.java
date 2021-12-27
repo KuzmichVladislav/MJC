@@ -1,6 +1,7 @@
 package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.TagDao;
+import com.epam.esm.entity.ApplicationPage;
 import com.epam.esm.entity.Tag;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +17,7 @@ import java.util.Optional;
 @Repository
 public class TagDaoImpl implements TagDao {
 
-    private static final String FIND_ALL_TAGS = "select t from Tag t";
+    private static final String FIND_ALL_TAGS = "select t from Tag t order by t.id";
     private static final String FIND_TAG_BY_NAME = "select t from Tag t where t.name = ?1";
 
     @PersistenceContext
@@ -35,9 +36,19 @@ public class TagDaoImpl implements TagDao {
     }
 
     @Override
-    public List<Tag> findAll() {
-        return entityManager.createQuery(FIND_ALL_TAGS, Tag.class)
+    public ApplicationPage<Tag> findAll(int page, int size) {
+        List<Tag> resultList = entityManager.createQuery(FIND_ALL_TAGS, Tag.class)
+                .setFirstResult(page)
+                .setMaxResults(size)
                 .getResultList();
+        ApplicationPage<Tag> tagPage = new ApplicationPage<>();
+        tagPage.setPage(page);
+        tagPage.setSize(size);
+        tagPage.setPageList(resultList);
+        long ceil = (Long) entityManager.createQuery("select count(t) from Tag t").getSingleResult();
+        int totalPage = (int) Math.ceil(ceil / (double) size);
+        tagPage.setTotalPage(totalPage);
+        return tagPage;
     }
 
     @Override
@@ -57,4 +68,13 @@ public class TagDaoImpl implements TagDao {
                 .setParameter(1, name).getResultList()
                 .stream().findFirst();
     }
+
+    /*
+ TODO: 12/27/2021
+    public Optional<Tag> findMostUsedTag(String name) {
+        return entityManager.createQuery("select t from Tag t where t.name = ?1", Tag.class)
+                .setParameter(1, name).getResultList()
+                .stream().findFirst();
+    }
+*/
 }

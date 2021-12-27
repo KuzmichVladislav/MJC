@@ -1,6 +1,7 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.GiftCertificateDao;
+import com.epam.esm.dto.ApplicationPageDto;
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.GiftCertificateQueryParameterDto;
 import com.epam.esm.dto.TagDto;
@@ -87,9 +88,11 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public List<GiftCertificateDto> findAll() {
-        return listConverter.convertList(giftCertificateDao.findAll(),
-                this::convertToGiftCertificateDto);
+    public List<GiftCertificateDto> findAll(int page, int size) {
+        // TODO: 12/27/2021
+//        return listConverter.convertList(giftCertificateDao.findAll(),
+//                this::convertToGiftCertificateDto);
+        return null;
     }
 
     @Override

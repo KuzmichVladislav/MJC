@@ -1,6 +1,7 @@
 package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.GiftCertificateDao;
+import com.epam.esm.entity.ApplicationPage;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.GiftCertificateQueryParameter;
 import org.springframework.stereotype.Repository;
@@ -50,10 +51,13 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
-    public List<GiftCertificate> findAll() {
-        return entityManager.createQuery(FIND_ALL_GIFT_CERTIFICATES, GiftCertificate.class)
-                .getResultList();
+    public ApplicationPage<GiftCertificate> findAll(int page, int size) {
+        // TODO: 12/27/2021  
+//        return entityManager.createQuery(FIND_ALL_GIFT_CERTIFICATES, GiftCertificate.class)
+//                .getResultList();
+        return null;
     }
+    
 
     @Override
     @Transactional

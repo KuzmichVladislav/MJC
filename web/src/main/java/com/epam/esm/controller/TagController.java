@@ -1,5 +1,6 @@
 package com.epam.esm.controller;
 
+import com.epam.esm.dto.ApplicationPageDto;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,10 +39,11 @@ public class TagController {
      *
      * @return the all tags
      */
-    @GetMapping
-    public List<TagDto> getAllTags() {
-        List<TagDto> tags = tagService.findAll();
-        tags.forEach(t -> addLinks(String.valueOf(t.getId()), t));
+    @GetMapping(params = { "page", "size" })
+    public List<TagDto> getAllTags(@RequestParam(value = "page", defaultValue = "1") int page,
+                                   @RequestParam(value = "size", defaultValue = "10") int size) {
+        List<TagDto> tags = tagService.findAll(page, size);
+                tags.forEach(t -> addLinks(String.valueOf(t.getId()), t));
         return tags;
     }
 
@@ -67,9 +69,9 @@ public class TagController {
      */
     @GetMapping("/{id}")
     public TagDto getTagById(@PathVariable("id") String id) {
-        TagDto tagDto = tagService.findById(id);
-        addLinks(id, tagDto);
-        return tagDto;
+        TagDto resultTag = tagService.findById(id);
+        addLinks(id, resultTag);
+        return resultTag;
     }
 
     /**
@@ -83,8 +85,8 @@ public class TagController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    private void addLinks(String id, TagDto tagDto) {
-        tagDto.add(linkTo(methodOn(TagController.class).getTagById(id)).withSelfRel());
-        tagDto.add(linkTo(methodOn(TagController.class).deleteTag(id)).withRel("delete"));
+    private void addLinks(String id, TagDto resultTag) {
+        resultTag.add(linkTo(methodOn(TagController.class).getTagById(id)).withSelfRel());
+        resultTag.add(linkTo(methodOn(TagController.class).deleteTag(id)).withRel("delete"));
     }
 }

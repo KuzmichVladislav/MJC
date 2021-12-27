@@ -2,6 +2,7 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.dto.TagDto;
+import com.epam.esm.entity.ApplicationPage;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.ExceptionKey;
 import com.epam.esm.exception.RequestValidationException;
@@ -68,8 +69,13 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public List<TagDto> findAll() {
-        return listConverter.convertList(tagDao.findAll(), this::convertToTagDto);
+    public List<TagDto> findAll(int page, int size) {
+        int firstValue = page * size - size;
+        ApplicationPage<Tag> all = tagDao.findAll(firstValue, size);
+        if (page > all.getTotalPage()) {
+            // TODO: 12/27/2021 throw new exception
+        }
+        return listConverter.convertList(all.getPageList(), this::convertToTagDto);
     }
 
     @Override

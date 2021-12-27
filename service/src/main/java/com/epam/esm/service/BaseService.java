@@ -1,5 +1,7 @@
 package com.epam.esm.service;
 
+import com.epam.esm.dto.TagDto;
+
 import java.util.List;
 
 /**
@@ -32,7 +34,7 @@ public interface BaseService<T> {
      *
      * @return the list of DTO objects
      */
-    List<T> findAll();
+    List<T> findAll(int page, int size);
 
     /**
      * Removes the by DTO object identifier.

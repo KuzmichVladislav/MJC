@@ -80,10 +80,12 @@ public class GiftCertificateController {
 
     @GetMapping
     public HttpEntity<List<GiftCertificateDto>> getAllGiftCertificates() {
-        List<GiftCertificateDto> giftCertificateDtos = giftCertificateService.findAll();
-        giftCertificateDtos.forEach(g -> g.add(linkTo(methodOn(GiftCertificateController.class)
-                .getGiftCertificateById(String.valueOf(g.getId()))).withSelfRel()));
-        return new ResponseEntity<>(giftCertificateDtos, HttpStatus.OK);
+        // TODO: 12/27/2021
+//        List<GiftCertificateDto> giftCertificateDtos = giftCertificateService.findAll();
+//        giftCertificateDtos.forEach(g -> g.add(linkTo(methodOn(GiftCertificateController.class)
+//                .getGiftCertificateById(String.valueOf(g.getId()))).withSelfRel()));
+//        return new ResponseEntity<>(giftCertificateDtos, HttpStatus.OK);
+        return null;
     }
 
     /**

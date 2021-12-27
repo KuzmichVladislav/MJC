@@ -1,5 +1,7 @@
 package com.epam.esm.dao;
 
+import com.epam.esm.entity.ApplicationPage;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -31,7 +33,7 @@ public interface BaseDao<T> {
      *
      * @return the list of entity
      */
-    List<T> findAll();
+    ApplicationPage<T> findAll(int page, int size);
 
     /*
  TODO: 12/24/2021
