@@ -1,6 +1,7 @@
 package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.UserDao;
+import com.epam.esm.entity.ApplicationPage;
 import com.epam.esm.entity.User;
 import org.springframework.stereotype.Repository;
 
@@ -13,6 +14,8 @@ import java.util.Optional;
 public class UserDaoImpl implements UserDao {
 
     public static final String FIND_ALL_USERS = "select u from User u";
+    private static final String TOTAL_NUMBER_OF_ITEMS = "select count(u) from User u";
+
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -22,7 +25,14 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public List<User> findAll() {
-        return entityManager.createQuery(FIND_ALL_USERS, User.class).getResultList();
+    public List<User> findAll(ApplicationPage page) {
+        return entityManager.createQuery(FIND_ALL_USERS, User.class)
+                .setFirstResult(page.getFirstValue())
+                .setMaxResults(page.getSize())
+                .getResultList();
+    }
+
+    public long getTotalNumberOfItems() {
+        return (Long) entityManager.createQuery(TOTAL_NUMBER_OF_ITEMS).getSingleResult();
     }
 }

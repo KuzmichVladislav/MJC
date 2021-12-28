@@ -5,16 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ApplicationPage<T> {
+public class ApplicationPage {
 
-    int page;
+    int firstValue;
     int size;
     int totalPage;
-    List<T> pageList;
 }

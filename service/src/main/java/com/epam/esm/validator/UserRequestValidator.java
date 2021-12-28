@@ -1,12 +1,8 @@
 package com.epam.esm.validator;
 
-import com.epam.esm.dto.GiftCertificateDto;
-import com.epam.esm.dto.TagDto;
 import com.epam.esm.exception.ExceptionKey;
 import com.epam.esm.exception.RequestValidationException;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 /**
  * Utility Class TagRequestValidator for validating the values received

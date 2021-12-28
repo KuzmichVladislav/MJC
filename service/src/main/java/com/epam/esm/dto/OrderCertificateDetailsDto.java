@@ -1,5 +1,6 @@
 package com.epam.esm.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,7 +14,8 @@ import java.math.BigDecimal;
 @Builder
 public class OrderCertificateDetailsDto {
 
-    long giftCertificateId;
+    GiftCertificateDto giftCertificate;
+    @JsonIgnore
     BigDecimal price;
     int numberOfCertificates;
 }

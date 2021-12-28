@@ -3,7 +3,7 @@ package com.epam.esm.dao.impl;
 import com.epam.esm.dao.OrderDao;
 import com.epam.esm.entity.ApplicationPage;
 import com.epam.esm.entity.Order;
-import com.epam.esm.entity.OrderCertificates;
+import com.epam.esm.entity.OrderCertificateDetails;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +16,8 @@ import java.util.Optional;
 public class OrderDaoImpl implements OrderDao {
 
     private static final String FIND_ALL_ORDERS = "select o from Order o";
+    private static final String TOTAL_NUMBER_OF_ITEMS = "select count(o) from Order o";
+
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -33,13 +35,17 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     @Override
-    public ApplicationPage<Order> findAll(int page, int size) {
-        // TODO: 12/27/2021
-//        return entityManager.createQuery(FIND_ALL_ORDERS, Order.class)
-//                .getResultList();
-        return null;
+    public List<Order> findAll(ApplicationPage page) {
+        return entityManager.createQuery(FIND_ALL_ORDERS, Order.class)
+                .setFirstResult(page.getFirstValue())
+                .setMaxResults(page.getSize())
+                .getResultList();
     }
 
+    @Override
+    public long getTotalNumberOfItems() {
+        return (Long) entityManager.createQuery(TOTAL_NUMBER_OF_ITEMS).getSingleResult();
+    }
 
     @Override
     @Transactional
@@ -54,8 +60,8 @@ public class OrderDaoImpl implements OrderDao {
 
     @Override
     @Transactional
-    public void addGiftCertificateToOrder(OrderCertificates orderCertificates) {
-        entityManager.persist(orderCertificates);
+    public void addGiftCertificateToOrder(OrderCertificateDetails orderCertificateDetails) {
+        entityManager.persist(orderCertificateDetails);
     }
 
     @Override

@@ -33,18 +33,9 @@ public interface BaseDao<T> {
      *
      * @return the list of entity
      */
-    ApplicationPage<T> findAll(int page, int size);
+    List<T> findAll(ApplicationPage page);
 
-    /*
- TODO: 12/24/2021
-    /**
-     * Removes the by entity identifier.
-     *
-     * @param id the the entity identifier
-     * @return true, if successful
-     * /
-    boolean removeById(long id);
-*/
+    long getTotalNumberOfItems();
 
     boolean remove(T t);
 }

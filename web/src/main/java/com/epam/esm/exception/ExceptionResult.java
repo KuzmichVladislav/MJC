@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 /**
  * The Class ExceptionResult to display error result
  */
@@ -14,6 +16,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ExceptionResult {
 
-    private String errorMessage;
+    private List<String> errorMessage;
     private int errorCode;
 }

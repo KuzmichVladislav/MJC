@@ -2,14 +2,19 @@ package com.epam.esm.exception;
 
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.FieldError;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -24,6 +29,16 @@ public class ErrorHandler {
         this.messageSource = messageSource;
     }
 
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ExceptionResult handle(MethodArgumentNotValidException e, Locale locale) {
+        List<String> errorMessage = new ArrayList<>();
+        e.getBindingResult().getAllErrors().forEach(error ->
+                errorMessage.add(createMessage(locale, error.getDefaultMessage(), (String) ((FieldError) error).getRejectedValue())));
+        return new ExceptionResult(errorMessage, ErrorCode.NOT_VALID_PARAM.getCode());
+    }
+
     /**
      * Handle ResourceNotFoundException.
      *
@@ -36,7 +51,7 @@ public class ErrorHandler {
     @ResponseBody
     public ExceptionResult handle(ResourceNotFoundException e, Locale locale) {
         String errorMessage = createMessage(locale, e.getMessageKey(), e.getMessageParameter());
-        return new ExceptionResult(errorMessage, ErrorCode.RESOURCE_NOT_FOUND.getCode());
+        return new ExceptionResult(Collections.singletonList(errorMessage), ErrorCode.RESOURCE_NOT_FOUND.getCode());
     }
 
     /**
@@ -51,7 +66,7 @@ public class ErrorHandler {
     @ResponseBody
     public ExceptionResult handle(RequestValidationException e, Locale locale) {
         String errorMessage = createMessage(locale, e.getMessageKey(), e.getMessageParameter());
-        return new ExceptionResult(errorMessage, ErrorCode.NOT_VALID_PARAM.getCode());
+        return new ExceptionResult(Collections.singletonList(errorMessage), ErrorCode.NOT_VALID_PARAM.getCode());
     }
 
     /**
@@ -65,7 +80,7 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
     public ExceptionResult handle(NoHandlerFoundException e, Locale locale) {
-        return new ExceptionResult(e.getMessage(), ErrorCode.HANDLER_NOT_FOUND.getCode());
+        return new ExceptionResult(Collections.singletonList(e.getMessage()), ErrorCode.HANDLER_NOT_FOUND.getCode());
     }
 // TODO: 12/23/2021  
 //    /**
@@ -93,7 +108,7 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     @ResponseBody
     public ExceptionResult handle(HttpRequestMethodNotSupportedException e, Locale locale) {
-        return new ExceptionResult(e.getMessage(), ErrorCode.METHOD_NOT_ALLOWED.getCode());
+        return new ExceptionResult(Collections.singletonList(e.getMessage()), ErrorCode.METHOD_NOT_ALLOWED.getCode());
     }
 
     /**
@@ -107,7 +122,7 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
     @ResponseBody
     public ExceptionResult handle(HttpMediaTypeNotSupportedException e, Locale locale) {
-        return new ExceptionResult(e.getMessage(), ErrorCode.UNSUPPORTED_MEDIA_TYPE.getCode());
+        return new ExceptionResult(Collections.singletonList(e.getMessage()), ErrorCode.UNSUPPORTED_MEDIA_TYPE.getCode());
     }
 
     private String createMessage(Locale locale, String messageKey, String messageParameter) {

@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -42,7 +43,7 @@ public class GiftCertificateController {
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public GiftCertificateDto addGiftCertificate(@RequestBody GiftCertificateDto giftCertificateDto) {
+    public GiftCertificateDto addGiftCertificate(@Valid @RequestBody GiftCertificateDto giftCertificateDto) {
         GiftCertificateDto resultGiftCertificate = giftCertificateService.add(giftCertificateDto);
         addLinks(resultGiftCertificate);
         return resultGiftCertificate;
@@ -78,14 +79,13 @@ public class GiftCertificateController {
     }
 */
 
-    @GetMapping
-    public HttpEntity<List<GiftCertificateDto>> getAllGiftCertificates() {
-        // TODO: 12/27/2021
-//        List<GiftCertificateDto> giftCertificateDtos = giftCertificateService.findAll();
-//        giftCertificateDtos.forEach(g -> g.add(linkTo(methodOn(GiftCertificateController.class)
-//                .getGiftCertificateById(String.valueOf(g.getId()))).withSelfRel()));
-//        return new ResponseEntity<>(giftCertificateDtos, HttpStatus.OK);
-        return null;
+    @GetMapping(params = {"page", "size"})
+    public List<GiftCertificateDto> getAllGiftCertificates(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
+                                                           @RequestParam(value = "size", required = false, defaultValue = "10") int size) {
+        List<GiftCertificateDto> giftCertificates = giftCertificateService.findAll(page, size);
+        giftCertificates.forEach(g -> g.add(linkTo(methodOn(GiftCertificateController.class)
+                .getGiftCertificateById(String.valueOf(g.getId()))).withSelfRel()));
+        return giftCertificates;
     }
 
     /**

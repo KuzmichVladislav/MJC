@@ -1,6 +1,8 @@
 package com.epam.esm.controller;
 
+import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.OrderDto;
+import com.epam.esm.dto.TagDto;
 import com.epam.esm.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -32,13 +34,12 @@ public class OrderController {
         return resultOrder;
     }
 
-    @GetMapping
-    public List<OrderDto> getAllOrders() {
-        // TODO: 12/27/2021
-//        List<OrderDto> orders = orderService.findAll();
-//        orders.forEach(o -> addLinks(String.valueOf(o.getId()), o));
-//        return orders;
-        return null;
+    @GetMapping(params = {"page", "size"})
+    public List<OrderDto> getAllOrders(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
+                                       @RequestParam(value = "size", required = false, defaultValue = "10") int size) {
+        List<OrderDto> orders = orderService.findAll(page, size);
+        orders.forEach(o -> addLinks(String.valueOf(o.getId()), o));
+        return orders;
     }
 
     @GetMapping("/{id}")
@@ -57,5 +58,21 @@ public class OrderController {
     private void addLinks(String id, OrderDto resultOrder) {
         resultOrder.add(linkTo(methodOn(OrderController.class).getOrderById(id)).withSelfRel());
         resultOrder.add(linkTo(methodOn(OrderController.class).deleteOrder(id)).withRel("delete"));
+        resultOrder.getOrderCertificateDetails().forEach(od -> {
+            GiftCertificateDto giftCertificate = od.getGiftCertificate();
+            giftCertificate.add(linkTo(methodOn(GiftCertificateController.class)
+                    .getGiftCertificateById(String.valueOf(od.getGiftCertificate().getId()))).withSelfRel());
+            giftCertificate.add(linkTo(methodOn(GiftCertificateController.class)
+                    .updateGiftCertificate(String.valueOf(giftCertificate.getId()), giftCertificate)).withRel("update"));
+            giftCertificate.add(linkTo(methodOn(GiftCertificateController.class)
+                    .deleteGiftCertificate(String.valueOf(giftCertificate.getId()))).withRel("delete"));
+            List<TagDto> tags = giftCertificate.getTags();
+            if (tags != null) {
+                tags.forEach(t -> {
+                    t.add(linkTo(methodOn(TagController.class).getTagById(String.valueOf(t.getId()))).withSelfRel());
+                    t.add(linkTo(methodOn(TagController.class).deleteTag(String.valueOf(t.getId()))).withRel("delete"));
+                });
+            }
+        });
     }
 }

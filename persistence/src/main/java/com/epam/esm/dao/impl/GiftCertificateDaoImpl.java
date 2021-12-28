@@ -20,6 +20,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
     private static final String FIND_ALL_GIFT_CERTIFICATES = "select gc from GiftCertificate gc where gc.isRemoved = false";
     private static final String REMOVE_GIFT_CERTIFICATE = "update GiftCertificate gc set gc.isRemoved = true where gc.id = ?1";
+    private static final String TOTAL_NUMBER_OF_ITEMS = "select count(gc) from GiftCertificate gc";
 
 /*
     private static final String FIND_CERTIFICATES_BY_PARAMETERS =
@@ -51,13 +52,17 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
-    public ApplicationPage<GiftCertificate> findAll(int page, int size) {
-        // TODO: 12/27/2021  
-//        return entityManager.createQuery(FIND_ALL_GIFT_CERTIFICATES, GiftCertificate.class)
-//                .getResultList();
-        return null;
+    public List<GiftCertificate> findAll(ApplicationPage page) {
+        return entityManager.createQuery(FIND_ALL_GIFT_CERTIFICATES, GiftCertificate.class)
+                .setFirstResult(page.getFirstValue())
+                .setMaxResults(page.getSize())
+                .getResultList();
     }
-    
+
+    @Override
+    public long getTotalNumberOfItems() {
+        return (Long) entityManager.createQuery(TOTAL_NUMBER_OF_ITEMS).getSingleResult();
+    }
 
     @Override
     @Transactional

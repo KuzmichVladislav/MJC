@@ -1,10 +1,9 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.UserDao;
-import com.epam.esm.dto.ApplicationPageDto;
 import com.epam.esm.dto.OrderDto;
-import com.epam.esm.dto.TagDto;
 import com.epam.esm.dto.UserDto;
+import com.epam.esm.entity.ApplicationPage;
 import com.epam.esm.entity.User;
 import com.epam.esm.exception.ExceptionKey;
 import com.epam.esm.exception.RequestValidationException;
@@ -61,9 +60,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> findAll(int page, int size) {
-        // TODO: 12/27/2021
-//        return listConverter.convertList(userDao.findAll(), this::convertToUserDto);
-        return null;
+        int totalPage = (int) Math.ceil(userDao.getTotalNumberOfItems() / (double) size);
+        if (page > totalPage) {
+            // TODO: 12/27/2021 throw new exception
+        }
+        ApplicationPage tagPage = ApplicationPage.builder()
+                .size(size)
+                .firstValue(page * size - size)
+                .totalPage(totalPage)
+                .build();
+        return listConverter.convertList(userDao.findAll(tagPage), this::convertToUserDto);
     }
 
     @Override

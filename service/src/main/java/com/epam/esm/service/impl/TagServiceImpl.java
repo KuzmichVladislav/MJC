@@ -68,14 +68,23 @@ public class TagServiceImpl implements TagService {
                 new ResourceNotFoundException(ExceptionKey.TAG_NOT_FOUND.getKey(), id)));
     }
 
+    public TagDto findMostUsedTag(int id) {
+        return modelMapper.map(tagDao.findMostUsedTag(id).get(), TagDto.class);
+    }
+
+
     @Override
     public List<TagDto> findAll(int page, int size) {
-        int firstValue = page * size - size;
-        ApplicationPage<Tag> all = tagDao.findAll(firstValue, size);
-        if (page > all.getTotalPage()) {
+        int totalPage = (int) Math.ceil(tagDao.getTotalNumberOfItems() / (double) size);
+        if (page > totalPage) {
             // TODO: 12/27/2021 throw new exception
         }
-        return listConverter.convertList(all.getPageList(), this::convertToTagDto);
+        ApplicationPage tagPage = ApplicationPage.builder()
+                .size(size)
+                .firstValue(page * size - size)
+                .totalPage(totalPage)
+                .build();
+        return listConverter.convertList(tagDao.findAll(tagPage), this::convertToTagDto);
     }
 
     @Override

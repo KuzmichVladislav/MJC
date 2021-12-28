@@ -1,10 +1,10 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.GiftCertificateDao;
-import com.epam.esm.dto.ApplicationPageDto;
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.GiftCertificateQueryParameterDto;
 import com.epam.esm.dto.TagDto;
+import com.epam.esm.entity.ApplicationPage;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.GiftCertificateQueryParameter;
 import com.epam.esm.entity.Tag;
@@ -16,7 +16,6 @@ import com.epam.esm.service.TagService;
 import com.epam.esm.util.ListConverter;
 import com.epam.esm.validator.GiftCertificateRequestValidator;
 import com.epam.esm.validator.TagRequestValidator;
-import lombok.NoArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
@@ -36,15 +35,14 @@ import java.util.stream.Collectors;
  * The Class GiftCertificateServiceImpl is the implementation of the {@link GiftCertificateService} interface.
  */
 @Service
-@NoArgsConstructor
 public class GiftCertificateServiceImpl implements GiftCertificateService {
 
-    private GiftCertificateDao giftCertificateDao;
-    private TagService tagService;
-    private ModelMapper modelMapper;
-    private ListConverter listConverter;
-    private GiftCertificateRequestValidator giftCertificateRequestValidator;
-    private TagRequestValidator tagRequestValidator;
+    private final GiftCertificateDao giftCertificateDao;
+    private final TagService tagService;
+    private final ModelMapper modelMapper;
+    private final ListConverter listConverter;
+    private final GiftCertificateRequestValidator giftCertificateRequestValidator;
+    private final TagRequestValidator tagRequestValidator;
 
     @Autowired
     public GiftCertificateServiceImpl(GiftCertificateDao giftCertificateDao,
@@ -64,8 +62,6 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     @Transactional
     public GiftCertificateDto add(GiftCertificateDto giftCertificateDto) {
-        giftCertificateRequestValidator.validateGiftCertificate(giftCertificateDto);
-        tagRequestValidator.validateTags(giftCertificateDto);
         giftCertificateDto.setCreateDate(LocalDateTime.now());
         giftCertificateDto.setLastUpdateDate(LocalDateTime.now());
         findAndSetTags(giftCertificateDto);
@@ -89,10 +85,16 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     public List<GiftCertificateDto> findAll(int page, int size) {
-        // TODO: 12/27/2021
-//        return listConverter.convertList(giftCertificateDao.findAll(),
-//                this::convertToGiftCertificateDto);
-        return null;
+        int totalPage = (int) Math.ceil(giftCertificateDao.getTotalNumberOfItems() / (double) size);
+        if (page > totalPage) {
+            // TODO: 12/27/2021 throw new exception
+        }
+        ApplicationPage tagPage = ApplicationPage.builder()
+                .size(size)
+                .firstValue(page * size - size)
+                .totalPage(totalPage)
+                .build();
+        return listConverter.convertList(giftCertificateDao.findAll(tagPage), this::convertToGiftCertificateDto);
     }
 
     @Override

@@ -17,9 +17,27 @@ import java.util.Optional;
 @Repository
 public class TagDaoImpl implements TagDao {
 
-    private static final String FIND_ALL_TAGS = "select t from Tag t order by t.id";
+    private static final String GET_MOST_USED = "SELECT id, name\n" +
+            "FROM (\n" +
+            "         SELECT id, name, sum(cost) AS amount, (COUNT(id) * number_of_certificates) AS number_of_orders\n" +
+            "         FROM (\n" +
+            "                  SELECT t.id,\n" +
+            "                         t.name,\n" +
+            "                         (oc.gift_certificate_cost * oc.number_of_certificates) AS 'cost',\n" +
+            "                         oc.number_of_certificates\n" +
+            "                  FROM tag t\n" +
+            "                           LEFT JOIN gift_certificate_tag_include gcti ON t.id = gcti.tag_id\n" +
+            "                           LEFT JOIN gift_certificate gc ON gc.id = gcti.gift_certificate_id\n" +
+            "                           LEFT JOIN order_certificates oc ON gc.id = oc.gift_certificate_id\n" +
+            "                           LEFT JOIN orders o ON oc.order_id = o.id\n" +
+            "                           LEFT JOIN user u ON o.user_id = u.id\n" +
+            "                  WHERE u.id = ?1) AS inner_table\n" +
+            "         GROUP BY id\n" +
+            "         ORDER BY number_of_orders DESC, amount DESC\n" +
+            "         LIMIT 1) AS outer_table";
+    private static final String FIND_ALL_TAGS = "select t from Tag t order by t.name";
     private static final String FIND_TAG_BY_NAME = "select t from Tag t where t.name = ?1";
-
+    private static final String TOTAL_NUMBER_OF_ITEMS = "select count(t) from Tag t";
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -36,19 +54,16 @@ public class TagDaoImpl implements TagDao {
     }
 
     @Override
-    public ApplicationPage<Tag> findAll(int page, int size) {
-        List<Tag> resultList = entityManager.createQuery(FIND_ALL_TAGS, Tag.class)
-                .setFirstResult(page)
-                .setMaxResults(size)
+    public List<Tag> findAll(ApplicationPage page) {
+        return entityManager.createQuery(FIND_ALL_TAGS, Tag.class)
+                .setFirstResult(page.getFirstValue())
+                .setMaxResults(page.getSize())
                 .getResultList();
-        ApplicationPage<Tag> tagPage = new ApplicationPage<>();
-        tagPage.setPage(page);
-        tagPage.setSize(size);
-        tagPage.setPageList(resultList);
-        long ceil = (Long) entityManager.createQuery("select count(t) from Tag t").getSingleResult();
-        int totalPage = (int) Math.ceil(ceil / (double) size);
-        tagPage.setTotalPage(totalPage);
-        return tagPage;
+    }
+
+    @Override
+    public long getTotalNumberOfItems() {
+        return (Long) entityManager.createQuery(TOTAL_NUMBER_OF_ITEMS).getSingleResult();
     }
 
     @Override
@@ -65,16 +80,16 @@ public class TagDaoImpl implements TagDao {
     @Override
     public Optional<Tag> findByName(String name) {
         return entityManager.createQuery(FIND_TAG_BY_NAME, Tag.class)
-                .setParameter(1, name).getResultList()
-                .stream().findFirst();
+                .setParameter(1, name)
+                .getResultList().stream()
+                .findFirst();
     }
 
-    /*
- TODO: 12/27/2021
-    public Optional<Tag> findMostUsedTag(String name) {
-        return entityManager.createQuery("select t from Tag t where t.name = ?1", Tag.class)
-                .setParameter(1, name).getResultList()
-                .stream().findFirst();
+    @Override
+    public Optional<Tag> findMostUsedTag(int id) {
+        return entityManager.createNativeQuery(GET_MOST_USED, Tag.class)
+                .setParameter(1, id)
+                .getResultList().stream()
+                .findFirst();
     }
-*/
 }

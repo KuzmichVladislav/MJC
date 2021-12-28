@@ -50,5 +50,5 @@ public class GiftCertificate {
 //    @JoinTable(name = "order_certificates",
 //            joinColumns = @JoinColumn(name = "gift_certificate_id"),
 //            inverseJoinColumns = @JoinColumn(name = "order_id"))
-    private Set<OrderCertificates> orderCertificates;
+    private Set<OrderCertificateDetails> orderCertificates;
 }

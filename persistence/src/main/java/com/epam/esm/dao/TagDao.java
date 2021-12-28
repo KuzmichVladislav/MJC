@@ -16,4 +16,7 @@ public interface TagDao extends BaseDao<Tag> {
      * @return the optional of tag entity
      */
     Optional<Tag> findByName(String name);
+
+    // TODO: 12/28/2021 add JD
+    Optional<Tag> findMostUsedTag(int id);
 }
