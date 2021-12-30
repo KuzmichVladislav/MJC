@@ -5,7 +5,7 @@
 //import com.epam.esm.entity.Tag;
 //import com.epam.esm.exception.RequestValidationException;
 //import com.epam.esm.service.TagService;
-//import com.epam.esm.util.ListConverter;
+//import com.epam.esm.com.epam.esm.util.ListConverter;
 //import com.epam.esm.validator.TagRequestValidator;
 //import org.junit.jupiter.api.Assertions;
 //import org.junit.jupiter.api.BeforeEach;
@@ -16,9 +16,9 @@
 //import org.mockito.MockitoAnnotations;
 //import org.modelmapper.ModelMapper;
 //
-//import java.util.Collections;
-//import java.util.List;
-//import java.util.Optional;
+//import java.com.epam.esm.util.Collections;
+//import java.com.epam.esm.util.List;
+//import java.com.epam.esm.util.Optional;
 //
 //import static org.mockito.ArgumentMatchers.anyLong;
 //import static org.mockito.Mockito.when;

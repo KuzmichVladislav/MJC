@@ -2,6 +2,7 @@ package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.OrderDao;
 import com.epam.esm.entity.ApplicationPage;
+import com.epam.esm.entity.QueryParameter;
 import com.epam.esm.entity.Order;
 import com.epam.esm.entity.OrderCertificateDetails;
 import org.springframework.stereotype.Repository;
@@ -35,12 +36,18 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     @Override
-    public List<Order> findAll(ApplicationPage page) {
-        return entityManager.createQuery(FIND_ALL_ORDERS, Order.class)
-                .setFirstResult(page.getFirstValue())
-                .setMaxResults(page.getSize())
-                .getResultList();
+    public List<Order> findAll(QueryParameter queryParameter) {
+        return null;
     }
+
+
+//    @Override
+//    public List<Order> findAll(ApplicationPage page) {
+//        return entityManager.createQuery(FIND_ALL_ORDERS, Order.class)
+//                .setFirstResult(page.getFirstValue())
+//                .setMaxResults(page.getSize())
+//                .getResultList();
+//    }
 
     @Override
     public long getTotalNumberOfItems() {

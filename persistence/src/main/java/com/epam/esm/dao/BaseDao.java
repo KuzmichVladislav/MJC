@@ -1,6 +1,7 @@
 package com.epam.esm.dao;
 
 import com.epam.esm.entity.ApplicationPage;
+import com.epam.esm.entity.QueryParameter;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,7 +34,7 @@ public interface BaseDao<T> {
      *
      * @return the list of entity
      */
-    List<T> findAll(ApplicationPage page);
+    List<T> findAll(QueryParameter queryParameter);
 
     long getTotalNumberOfItems();
 

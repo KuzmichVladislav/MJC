@@ -1,16 +1,10 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.OrderDao;
-import com.epam.esm.dto.GiftCertificateDto;
-import com.epam.esm.dto.OrderCertificateDetailsDto;
-import com.epam.esm.dto.OrderDto;
-import com.epam.esm.entity.ApplicationPage;
+import com.epam.esm.dto.*;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Order;
 import com.epam.esm.entity.OrderCertificateDetails;
-import com.epam.esm.exception.ExceptionKey;
-import com.epam.esm.exception.RequestValidationException;
-import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.util.ListConverter;
@@ -78,38 +72,45 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDto findById(String id) {
-        long longId;
-        try {
-            longId = Long.parseLong(id);
-            userRequestValidator.checkId(longId);
-        } catch (NumberFormatException e) {
-            throw new RequestValidationException(ExceptionKey.CERTIFICATE_ID_IS_NOT_VALID.getKey(), String.valueOf(id));// TODO: 12/24/2021
-        }
-        Order order = orderDao.findById(longId).orElseThrow(() ->
-                new ResourceNotFoundException(ExceptionKey.USER_NOT_FOUND.getKey(), id));
-        return getOrderDto(order);
+        return null;
     }
-
 
     @Override
-    public List<OrderDto> findAll(int page, int size) {
-        int totalPage = (int) Math.ceil(orderDao.getTotalNumberOfItems() / (double) size);
-        if (page > totalPage) {
-            // TODO: 12/27/2021 throw new exception
-        }
-        ApplicationPage tagPage = ApplicationPage.builder()
-                .size(size)
-                .firstValue(page * size - size)
-                .totalPage(totalPage)
-                .build();
-        return orderDao.findAll(tagPage).stream()
-                .map(this::getOrderDto)
-                .collect(Collectors.toList());
+    public PageWrapper<OrderDto> findAll(QueryParameterDto queryParameterDto) {
+        return null;
     }
 
-    private OrderDto convertToOrderDto(Order order) {
-        return modelMapper.map(order, OrderDto.class);
-    }
+
+//    @Override
+//    public OrderDto findById(String id) {
+//        long longId;
+//        try {
+//            longId = Long.parseLong(id);
+//            userRequestValidator.checkId(longId);
+//        } catch (NumberFormatException e) {
+//            throw new RequestValidationException(ExceptionKey.CERTIFICATE_ID_IS_NOT_VALID.getKey(), String.valueOf(id));// TODO: 12/24/2021
+//        }
+//        Order order = orderDao.findById(longId).orElseThrow(() ->
+//                new ResourceNotFoundException(ExceptionKey.USER_NOT_FOUND.getKey(), id));
+//        return getOrderDto(order);
+//    }
+
+
+//    @Override
+//    public List<OrderDto> findAll(int page, int size) {
+//        int totalPage = (int) Math.ceil(orderDao.getTotalNumberOfItems() / (double) size);
+//        if (page > totalPage) {
+//            // TODO: 12/27/2021 throw new exception
+//        }
+//        ApplicationPage tagPage = ApplicationPage.builder()
+//                .size(size)
+//                .firstValue(page * size - size)
+//                .totalPage(totalPage)
+//                .build();
+//        return orderDao.findAll(tagPage).stream()
+//                .map(this::getOrderDto)
+//                .collect(Collectors.toList());
+//    }
 
     @Override
     public boolean removeById(String id) {

@@ -8,7 +8,7 @@
 //import com.epam.esm.exception.RequestValidationException;
 //import com.epam.esm.service.GiftCertificateService;
 //import com.epam.esm.service.TagService;
-//import com.epam.esm.util.ListConverter;
+//import com.epam.esm.com.epam.esm.util.ListConverter;
 //import com.epam.esm.validator.GiftCertificateRequestValidator;
 //import com.epam.esm.validator.TagRequestValidator;
 //import org.junit.jupiter.api.Assertions;
@@ -25,9 +25,9 @@
 //import java.math.BigDecimal;
 //import java.time.LocalDateTime;
 //import java.time.Month;
-//import java.util.Collections;
-//import java.util.List;
-//import java.util.Optional;
+//import java.com.epam.esm.util.Collections;
+//import java.com.epam.esm.util.List;
+//import java.com.epam.esm.util.Optional;
 //
 //import static org.mockito.Mockito.any;
 //import static org.mockito.Mockito.when;

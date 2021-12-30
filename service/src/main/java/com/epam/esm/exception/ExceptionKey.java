@@ -1,30 +1,24 @@
 package com.epam.esm.exception;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 
 /**
- * The Enum ExceptionKey to localize the error message.
+ * The class ExceptionKey to localize the error message.
  */
-@AllArgsConstructor
-@Getter
-public enum ExceptionKey {
+@Data
+public final class ExceptionKey {
 
-    CERTIFICATE_NOT_FOUND(Values.CERTIFICATE_NOT_FOUND),
-    CERTIFICATE_NAME_IS_NOT_VALID("certificate.name.isNotValid"),
-    CERTIFICATE_DURATION_IS_NOT_VALID("certificate.duration.isNotValid"),
-    CERTIFICATE_PRICE_IS_NOT_VALID("certificate.price.isNotValid"),
-    CERTIFICATE_ID_IS_NOT_VALID("certificate.id.isNotValid"),
-    CERTIFICATE_DESCRIPTION_IS_NOT_VALID("certificate.description.isNotValid"),
-    TAG_NAME_IS_NOT_VALID("tag.name.isNotValid"),
-    TAG_ID_IS_NOT_VALID("tag.id.isNotValid"),
-    TAG_NOT_FOUND("tag.notFound"),
-    TAG_EXISTS("tag.exists"),
-    USER_NOT_FOUND("user.notFound");
-
-    private final String key;
-
-    public class Values {
-        public static final String CERTIFICATE_NOT_FOUND = "certificate.notFound";
+    public static final String CERTIFICATE_NOT_FOUND = "certificate.notFound";
+    public static final String CERTIFICATE_NAME_IS_NOT_VALID = "certificate.name.isNotValid";
+    public static final String CERTIFICATE_DURATION_IS_NOT_VALID = "certificate.duration.isNotValid";
+    public static final String CERTIFICATE_PRICE_IS_NOT_VALID = "certificate.price.isNotValid";
+    public static final String CERTIFICATE_ID_IS_NOT_VALID = "certificate.id.isNotValid";
+    public static final String CERTIFICATE_DESCRIPTION_IS_NOT_VALID = "certificate.description.isNotValid";
+    public static final String TAG_NAME_IS_NOT_VALID = "tag.name.isNotValid";
+    public static final String TAG_ID_IS_NOT_VALID = "tag.id.isNotValid";
+    public static final String TAG_NOT_FOUND = "tag.notFound";
+    public static final String TAG_EXISTS = "tag.exists";
+    public static final String USER_NOT_FOUND = "user.notFound";
+    private ExceptionKey() {
     }
 }

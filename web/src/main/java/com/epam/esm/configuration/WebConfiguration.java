@@ -13,6 +13,7 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 @ComponentScan("com.epam.esm")
 public class WebConfiguration {
 
+
     @Bean
     public MessageSource messageSource() {
         ResourceBundleMessageSource source = new ResourceBundleMessageSource();
@@ -21,4 +22,23 @@ public class WebConfiguration {
         source.setDefaultEncoding("UTF-8");
         return source;
     }
+
+    /*
+ TODO: 12/29/2021
+    @Bean
+    public MessageSource messageSource() {
+        ReloadableResourceBundleMessageSource messageSource
+                = new ReloadableResourceBundleMessageSource();
+        messageSource.setBasename("message");
+        messageSource.setDefaultEncoding("UTF-8");
+        return messageSource;
+    }
+    @Bean
+    public LocalValidatorFactoryBean getValidator() {
+        LocalValidatorFactoryBean bean = new LocalValidatorFactoryBean();
+        bean.setValidationMessageSource(messageSource());
+        return bean;
+    }
+*/
+
 }

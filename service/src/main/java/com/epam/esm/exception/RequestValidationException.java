@@ -7,8 +7,8 @@ package com.epam.esm.exception;
  */
 public class RequestValidationException extends RuntimeException {
 
-    private String messageKey;
-    private String messageParameter;
+    private final String messageKey;
+    private final String messageParameter;
 
     public RequestValidationException(String messageKey, String messageParameter) {
         this.messageKey = messageKey;

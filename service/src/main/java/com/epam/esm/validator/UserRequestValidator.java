@@ -20,7 +20,7 @@ public class UserRequestValidator {
      */
     public void checkId(Long id) {
         if (id < 1) {
-            throw new RequestValidationException(ExceptionKey.TAG_ID_IS_NOT_VALID.getKey(), String.valueOf(id));
+            throw new RequestValidationException(ExceptionKey.TAG_ID_IS_NOT_VALID, String.valueOf(id));
         }
     }
 
@@ -31,7 +31,7 @@ public class UserRequestValidator {
      */
     public void checkName(String name) {
         if (!name.trim().matches(NAME_REGEX)) {
-            throw new RequestValidationException(ExceptionKey.TAG_NAME_IS_NOT_VALID.getKey(), name);
+            throw new RequestValidationException(ExceptionKey.TAG_NAME_IS_NOT_VALID, name);
         }
     }
 }

@@ -5,7 +5,7 @@
 //import com.epam.esm.entity.GiftCertificate;
 //import com.epam.esm.entity.GiftCertificateQueryParameter;
 //import com.epam.esm.entity.Tag;
-//import com.epam.esm.util.GiftCertificateQueryCreator;
+//import com.epam.esm.com.epam.esm.util.GiftCertificateQueryCreator;
 //import org.junit.jupiter.api.AfterEach;
 //import org.junit.jupiter.api.Assertions;
 //import org.junit.jupiter.api.BeforeEach;
@@ -17,9 +17,9 @@
 //
 //import java.math.BigDecimal;
 //import java.time.LocalDateTime;
-//import java.util.Arrays;
-//import java.util.List;
-//import java.util.Optional;
+//import java.com.epam.esm.util.Arrays;
+//import java.com.epam.esm.util.List;
+//import java.com.epam.esm.util.Optional;
 //
 //class GiftCertificateDaoImplTest {
 //

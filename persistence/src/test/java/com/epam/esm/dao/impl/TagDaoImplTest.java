@@ -11,8 +11,8 @@
 //import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 //import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 //
-//import java.util.List;
-//import java.util.Optional;
+//import java.com.epam.esm.util.List;
+//import java.com.epam.esm.util.Optional;
 //
 //class TagDaoImplTest {
 //

@@ -2,11 +2,12 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dto.GiftCertificateDto;
-import com.epam.esm.dto.GiftCertificateQueryParameterDto;
+import com.epam.esm.dto.PageWrapper;
+import com.epam.esm.dto.QueryParameterDto;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.ApplicationPage;
 import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.entity.GiftCertificateQueryParameter;
+import com.epam.esm.entity.QueryParameter;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.ExceptionKey;
 import com.epam.esm.exception.RequestValidationException;
@@ -75,27 +76,46 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             longId = Long.parseLong(id);
             giftCertificateRequestValidator.checkId(longId);
         } catch (NumberFormatException e) {
-            throw new RequestValidationException(ExceptionKey.CERTIFICATE_ID_IS_NOT_VALID.getKey(), String.valueOf(id));
+            throw new RequestValidationException(ExceptionKey.CERTIFICATE_ID_IS_NOT_VALID, String.valueOf(id));
         }
         Optional<GiftCertificate> byId = giftCertificateDao
                 .findById(longId);
         return convertToGiftCertificateDto(byId.orElseThrow(() ->
-                new ResourceNotFoundException(ExceptionKey.CERTIFICATE_NOT_FOUND.getKey(), id)));
+                new ResourceNotFoundException(ExceptionKey.CERTIFICATE_NOT_FOUND, id)));
     }
 
     @Override
-    public List<GiftCertificateDto> findAll(int page, int size) {
+    public PageWrapper<GiftCertificateDto> findAll(QueryParameterDto queryParameterDto) {
+        int page = queryParameterDto.getPage();
+        int size = queryParameterDto.getSize();
         int totalPage = (int) Math.ceil(giftCertificateDao.getTotalNumberOfItems() / (double) size);
         if (page > totalPage) {
             // TODO: 12/27/2021 throw new exception
         }
-        ApplicationPage tagPage = ApplicationPage.builder()
-                .size(size)
-                .firstValue(page * size - size)
-                .totalPage(totalPage)
-                .build();
-        return listConverter.convertList(giftCertificateDao.findAll(tagPage), this::convertToGiftCertificateDto);
+//        ApplicationPage giftCertificatePage = ApplicationPage.builder()
+//                .size(size)
+//                .firstValue(page * size - size)
+//                .totalPage(totalPage)
+//                .build();
+        // TODO: 12/29/2021 add exception
+        queryParameterDto.setFirstValue(page * size - size);
+        List<GiftCertificateDto> giftCertificates = listConverter.convertList(giftCertificateDao.findAll(modelMapper.map(queryParameterDto, QueryParameter.class)), this::convertToGiftCertificateDto);
+        return new PageWrapper<>(giftCertificates, totalPage);
     }
+
+//    @Override
+//    public List<GiftCertificateDto> findAll(int page, int size) {
+//        int totalPage = (int) Math.ceil(giftCertificateDao.getTotalNumberOfItems() / (double) size);
+//        if (page > totalPage) {
+//            // TODO: 12/27/2021 throw new exception
+//        }
+//        ApplicationPage tagPage = ApplicationPage.builder()
+//                .size(size)
+//                .firstValue(page * size - size)
+//                .totalPage(totalPage)
+//                .build();
+//        return listConverter.convertList(giftCertificateDao.findAll(tagPage), this::convertToGiftCertificateDto);
+//    }
 
     @Override
     @Transactional
@@ -105,7 +125,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             longId = Long.parseLong(id);
             giftCertificateRequestValidator.checkId(longId);
         } catch (NumberFormatException e) {
-            throw new RequestValidationException(ExceptionKey.CERTIFICATE_ID_IS_NOT_VALID.getKey(), String.valueOf(id));
+            throw new RequestValidationException(ExceptionKey.CERTIFICATE_ID_IS_NOT_VALID, String.valueOf(id));
         }
         giftCertificateDto.setId(longId);
         giftCertificateDto.setLastUpdateDate(LocalDateTime.now());
@@ -118,8 +138,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
 
     @Override
-    public List<GiftCertificateDto> findByParameters(GiftCertificateQueryParameterDto requestParameterDto) {
-        GiftCertificateQueryParameter requestParameter = modelMapper.map(requestParameterDto, GiftCertificateQueryParameter.class);
+    public List<GiftCertificateDto> findByParameters(QueryParameterDto requestParameterDto) {
+        QueryParameter requestParameter = modelMapper.map(requestParameterDto, QueryParameter.class);
         return listConverter.convertList(giftCertificateDao.findByParameters(requestParameter),
                 this::convertToGiftCertificateDto);
     }

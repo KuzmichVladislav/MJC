@@ -2,6 +2,7 @@ package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.entity.ApplicationPage;
+import com.epam.esm.entity.QueryParameter;
 import com.epam.esm.entity.Tag;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,7 +36,7 @@ public class TagDaoImpl implements TagDao {
             "         GROUP BY id\n" +
             "         ORDER BY number_of_orders DESC, amount DESC\n" +
             "         LIMIT 1) AS outer_table";
-    private static final String FIND_ALL_TAGS = "select t from Tag t order by t.name";
+    private static final String FIND_ALL_TAGS = "select t from Tag t order by t.name ";
     private static final String FIND_TAG_BY_NAME = "select t from Tag t where t.name = ?1";
     private static final String TOTAL_NUMBER_OF_ITEMS = "select count(t) from Tag t";
     @PersistenceContext
@@ -54,12 +55,17 @@ public class TagDaoImpl implements TagDao {
     }
 
     @Override
-    public List<Tag> findAll(ApplicationPage page) {
-        return entityManager.createQuery(FIND_ALL_TAGS, Tag.class)
-                .setFirstResult(page.getFirstValue())
-                .setMaxResults(page.getSize())
-                .getResultList();
+    public List<Tag> findAll(QueryParameter queryParameter) {
+        return null;
     }
+
+//    @Override
+//    public List<Tag> findAll(ApplicationPage page, QueryParameter.SortingDirection orderBy) {
+//        return entityManager.createQuery(FIND_ALL_TAGS + orderBy.name(), Tag.class)
+//                .setFirstResult(page.getFirstValue())
+//                .setMaxResults(page.getSize())
+//                .getResultList();
+//    }
 
     @Override
     public long getTotalNumberOfItems() {
@@ -69,11 +75,7 @@ public class TagDaoImpl implements TagDao {
     @Override
     @Transactional
     public boolean remove(Tag tag) {
-        if (entityManager.contains(tag)) {
-            entityManager.remove(tag);
-        } else {
-            entityManager.remove(entityManager.merge(tag));
-        }
+        entityManager.remove(tag);
         return tag != null;
     }
 
@@ -89,7 +91,7 @@ public class TagDaoImpl implements TagDao {
     public Optional<Tag> findMostUsedTag(int id) {
         return entityManager.createNativeQuery(GET_MOST_USED, Tag.class)
                 .setParameter(1, id)
-                .getResultList().stream()
+                .getResultStream()
                 .findFirst();
     }
 }

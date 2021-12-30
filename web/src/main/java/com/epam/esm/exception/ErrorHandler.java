@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.util.ArrayList;
@@ -123,6 +124,13 @@ public class ErrorHandler {
     @ResponseBody
     public ExceptionResult handle(HttpMediaTypeNotSupportedException e, Locale locale) {
         return new ExceptionResult(Collections.singletonList(e.getMessage()), ErrorCode.UNSUPPORTED_MEDIA_TYPE.getCode());
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ExceptionResult handle(MethodArgumentTypeMismatchException e, Locale locale) {
+        return new ExceptionResult(Collections.singletonList(e.getMessage()), ErrorCode.NOT_VALID_PARAM.getCode());
     }
 
     private String createMessage(Locale locale, String messageKey, String messageParameter) {

@@ -25,7 +25,7 @@ public class GiftCertificateRequestValidator {
      */
     public void checkId(Long id) {
         if (id < 1) {
-            throw new RequestValidationException(ExceptionKey.CERTIFICATE_ID_IS_NOT_VALID.getKey(), String.valueOf(id));
+            throw new RequestValidationException(ExceptionKey.CERTIFICATE_ID_IS_NOT_VALID, String.valueOf(id));
         }
     }
 
@@ -36,7 +36,7 @@ public class GiftCertificateRequestValidator {
      */
     public void checkName(String name) {
         if (name == null || !name.trim().matches(NAME_REGEX)) {
-            throw new RequestValidationException(ExceptionKey.CERTIFICATE_NAME_IS_NOT_VALID.getKey(), name);
+            throw new RequestValidationException(ExceptionKey.CERTIFICATE_NAME_IS_NOT_VALID, name);
         }
     }
 
@@ -47,7 +47,7 @@ public class GiftCertificateRequestValidator {
      */
     public void checkDescription(String description) {
         if (description == null || !description.matches(DESCRIPTION_REGEX)) {
-            throw new RequestValidationException(ExceptionKey.CERTIFICATE_DESCRIPTION_IS_NOT_VALID.getKey(), description);
+            throw new RequestValidationException(ExceptionKey.CERTIFICATE_DESCRIPTION_IS_NOT_VALID, description);
         }
     }
 
@@ -58,7 +58,7 @@ public class GiftCertificateRequestValidator {
      */
     public void checkDuration(Integer duration) {
         if (duration == null || (duration < 1 || duration > 366)) {
-            throw new RequestValidationException(ExceptionKey.CERTIFICATE_DURATION_IS_NOT_VALID.getKey(),
+            throw new RequestValidationException(ExceptionKey.CERTIFICATE_DURATION_IS_NOT_VALID,
                     String.valueOf(duration));
         }
     }
@@ -70,7 +70,7 @@ public class GiftCertificateRequestValidator {
      */
     public void checkPrice(BigDecimal price) {
         if (price == null || (price.compareTo(new BigDecimal(ZERO_VALUE)) < ZERO_VALUE || price.compareTo(new BigDecimal(1_000_000)) > ZERO_VALUE)) {
-            throw new RequestValidationException(ExceptionKey.CERTIFICATE_PRICE_IS_NOT_VALID.getKey(),
+            throw new RequestValidationException(ExceptionKey.CERTIFICATE_PRICE_IS_NOT_VALID,
                     String.valueOf(price));
         }
     }

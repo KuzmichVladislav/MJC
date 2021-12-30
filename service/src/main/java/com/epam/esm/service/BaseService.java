@@ -1,6 +1,7 @@
 package com.epam.esm.service;
 
-import java.util.List;
+import com.epam.esm.dto.QueryParameterDto;
+import com.epam.esm.dto.PageWrapper;
 
 /**
  * A generic interface for the Service layer. The interface
@@ -32,7 +33,7 @@ public interface BaseService<T> {
      *
      * @return the list of DTO objects
      */
-    List<T> findAll(int page, int size);
+    PageWrapper<T> findAll(QueryParameterDto queryParameterDto);
 
     /**
      * Removes the by DTO object identifier.

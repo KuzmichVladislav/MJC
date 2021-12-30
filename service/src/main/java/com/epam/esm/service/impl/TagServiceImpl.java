@@ -1,8 +1,11 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.TagDao;
+import com.epam.esm.dto.PageWrapper;
+import com.epam.esm.dto.QueryParameterDto;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.ApplicationPage;
+import com.epam.esm.entity.QueryParameter;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.ExceptionKey;
 import com.epam.esm.exception.RequestValidationException;
@@ -50,7 +53,7 @@ public class TagServiceImpl implements TagService {
             tagDto.setId(tagDao.add(tag).getId());
             return tagDto;
         } else {
-            throw new RequestValidationException(ExceptionKey.TAG_EXISTS.getKey(),
+            throw new RequestValidationException(ExceptionKey.TAG_EXISTS,
                     String.valueOf(tagName));
         }
     }
@@ -62,30 +65,38 @@ public class TagServiceImpl implements TagService {
             longId = Long.parseLong(id);
             tagRequestValidator.checkId(longId);
         } catch (NumberFormatException e) {
-            throw new RequestValidationException(ExceptionKey.CERTIFICATE_ID_IS_NOT_VALID.getKey(), String.valueOf(id));
+            throw new RequestValidationException(ExceptionKey.CERTIFICATE_ID_IS_NOT_VALID, String.valueOf(id));
         }
         return convertToTagDto(tagDao.findById(longId).orElseThrow(() ->
-                new ResourceNotFoundException(ExceptionKey.TAG_NOT_FOUND.getKey(), id)));
+                new ResourceNotFoundException(ExceptionKey.TAG_NOT_FOUND, id)));
+    }
+
+    @Override
+    public PageWrapper<TagDto> findAll(QueryParameterDto queryParameterDto) {
+        return null;
     }
 
     public TagDto findMostUsedTag(int id) {
         return modelMapper.map(tagDao.findMostUsedTag(id).get(), TagDto.class);
     }
 
-
-    @Override
-    public List<TagDto> findAll(int page, int size) {
-        int totalPage = (int) Math.ceil(tagDao.getTotalNumberOfItems() / (double) size);
-        if (page > totalPage) {
-            // TODO: 12/27/2021 throw new exception
-        }
-        ApplicationPage tagPage = ApplicationPage.builder()
-                .size(size)
-                .firstValue(page * size - size)
-                .totalPage(totalPage)
-                .build();
-        return listConverter.convertList(tagDao.findAll(tagPage), this::convertToTagDto);
-    }
+//
+//    @Override
+//    public List<TagDto> findAll(int page, int size, QueryParameterDto.OrderParameter orderByDto) {
+//        int totalPage = (int) Math.ceil(tagDao.getTotalNumberOfItems() / (double) size);
+//        if (page > totalPage) {
+//            // TODO: 12/27/2021 throw new exception
+//        }
+//        ApplicationPage tagPage = ApplicationPage.builder()
+//                .size(size)
+//                .firstValue(page * size - size)
+//                .totalPage(totalPage)
+//                .build();
+//        // TODO: 12/29/2021 add exception
+////        SortOrderBy sortOrderBy = SortOrderBy.valueOf(orderByDto);
+//        QueryParameter.SortingDirection orderBy = modelMapper.map(orderByDto, QueryParameter.SortingDirection.class);
+//        return listConverter.convertList(tagDao.findAll(tagPage, orderBy), this::convertToTagDto);
+//    }
 
     @Override
     @Transactional
