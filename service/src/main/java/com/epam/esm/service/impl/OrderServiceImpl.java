@@ -5,9 +5,13 @@ import com.epam.esm.dto.*;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Order;
 import com.epam.esm.entity.OrderCertificateDetails;
+import com.epam.esm.entity.QueryParameter;
+import com.epam.esm.exception.ExceptionKey;
+import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.util.ListConverter;
+import com.epam.esm.util.TotalPageCountCalculator;
 import com.epam.esm.validator.UserRequestValidator;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,21 +33,19 @@ import static java.util.stream.Collectors.counting;
 public class OrderServiceImpl implements OrderService {
 
     private final OrderDao orderDao;
-    private final UserRequestValidator userRequestValidator;
     private final ModelMapper modelMapper;
     private final GiftCertificateService giftCertificateService;
-    private final ListConverter listConverter;
+    private final TotalPageCountCalculator totalPageCountCalculator;
 
     @Autowired
     public OrderServiceImpl(OrderDao orderDao,
-                            UserRequestValidator userRequestValidator,
                             ModelMapper modelMapper,
-                            GiftCertificateService giftCertificateService, ListConverter listConverter) {
+                            GiftCertificateService giftCertificateService,
+                            TotalPageCountCalculator totalPageCountCalculator) {
         this.orderDao = orderDao;
-        this.userRequestValidator = userRequestValidator;
+        this.totalPageCountCalculator = totalPageCountCalculator;
         this.modelMapper = modelMapper;
         this.giftCertificateService = giftCertificateService;
-        this.listConverter = listConverter;
     }
 
     @Override
@@ -52,7 +54,7 @@ public class OrderServiceImpl implements OrderService {
         orderDto.setPurchaseTime(LocalDateTime.now());
         Order order = orderDao.add(modelMapper.map(orderDto, Order.class));
         List<GiftCertificateDto> giftCertificates = orderDto.getOrderCertificateDetails().stream()
-                .map(t -> giftCertificateService.findById(String.valueOf(t.getGiftCertificate())))
+                .map(t -> giftCertificateService.findById(t.getGiftCertificate().getId())) // TODO: 1/3/2022
                 .collect(Collectors.toList());
         Map<GiftCertificateDto, Long> collect = giftCertificates.stream()
                 .collect(Collectors.groupingBy(Function.identity(), counting()));
@@ -71,15 +73,20 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderDto findById(String id) {
-        return null;
+    public OrderDto findById(long id) {
+        Order order = orderDao.findById(id).orElseThrow(() ->
+                new ResourceNotFoundException(ExceptionKey.USER_NOT_FOUND, String.valueOf(id)));
+        return getOrderDto(order);
     }
 
     @Override
     public PageWrapper<OrderDto> findAll(QueryParameterDto queryParameterDto) {
-        return null;
+        long totalNumberOfItems = orderDao.getTotalNumberOfItems();
+        int totalPage = totalPageCountCalculator.getTotalPage(queryParameterDto, totalNumberOfItems);
+        List<Order> orders = orderDao.findAll(modelMapper.map(queryParameterDto, QueryParameter.class));
+        List<OrderDto> orderDtos = orders.stream().map(this::getOrderDto).collect(Collectors.toList());
+        return new PageWrapper<>(orderDtos, totalPage);
     }
-
 
 //    @Override
 //    public OrderDto findById(String id) {
@@ -88,32 +95,16 @@ public class OrderServiceImpl implements OrderService {
 //            longId = Long.parseLong(id);
 //            userRequestValidator.checkId(longId);
 //        } catch (NumberFormatException e) {
-//            throw new RequestValidationException(ExceptionKey.CERTIFICATE_ID_IS_NOT_VALID.getKey(), String.valueOf(id));// TODO: 12/24/2021
+//            throw new RequestValidationException(ExceptionKey.CERTIFICATE_ID_IS_NOT_VALID, String.valueOf(id));// TODO: 12/24/2021
 //        }
 //        Order order = orderDao.findById(longId).orElseThrow(() ->
-//                new ResourceNotFoundException(ExceptionKey.USER_NOT_FOUND.getKey(), id));
+//                new ResourceNotFoundException(ExceptionKey.USER_NOT_FOUND, id));
 //        return getOrderDto(order);
 //    }
 
 
-//    @Override
-//    public List<OrderDto> findAll(int page, int size) {
-//        int totalPage = (int) Math.ceil(orderDao.getTotalNumberOfItems() / (double) size);
-//        if (page > totalPage) {
-//            // TODO: 12/27/2021 throw new exception
-//        }
-//        ApplicationPage tagPage = ApplicationPage.builder()
-//                .size(size)
-//                .firstValue(page * size - size)
-//                .totalPage(totalPage)
-//                .build();
-//        return orderDao.findAll(tagPage).stream()
-//                .map(this::getOrderDto)
-//                .collect(Collectors.toList());
-//    }
-
     @Override
-    public boolean removeById(String id) {
+    public boolean removeById(long id) {
         OrderDto orderDto = findById(id);
         return orderDao.remove(modelMapper.map(orderDto, Order.class));
     }

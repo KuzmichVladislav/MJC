@@ -1,10 +1,9 @@
 package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.OrderDao;
-import com.epam.esm.entity.ApplicationPage;
-import com.epam.esm.entity.QueryParameter;
 import com.epam.esm.entity.Order;
 import com.epam.esm.entity.OrderCertificateDetails;
+import com.epam.esm.entity.QueryParameter;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,7 +15,7 @@ import java.util.Optional;
 @Repository
 public class OrderDaoImpl implements OrderDao {
 
-    private static final String FIND_ALL_ORDERS = "select o from Order o";
+    private static final String FIND_ALL_ORDERS = "select o from Order o order by o.purchaseTime ";
     private static final String TOTAL_NUMBER_OF_ITEMS = "select count(o) from Order o";
 
     @PersistenceContext
@@ -37,17 +36,13 @@ public class OrderDaoImpl implements OrderDao {
 
     @Override
     public List<Order> findAll(QueryParameter queryParameter) {
-        return null;
+        return entityManager.createQuery
+                (FIND_ALL_ORDERS + queryParameter.getSortingDirection(),
+                        Order.class)
+                .setFirstResult(queryParameter.getFirstValue())
+                .setMaxResults(queryParameter.getSize())
+                .getResultList();
     }
-
-
-//    @Override
-//    public List<Order> findAll(ApplicationPage page) {
-//        return entityManager.createQuery(FIND_ALL_ORDERS, Order.class)
-//                .setFirstResult(page.getFirstValue())
-//                .setMaxResults(page.getSize())
-//                .getResultList();
-//    }
 
     @Override
     public long getTotalNumberOfItems() {

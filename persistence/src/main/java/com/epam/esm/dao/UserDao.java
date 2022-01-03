@@ -1,6 +1,6 @@
 package com.epam.esm.dao;
 
-import com.epam.esm.entity.ApplicationPage;
+import com.epam.esm.entity.QueryParameter;
 import com.epam.esm.entity.User;
 
 import java.util.List;
@@ -10,7 +10,7 @@ public interface UserDao {
 
     Optional<User> findById(long id);
 
-    List<User> findAll(ApplicationPage page);
+    List<User> findAll(QueryParameter queryParameter);
 
     long getTotalNumberOfItems();
 }

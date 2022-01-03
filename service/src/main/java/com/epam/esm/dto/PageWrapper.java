@@ -12,6 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PageWrapper<T> {
+
     List<T> pageValues;
     int totalPage;
 }

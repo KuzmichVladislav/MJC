@@ -1,6 +1,5 @@
 package com.epam.esm.dao;
 
-import com.epam.esm.entity.ApplicationPage;
 import com.epam.esm.entity.QueryParameter;
 
 import java.util.List;

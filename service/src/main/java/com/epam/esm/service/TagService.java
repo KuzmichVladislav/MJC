@@ -10,15 +10,6 @@ import java.util.Optional;
  */
 public interface TagService extends BaseService<TagDto> {
 
-    // TODO: 12/24/2021  
-//    /**
-//     * Find tag DTO object by certificate id.
-//     *
-//     * @param giftCertificateId the gift certificate id
-//     * @return the list of tag DTO objects
-//     */
-//    List<TagDto> findByCertificateId(long giftCertificateId);
-
     /**
      * Find tag DTO object by name.
      *
@@ -27,5 +18,5 @@ public interface TagService extends BaseService<TagDto> {
      */
     Optional<TagDto> findByName(String name);
 
-    TagDto findMostUsedTag(int id);
+    TagDto findMostUsedTag(long id);
 }

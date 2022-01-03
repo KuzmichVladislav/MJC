@@ -3,7 +3,6 @@ dependencies {
 
     implementation "org.springframework:spring-tx:$springVersion"
 
-//    implementation 'org.springframework.boot:spring-boot-starter-hateoas'
     implementation 'com.jayway.jsonpath:json-path:2.6.0'
 
     implementation 'org.springframework.hateoas:spring-hateoas:1.4.0'

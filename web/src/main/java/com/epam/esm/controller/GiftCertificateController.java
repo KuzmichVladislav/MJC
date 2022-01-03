@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,36 +54,7 @@ public class GiftCertificateController {
         return resultGiftCertificate;
     }
 
-/*
- TODO: 12/24/2021
-    /**
-     * Get list of gift certificates based on GET request.
-     *
-     * @param name        the name parameter
-     * @param description the description parameter
-     * @param tagName     the tag name parameter
-     * @param sortType    the sort type parameter
-     * @param sortOrder   the sort order parameter
-     * @return all gift certificates
-     * /
-    @GetMapping
-    public List<GiftCertificateDto> getAllGiftCertificates
-    (@RequestParam(value = "name", required = false) Optional<String> name,
-     @RequestParam(value = "description", required = false) Optional<String> description,
-     @RequestParam(value = "tag-name", required = false) Optional<String> tagName,
-     @RequestParam(value = "sort", required = false) Optional<List<String>> sortType,
-     @RequestParam(value = "order-by", required = false) Optional<String> sortOrder) {
-        GiftCertificateQueryParameterDto queryParameterDto = GiftCertificateQueryParameterDto.builder()
-                .name(name)
-                .tagName(tagName)
-                .description(description)
-                .sortType(sortType)
-                .sortOrder(sortOrder)
-                .build();
-        return giftCertificateService.findByParameters(queryParameterDto);
-    }
-*/
-
+    // TODO: 1/3/2022
     @GetMapping
     public PageWrapper<GiftCertificateDto> getAllGiftCertificates(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
                                                                   @RequestParam(value = "size", required = false, defaultValue = "10") int size,
@@ -112,7 +84,7 @@ public class GiftCertificateController {
      * @return the gift certificate
      */
     @GetMapping("/{id}")
-    public GiftCertificateDto getGiftCertificateById(@PathVariable("id") String id) {
+    public GiftCertificateDto getGiftCertificateById(@PathVariable("id") @Min(1) long id) {
         GiftCertificateDto resultGiftCertificate = giftCertificateService.findById(id);
         linkCreator.addGiftCertificateLinks(resultGiftCertificate);
         return resultGiftCertificate;
@@ -126,7 +98,7 @@ public class GiftCertificateController {
      * @return the gift certificate DTO object
      */
     @PatchMapping("/{id}")
-    public GiftCertificateDto updateGiftCertificate(@PathVariable("id") String id,
+    public GiftCertificateDto updateGiftCertificate(@PathVariable("id") @Min(1) long id,
                                                     @RequestBody GiftCertificateDto giftCertificateDto) {
         GiftCertificateDto resultGiftCertificate = giftCertificateService.update(id, giftCertificateDto);
         linkCreator.addGiftCertificateLinks(resultGiftCertificate);
@@ -139,7 +111,7 @@ public class GiftCertificateController {
      * @param id the gift certificate identifier
      */
     @DeleteMapping("/{id}")
-    public HttpEntity<Void> deleteGiftCertificate(@PathVariable("id") String id) {
+    public HttpEntity<Void> deleteGiftCertificate(@PathVariable("id") @Min(1) long id) {
         giftCertificateService.removeById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

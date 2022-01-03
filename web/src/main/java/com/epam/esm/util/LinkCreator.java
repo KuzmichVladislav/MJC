@@ -22,34 +22,34 @@ public class LinkCreator {
     private static final String UPDATE = "update";
 
     public void addTagLinks(TagDto tag) {
-        tag.add(linkTo(methodOn(TagController.class).getTagById(String.valueOf(tag.getId()))).withSelfRel());
-        tag.add(linkTo(methodOn(TagController.class).deleteTag(String.valueOf(tag.getId()))).withRel(DELETE));
+        tag.add(linkTo(methodOn(TagController.class).getTagById(tag.getId())).withSelfRel());
+        tag.add(linkTo(methodOn(TagController.class).deleteTag(tag.getId())).withRel(DELETE));
     }
 
     public void addGiftCertificateLinks(GiftCertificateDto giftCertificate) {
         giftCertificate.add(linkTo(methodOn(GiftCertificateController.class)
-                .getGiftCertificateById(String.valueOf(giftCertificate.getId()))).withSelfRel());
+                .getGiftCertificateById(giftCertificate.getId())).withSelfRel());
         giftCertificate.add(linkTo(methodOn(GiftCertificateController.class)
-                .updateGiftCertificate(String.valueOf(giftCertificate.getId()), giftCertificate)).withRel(UPDATE));
+                .updateGiftCertificate(giftCertificate.getId(), giftCertificate)).withRel(UPDATE));
         giftCertificate.add(linkTo(methodOn(GiftCertificateController.class)
-                .deleteGiftCertificate(String.valueOf(giftCertificate.getId()))).withRel(DELETE));
+                .deleteGiftCertificate(giftCertificate.getId())).withRel(DELETE));
         addTagLinksToGiftCertificate(giftCertificate.getTags());
     }
 
     public void addUserLinks(UserDto user) {
-        user.add(linkTo(methodOn(UserController.class).getUserById(String.valueOf(user.getId()))).withSelfRel());
+        user.add(linkTo(methodOn(UserController.class).getUserById(user.getId())).withSelfRel());
     }
 
     public void addOrderLinks(OrderDto order) {
-        order.add(linkTo(methodOn(OrderController.class).getOrderById(String.valueOf(order.getId()))).withSelfRel());
-        order.add(linkTo(methodOn(OrderController.class).deleteOrder(String.valueOf(order.getId()))).withRel(DELETE));
+        order.add(linkTo(methodOn(OrderController.class).getOrderById(order.getId())).withSelfRel());
+        order.add(linkTo(methodOn(OrderController.class).deleteOrder(order.getId())).withRel(DELETE));
         order.getOrderCertificateDetails().forEach(od -> addGiftCertificateLinks(od.getGiftCertificate()));
     }
 
     private void addTagLinksToGiftCertificate(List<TagDto> tags) {
         if (tags != null) {
             tags.forEach(t ->
-                    t.add(linkTo(methodOn(TagController.class).getTagById(String.valueOf(t.getId()))).withSelfRel()));
+                    t.add(linkTo(methodOn(TagController.class).getTagById(t.getId())).withSelfRel()));
         }
     }
 }

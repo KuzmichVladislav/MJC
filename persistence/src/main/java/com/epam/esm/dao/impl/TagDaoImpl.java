@@ -1,7 +1,6 @@
 package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.TagDao;
-import com.epam.esm.entity.ApplicationPage;
 import com.epam.esm.entity.QueryParameter;
 import com.epam.esm.entity.Tag;
 import org.springframework.stereotype.Repository;
@@ -39,6 +38,7 @@ public class TagDaoImpl implements TagDao {
     private static final String FIND_ALL_TAGS = "select t from Tag t order by t.name ";
     private static final String FIND_TAG_BY_NAME = "select t from Tag t where t.name = ?1";
     private static final String TOTAL_NUMBER_OF_ITEMS = "select count(t) from Tag t";
+
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -56,16 +56,13 @@ public class TagDaoImpl implements TagDao {
 
     @Override
     public List<Tag> findAll(QueryParameter queryParameter) {
-        return null;
+        return entityManager.createQuery
+                (FIND_ALL_TAGS + queryParameter.getSortingDirection(),
+                        Tag.class)
+                .setFirstResult(queryParameter.getFirstValue())
+                .setMaxResults(queryParameter.getSize())
+                .getResultList();
     }
-
-//    @Override
-//    public List<Tag> findAll(ApplicationPage page, QueryParameter.SortingDirection orderBy) {
-//        return entityManager.createQuery(FIND_ALL_TAGS + orderBy.name(), Tag.class)
-//                .setFirstResult(page.getFirstValue())
-//                .setMaxResults(page.getSize())
-//                .getResultList();
-//    }
 
     @Override
     public long getTotalNumberOfItems() {
@@ -75,7 +72,8 @@ public class TagDaoImpl implements TagDao {
     @Override
     @Transactional
     public boolean remove(Tag tag) {
-        entityManager.remove(tag);
+        // TODO: 1/3/2022 check is part of gc
+        entityManager.remove(entityManager.contains(tag) ? tag : entityManager.merge(tag));
         return tag != null;
     }
 
@@ -83,12 +81,12 @@ public class TagDaoImpl implements TagDao {
     public Optional<Tag> findByName(String name) {
         return entityManager.createQuery(FIND_TAG_BY_NAME, Tag.class)
                 .setParameter(1, name)
-                .getResultList().stream()
+                .getResultStream()
                 .findFirst();
     }
 
     @Override
-    public Optional<Tag> findMostUsedTag(int id) {
+    public Optional<Tag> findMostUsedTag(long id) {
         return entityManager.createNativeQuery(GET_MOST_USED, Tag.class)
                 .setParameter(1, id)
                 .getResultStream()

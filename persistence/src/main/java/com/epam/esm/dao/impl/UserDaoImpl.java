@@ -1,7 +1,7 @@
 package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.UserDao;
-import com.epam.esm.entity.ApplicationPage;
+import com.epam.esm.entity.QueryParameter;
 import com.epam.esm.entity.User;
 import org.springframework.stereotype.Repository;
 
@@ -13,7 +13,7 @@ import java.util.Optional;
 @Repository
 public class UserDaoImpl implements UserDao {
 
-    public static final String FIND_ALL_USERS = "select u from User u";
+    public static final String FIND_ALL_USERS = "select u from User u order by u.login ";
     private static final String TOTAL_NUMBER_OF_ITEMS = "select count(u) from User u";
 
     @PersistenceContext
@@ -25,10 +25,12 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public List<User> findAll(ApplicationPage page) {
-        return entityManager.createQuery(FIND_ALL_USERS, User.class)
-                .setFirstResult(page.getFirstValue())
-                .setMaxResults(page.getSize())
+    public List<User> findAll(QueryParameter queryParameter) {
+        return entityManager.createQuery
+                (FIND_ALL_USERS + queryParameter.getSortingDirection(),
+                        User.class)
+                .setFirstResult(queryParameter.getFirstValue())
+                .setMaxResults(queryParameter.getSize())
                 .getResultList();
     }
 

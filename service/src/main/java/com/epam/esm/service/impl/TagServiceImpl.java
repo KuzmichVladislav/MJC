@@ -4,7 +4,6 @@ import com.epam.esm.dao.TagDao;
 import com.epam.esm.dto.PageWrapper;
 import com.epam.esm.dto.QueryParameterDto;
 import com.epam.esm.dto.TagDto;
-import com.epam.esm.entity.ApplicationPage;
 import com.epam.esm.entity.QueryParameter;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.ExceptionKey;
@@ -12,6 +11,7 @@ import com.epam.esm.exception.RequestValidationException;
 import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.service.TagService;
 import com.epam.esm.util.ListConverter;
+import com.epam.esm.util.TotalPageCountCalculator;
 import com.epam.esm.validator.TagRequestValidator;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,16 +31,19 @@ public class TagServiceImpl implements TagService {
     private final ModelMapper modelMapper;
     private final ListConverter listConverter;
     private final TagRequestValidator tagRequestValidator;
+    private final TotalPageCountCalculator totalPageCountCalculator;
 
     @Autowired
     public TagServiceImpl(TagDao tagDao,
                           ModelMapper modelMapper,
                           ListConverter listConverter,
-                          TagRequestValidator tagRequestValidator) {
+                          TagRequestValidator tagRequestValidator,
+                          TotalPageCountCalculator totalPageCountCalculator) {
         this.tagDao = tagDao;
         this.modelMapper = modelMapper;
         this.listConverter = listConverter;
         this.tagRequestValidator = tagRequestValidator;
+        this.totalPageCountCalculator = totalPageCountCalculator;
     }
 
     @Override
@@ -59,48 +62,29 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public TagDto findById(String id) {
-        long longId;
-        try {
-            longId = Long.parseLong(id);
-            tagRequestValidator.checkId(longId);
-        } catch (NumberFormatException e) {
-            throw new RequestValidationException(ExceptionKey.CERTIFICATE_ID_IS_NOT_VALID, String.valueOf(id));
-        }
-        return convertToTagDto(tagDao.findById(longId).orElseThrow(() ->
-                new ResourceNotFoundException(ExceptionKey.TAG_NOT_FOUND, id)));
+    public TagDto findById(long id) {
+        return convertToTagDto(tagDao.findById(id).orElseThrow(() ->
+                new ResourceNotFoundException(ExceptionKey.TAG_NOT_FOUND, String.valueOf(id))));
     }
+
 
     @Override
-    public PageWrapper<TagDto> findAll(QueryParameterDto queryParameterDto) {
-        return null;
-    }
-
-    public TagDto findMostUsedTag(int id) {
+    public TagDto findMostUsedTag(long id) {
         return modelMapper.map(tagDao.findMostUsedTag(id).get(), TagDto.class);
     }
 
-//
-//    @Override
-//    public List<TagDto> findAll(int page, int size, QueryParameterDto.OrderParameter orderByDto) {
-//        int totalPage = (int) Math.ceil(tagDao.getTotalNumberOfItems() / (double) size);
-//        if (page > totalPage) {
-//            // TODO: 12/27/2021 throw new exception
-//        }
-//        ApplicationPage tagPage = ApplicationPage.builder()
-//                .size(size)
-//                .firstValue(page * size - size)
-//                .totalPage(totalPage)
-//                .build();
-//        // TODO: 12/29/2021 add exception
-////        SortOrderBy sortOrderBy = SortOrderBy.valueOf(orderByDto);
-//        QueryParameter.SortingDirection orderBy = modelMapper.map(orderByDto, QueryParameter.SortingDirection.class);
-//        return listConverter.convertList(tagDao.findAll(tagPage, orderBy), this::convertToTagDto);
-//    }
+
+    @Override
+    public PageWrapper<TagDto> findAll(QueryParameterDto queryParameterDto) {
+        long totalNumberOfItems = tagDao.getTotalNumberOfItems();
+        int totalPage = totalPageCountCalculator.getTotalPage(queryParameterDto, totalNumberOfItems);
+        List<TagDto> tags = listConverter.convertList(tagDao.findAll(modelMapper.map(queryParameterDto, QueryParameter.class)), this::convertToTagDto);
+        return new PageWrapper<>(tags, totalPage);
+    }
 
     @Override
     @Transactional
-    public boolean removeById(String id) {
+    public boolean removeById(long id) {
         TagDto tagDto = findById(id);
         return tagDao.remove(modelMapper.map(tagDto, Tag.class));
     }

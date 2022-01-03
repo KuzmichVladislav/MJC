@@ -18,25 +18,10 @@ import java.util.Optional;
 @Repository
 public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
-    private final GiftCertificateQueryCreator giftCertificateQueryCreator;
-
-    private static final String FIND_ALL_GIFT_CERTIFICATES = "select gc from GiftCertificate gc where gc.isRemoved = false";
     private static final String REMOVE_GIFT_CERTIFICATE = "update GiftCertificate gc set gc.isRemoved = true where gc.id = ?1";
     private static final String TOTAL_NUMBER_OF_ITEMS = "select count(gc) from GiftCertificate gc";
-
-/*
-    private static final String FIND_CERTIFICATES_BY_PARAMETERS =
-            "SELECT DISTINCT gift_certificate.id,\n" +
-                    "                gift_certificate.name,\n" +
-                    "                gift_certificate.description,\n" +
-                    "                gift_certificate.price,\n" +
-                    "                gift_certificate.duration,\n" +
-                    "                gift_certificate.create_date,\n" +
-                    "                gift_certificate.last_update_date\n" +
-                    "FROM gift_certificate\n" +
-                    "         LEFT JOIN gift_certificate_tag_include gcti on gift_certificate.id = gcti.gift_certificate_id\n" +
-                    "         LEFT JOIN tag t on t.id = gcti.tag_id\n";
-*/
+    private static final String FIND_ALL_GIFT_CERTIFICATES = "select gc from GiftCertificate gc left join gc.tags t";
+    private final GiftCertificateQueryCreator giftCertificateQueryCreator;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -59,21 +44,14 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
     @Override
     public List<GiftCertificate> findAll(QueryParameter queryParameter) {
+        // TODO: 1/3/2022 fix removed
         return entityManager.createQuery
-                ("select gc " +
-                        "from GiftCertificate gc left join gc.tags t" + giftCertificateQueryCreator.mapRequestParameters(queryParameter),
+                (FIND_ALL_GIFT_CERTIFICATES + giftCertificateQueryCreator.mapRequestParameters(queryParameter),
                         GiftCertificate.class)
                 .setFirstResult(queryParameter.getFirstValue())
                 .setMaxResults(queryParameter.getSize())
                 .getResultList();
     }
-//    @Override
-//    public List<GiftCertificate> findAll(ApplicationPage page) {
-//        return entityManager.createQuery(FIND_ALL_GIFT_CERTIFICATES, GiftCertificate.class)
-//                .setFirstResult(page.getFirstValue())
-//                .setMaxResults(page.getSize())
-//                .getResultList();
-//    }
 
     @Override
     public long getTotalNumberOfItems() {
@@ -83,24 +61,14 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     @Override
     @Transactional
     public boolean remove(GiftCertificate giftCertificate) {
-        entityManager.createQuery(REMOVE_GIFT_CERTIFICATE)
+        int result = entityManager.createQuery(REMOVE_GIFT_CERTIFICATE)
                 .setParameter(1, giftCertificate.getId()).executeUpdate();
-        return false;        // FIXME: 12/24/2021 return
+        return result > 0;
     }
 
     @Override
     @Transactional
     public void update(GiftCertificate giftCertificate) {
         entityManager.merge(giftCertificate);
-    }
-
-    @Override
-    public List<GiftCertificate> findByParameters(QueryParameter requestParameter) {
-        return null;// TODO: 12/24/2021
-/*
-        String sqlQuery = FIND_CERTIFICATES_BY_PARAMETERS +
-                giftCertificateQueryCreator.mapRequestParameters(requestParameter);
-        return jdbcTemplate.query(sqlQuery, giftCertificateMapper);
-*/
     }
 }
