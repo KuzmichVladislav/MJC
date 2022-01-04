@@ -16,6 +16,6 @@ import java.util.List;
 @Builder
 public class ExceptionResult {
 
-    private List<String> errorMessage;
+    private String errorMessage;
     private int errorCode;
 }

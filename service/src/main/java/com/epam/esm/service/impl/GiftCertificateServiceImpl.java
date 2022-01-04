@@ -9,6 +9,7 @@ import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.QueryParameter;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.ExceptionKey;
+import com.epam.esm.exception.RequestValidationException;
 import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.TagService;
@@ -36,7 +37,6 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     private final ListConverter listConverter;
     private final TotalPageCountCalculator totalPageCountCalculator;
 
-
     @Autowired
     public GiftCertificateServiceImpl(GiftCertificateDao giftCertificateDao,
                                       TagService tagService,
@@ -53,6 +53,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     @Transactional
     public GiftCertificateDto add(GiftCertificateDto giftCertificateDto) {
+        checkGiftCertificateFields(giftCertificateDto);
         giftCertificateDto.setCreateDate(LocalDateTime.now());
         giftCertificateDto.setLastUpdateDate(LocalDateTime.now());
         findAndSetTags(giftCertificateDto);
@@ -71,7 +72,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     public PageWrapper<GiftCertificateDto> findAll(QueryParameterDto queryParameterDto) {
         long totalNumberOfItems = giftCertificateDao.getTotalNumberOfItems();
         int totalPage = totalPageCountCalculator.getTotalPage(queryParameterDto, totalNumberOfItems);
-        List<GiftCertificateDto> giftCertificates = listConverter.convertList(giftCertificateDao.findAll(modelMapper.map(queryParameterDto, QueryParameter.class)), this::convertToGiftCertificateDto);
+        List<GiftCertificateDto> giftCertificates =
+                listConverter.convertList(giftCertificateDao.findAll(modelMapper.map(queryParameterDto, QueryParameter.class)),
+                        this::convertToGiftCertificateDto);
         return new PageWrapper<>(giftCertificates, totalPage);
     }
 
@@ -82,7 +85,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         giftCertificateDto.setLastUpdateDate(LocalDateTime.now());
         findAndSetTags(giftCertificateDto);
         GiftCertificateDto existing = findById(id);
-        extracted(giftCertificateDto, existing);
+        copyNonNullProperties(giftCertificateDto, existing);
         giftCertificateDao.update(modelMapper.map(existing, GiftCertificate.class));
         return existing;
     }
@@ -93,7 +96,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         return giftCertificateDao.remove(modelMapper.map(findById(id), GiftCertificate.class));
     }
 
-    private void extracted(GiftCertificateDto giftCertificateDto, GiftCertificateDto existing) {
+    private void copyNonNullProperties(GiftCertificateDto giftCertificateDto, GiftCertificateDto existing) {
         giftCertificateDto.setCreateDate(existing.getCreateDate());
         if (giftCertificateDto.getName() == null) {
             giftCertificateDto.setName(existing.getName());
@@ -130,5 +133,20 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
                     .collect(Collectors.toList());
         }
         giftCertificateDto.setTags(tags);
+    }
+
+    private void checkGiftCertificateFields(GiftCertificateDto giftCertificateDto) {
+        if (giftCertificateDto.getName() == null) {
+            throw new RequestValidationException(ExceptionKey.TAG_NAME_MIGHT_NOT_BE_NULL);
+        }
+        if (giftCertificateDto.getDescription() == null) {
+            throw new RequestValidationException(ExceptionKey.CERTIFICATE_DESCRIPTION_MIGHT_NOT_BE_NULL);
+        }
+        if (giftCertificateDto.getPrice() == null) {
+            throw new RequestValidationException(ExceptionKey.CERTIFICATE_PRICE_MIGHT_NOT_BE_NULL);
+        }
+        if (giftCertificateDto.getDuration() == null) {
+            throw new RequestValidationException(ExceptionKey.CERTIFICATE_DURATION_MIGHT_NOT_BE_NULL);
+        }
     }
 }

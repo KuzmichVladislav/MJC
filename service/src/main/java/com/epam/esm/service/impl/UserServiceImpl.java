@@ -25,7 +25,6 @@ public class UserServiceImpl implements UserService {
     private final ListConverter listConverter;
     private final TotalPageCountCalculator totalPageCountCalculator;
 
-
     @Autowired
     public UserServiceImpl(UserDao userDao,
                            ModelMapper modelMapper,
@@ -49,25 +48,12 @@ public class UserServiceImpl implements UserService {
                 new ResourceNotFoundException(ExceptionKey.USER_NOT_FOUND, String.valueOf(id))));
     }
 
-//    @Override
-//    public UserDto findById(String id) {
-//        // TODO: 12/26/2021
-//        long longId;
-//        try {
-//            longId = Long.parseLong(id);
-//            userRequestValidator.checkId(longId);
-//        } catch (NumberFormatException e) {
-//            throw new RequestValidationException(ExceptionKey.CERTIFICATE_ID_IS_NOT_VALID, String.valueOf(id));
-//        }
-//        return convertToUserDto(userDao.findById(longId).orElseThrow(() ->
-//                new ResourceNotFoundException(ExceptionKey.USER_NOT_FOUND, id)));
-//    }
-
     @Override
     public PageWrapper<UserDto> findAll(QueryParameterDto queryParameterDto) {
         long totalNumberOfItems = userDao.getTotalNumberOfItems();
         int totalPage = totalPageCountCalculator.getTotalPage(queryParameterDto, totalNumberOfItems);
-        List<UserDto> users = listConverter.convertList(userDao.findAll(modelMapper.map(queryParameterDto, QueryParameter.class)), this::convertToUserDto);
+        List<UserDto> users = listConverter.convertList(userDao.findAll(modelMapper.map(queryParameterDto,
+                QueryParameter.class)), this::convertToUserDto);
         return new PageWrapper<>(users, totalPage);
     }
 

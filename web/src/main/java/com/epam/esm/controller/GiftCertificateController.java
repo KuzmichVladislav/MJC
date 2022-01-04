@@ -56,13 +56,16 @@ public class GiftCertificateController {
 
     // TODO: 1/3/2022
     @GetMapping
-    public PageWrapper<GiftCertificateDto> getAllGiftCertificates(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
-                                                                  @RequestParam(value = "size", required = false, defaultValue = "10") int size,
-                                                                  @RequestParam(value = "name", required = false) Optional<String> name,
-                                                                  @RequestParam(value = "description", required = false) Optional<String> description,
-                                                                  @RequestParam(value = "tag-name", required = false) Optional<List<String>> tagNames,
-                                                                  @RequestParam(value = "sort", required = false, defaultValue = "NAME") QueryParameterDto.SortParameter sortParameter,
-                                                                  @RequestParam(value = "order-by", required = false, defaultValue = "ASC") QueryParameterDto.SortingDirection sortingDirection) {
+    public PageWrapper<GiftCertificateDto>
+    getAllGiftCertificates(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
+                           @RequestParam(value = "size", required = false, defaultValue = "10") int size,
+                           @RequestParam(value = "name", required = false) Optional<String> name,
+                           @RequestParam(value = "description", required = false) Optional<String> description,
+                           @RequestParam(value = "tag-name", required = false) Optional<List<String>> tagNames,
+                           @RequestParam(value = "sort", required = false, defaultValue = "NAME")
+                                   QueryParameterDto.SortParameter sortParameter,
+                           @RequestParam(value = "order-by", required = false, defaultValue = "ASC")
+                                   QueryParameterDto.SortingDirection sortingDirection) {
         QueryParameterDto queryParameterDto = QueryParameterDto.builder()
                 .page(page)
                 .size(size)
@@ -99,7 +102,7 @@ public class GiftCertificateController {
      */
     @PatchMapping("/{id}")
     public GiftCertificateDto updateGiftCertificate(@PathVariable("id") @Min(1) long id,
-                                                    @RequestBody GiftCertificateDto giftCertificateDto) {
+                                                    @Valid @RequestBody GiftCertificateDto giftCertificateDto) {
         GiftCertificateDto resultGiftCertificate = giftCertificateService.update(id, giftCertificateDto);
         linkCreator.addGiftCertificateLinks(resultGiftCertificate);
         return resultGiftCertificate;

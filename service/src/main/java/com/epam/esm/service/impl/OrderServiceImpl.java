@@ -10,9 +10,7 @@ import com.epam.esm.exception.ExceptionKey;
 import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.OrderService;
-import com.epam.esm.util.ListConverter;
 import com.epam.esm.util.TotalPageCountCalculator;
-import com.epam.esm.validator.UserRequestValidator;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -54,7 +52,7 @@ public class OrderServiceImpl implements OrderService {
         orderDto.setPurchaseTime(LocalDateTime.now());
         Order order = orderDao.add(modelMapper.map(orderDto, Order.class));
         List<GiftCertificateDto> giftCertificates = orderDto.getOrderCertificateDetails().stream()
-                .map(t -> giftCertificateService.findById(t.getGiftCertificate().getId())) // TODO: 1/3/2022
+                .map(t -> giftCertificateService.findById(t.getGiftCertificate().getId()))
                 .collect(Collectors.toList());
         Map<GiftCertificateDto, Long> collect = giftCertificates.stream()
                 .collect(Collectors.groupingBy(Function.identity(), counting()));
@@ -87,21 +85,6 @@ public class OrderServiceImpl implements OrderService {
         List<OrderDto> orderDtos = orders.stream().map(this::getOrderDto).collect(Collectors.toList());
         return new PageWrapper<>(orderDtos, totalPage);
     }
-
-//    @Override
-//    public OrderDto findById(String id) {
-//        long longId;
-//        try {
-//            longId = Long.parseLong(id);
-//            userRequestValidator.checkId(longId);
-//        } catch (NumberFormatException e) {
-//            throw new RequestValidationException(ExceptionKey.CERTIFICATE_ID_IS_NOT_VALID, String.valueOf(id));// TODO: 12/24/2021
-//        }
-//        Order order = orderDao.findById(longId).orElseThrow(() ->
-//                new ResourceNotFoundException(ExceptionKey.USER_NOT_FOUND, id));
-//        return getOrderDto(order);
-//    }
-
 
     @Override
     public boolean removeById(long id) {

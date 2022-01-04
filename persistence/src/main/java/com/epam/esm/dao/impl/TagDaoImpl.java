@@ -1,6 +1,7 @@
 package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.TagDao;
+import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.QueryParameter;
 import com.epam.esm.entity.Tag;
 import org.springframework.stereotype.Repository;
@@ -37,6 +38,7 @@ public class TagDaoImpl implements TagDao {
             "         LIMIT 1) AS outer_table";
     private static final String FIND_ALL_TAGS = "select t from Tag t order by t.name ";
     private static final String FIND_TAG_BY_NAME = "select t from Tag t where t.name = ?1";
+    private static final String IS_TAG_PART_OF_GIFT_CERTIFICATE = "select gc from GiftCertificate gc left join gc.tags t WHERE t.id = ?1";
     private static final String TOTAL_NUMBER_OF_ITEMS = "select count(t) from Tag t";
 
     @PersistenceContext
@@ -73,7 +75,7 @@ public class TagDaoImpl implements TagDao {
     @Transactional
     public boolean remove(Tag tag) {
         // TODO: 1/3/2022 check is part of gc
-        entityManager.remove(entityManager.contains(tag) ? tag : entityManager.merge(tag));
+        entityManager.remove(tag);
         return tag != null;
     }
 
@@ -91,5 +93,13 @@ public class TagDaoImpl implements TagDao {
                 .setParameter(1, id)
                 .getResultStream()
                 .findFirst();
+    }
+
+    @Override
+    public boolean isPartOfGiftCertificate(long id) {
+        return entityManager.createQuery(IS_TAG_PART_OF_GIFT_CERTIFICATE, GiftCertificate.class)
+                .setParameter(1, id)
+                .getResultStream()
+                .findFirst().isPresent();
     }
 }

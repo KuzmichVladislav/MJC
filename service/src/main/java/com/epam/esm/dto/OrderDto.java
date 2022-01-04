@@ -1,5 +1,6 @@
 package com.epam.esm.dto;
 
+import com.epam.esm.exception.ExceptionKey;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +14,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.epam.esm.exception.ExceptionKey.TAG_NAME_IS_NOT_VALID;
+import static com.epam.esm.exception.ExceptionKey.USER_ID_IS_NOT_VALID;
 
 @Data
 @NoArgsConstructor
@@ -22,8 +23,8 @@ import static com.epam.esm.exception.ExceptionKey.TAG_NAME_IS_NOT_VALID;
 public class OrderDto extends RepresentationModel<OrderDto> {
 
     private long id;
-    @NotNull(message = TAG_NAME_IS_NOT_VALID) // TODO: 12/29/2021
-    @Min(value = 0, message = TAG_NAME_IS_NOT_VALID)  // TODO: 12/29/2021
+    @NotNull(message = ExceptionKey.USER_ID_MIGHT_NOT_BE_NULL) // FIXME: 1/4/2022
+    @Min(value = 0, message = USER_ID_IS_NOT_VALID)
     private long userId;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime purchaseTime;

@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import java.util.List;
 
@@ -30,7 +31,7 @@ public class OrderController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public OrderDto addOrder(@RequestBody OrderDto orderDto) {
+    public OrderDto addOrder(@Valid @RequestBody OrderDto orderDto) {
         OrderDto resultOrder = orderService.add(orderDto);
         linkCreator.addOrderLinks(resultOrder);
         return resultOrder;
@@ -39,7 +40,8 @@ public class OrderController {
     @GetMapping
     public PageWrapper<OrderDto> getAllOrders(@RequestParam(required = false, defaultValue = "1") int page,
                                               @RequestParam(required = false, defaultValue = "10") int size,
-                                              @RequestParam(value = "order-by", required = false, defaultValue = "ASC") QueryParameterDto.SortingDirection sortingDirection) {
+                                              @RequestParam(value = "order-by", required = false, defaultValue = "ASC")
+                                                          QueryParameterDto.SortingDirection sortingDirection) {
         QueryParameterDto queryParameterDto = QueryParameterDto.builder()
                 .page(page)
                 .size(size)

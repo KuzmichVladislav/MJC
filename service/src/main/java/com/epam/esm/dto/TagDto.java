@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-import static com.epam.esm.exception.ExceptionKey.TAG_NAME_IS_NOT_VALID;
+import static com.epam.esm.exception.ExceptionKey.*;
 
 /**
  * DTO Class GiftCertificate for tag DTO object
@@ -22,8 +22,8 @@ import static com.epam.esm.exception.ExceptionKey.TAG_NAME_IS_NOT_VALID;
 public class TagDto extends RepresentationModel<TagDto> {
 
     private long id;
-    @NotNull(message = TAG_NAME_IS_NOT_VALID) // TODO: 12/29/2021
-    @Size(min = 2, max = 16, message = TAG_NAME_IS_NOT_VALID) // TODO: 12/29/2021
-    @Pattern(regexp = "^[\\w_]", message = TAG_NAME_IS_NOT_VALID) // TODO: 12/29/2021
+    @NotNull(message = TAG_NAME_MIGHT_NOT_BE_NULL)
+    @Size(min = 2, max = 16, message = TAG_NAME_LENGTH_IS_NOT_VALID)
+    @Pattern(regexp = "^[\\w_]{2,16}$", message = TAG_NAME_IS_NOT_VALID)
     private String name;
 }

@@ -12,7 +12,6 @@ import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.service.TagService;
 import com.epam.esm.util.ListConverter;
 import com.epam.esm.util.TotalPageCountCalculator;
-import com.epam.esm.validator.TagRequestValidator;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,19 +29,16 @@ public class TagServiceImpl implements TagService {
     private final TagDao tagDao;
     private final ModelMapper modelMapper;
     private final ListConverter listConverter;
-    private final TagRequestValidator tagRequestValidator;
     private final TotalPageCountCalculator totalPageCountCalculator;
 
     @Autowired
     public TagServiceImpl(TagDao tagDao,
                           ModelMapper modelMapper,
                           ListConverter listConverter,
-                          TagRequestValidator tagRequestValidator,
                           TotalPageCountCalculator totalPageCountCalculator) {
         this.tagDao = tagDao;
         this.modelMapper = modelMapper;
         this.listConverter = listConverter;
-        this.tagRequestValidator = tagRequestValidator;
         this.totalPageCountCalculator = totalPageCountCalculator;
     }
 
@@ -51,7 +47,6 @@ public class TagServiceImpl implements TagService {
     public TagDto add(TagDto tagDto) {
         String tagName = tagDto.getName();
         if (findByName(tagName).isEmpty()) {
-            tagRequestValidator.checkName(tagName);
             Tag tag = modelMapper.map(tagDto, Tag.class);
             tagDto.setId(tagDao.add(tag).getId());
             return tagDto;
@@ -70,6 +65,7 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public TagDto findMostUsedTag(long id) {
+        // FIXME: 1/3/2022 orElse?
         return modelMapper.map(tagDao.findMostUsedTag(id).get(), TagDto.class);
     }
 
@@ -85,8 +81,12 @@ public class TagServiceImpl implements TagService {
     @Override
     @Transactional
     public boolean removeById(long id) {
-        TagDto tagDto = findById(id);
-        return tagDao.remove(modelMapper.map(tagDto, Tag.class));
+        if (tagDao.isPartOfGiftCertificate(id)) {
+            throw new RequestValidationException(ExceptionKey.TAG_BELONGS_TO_CERTIFICATE, String.valueOf(id));
+        }
+        return tagDao.remove(tagDao.findById(id).orElseThrow(() ->
+                new ResourceNotFoundException(ExceptionKey.TAG_NOT_FOUND, String.valueOf(id))));
+// FIXME: 1/4/2022 catch (SQLIntegrityConstraintViolationException e){
     }
 
     @Override

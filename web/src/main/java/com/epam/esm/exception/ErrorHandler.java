@@ -13,9 +13,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Locale;
 
 /**
@@ -34,10 +31,10 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public ExceptionResult handle(MethodArgumentNotValidException e, Locale locale) {
-        List<String> errorMessage = new ArrayList<>();
-        e.getBindingResult().getAllErrors().forEach(error ->
-                errorMessage.add(createMessage(locale, error.getDefaultMessage(), (String) ((FieldError) error).getRejectedValue())));
-        return new ExceptionResult(errorMessage, ErrorCode.NOT_VALID_PARAM.getCode());
+        StringBuilder errorMessage = new StringBuilder();
+        e.getBindingResult().getAllErrors().forEach(error -> errorMessage.append(createMessage(locale, error.getDefaultMessage(),
+                String.valueOf(((FieldError) error).getRejectedValue()))));
+        return new ExceptionResult(errorMessage.toString(), ErrorCode.NOT_VALID_PARAM.getCode());
     }
 
     /**
@@ -52,7 +49,7 @@ public class ErrorHandler {
     @ResponseBody
     public ExceptionResult handle(ResourceNotFoundException e, Locale locale) {
         String errorMessage = createMessage(locale, e.getMessageKey(), e.getMessageParameter());
-        return new ExceptionResult(Collections.singletonList(errorMessage), ErrorCode.RESOURCE_NOT_FOUND.getCode());
+        return new ExceptionResult(errorMessage, ErrorCode.RESOURCE_NOT_FOUND.getCode());
     }
 
     /**
@@ -67,7 +64,7 @@ public class ErrorHandler {
     @ResponseBody
     public ExceptionResult handle(RequestValidationException e, Locale locale) {
         String errorMessage = createMessage(locale, e.getMessageKey(), e.getMessageParameter());
-        return new ExceptionResult(Collections.singletonList(errorMessage), ErrorCode.NOT_VALID_PARAM.getCode());
+        return new ExceptionResult(errorMessage, ErrorCode.NOT_VALID_PARAM.getCode());
     }
 
     /**
@@ -81,22 +78,22 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
     public ExceptionResult handle(NoHandlerFoundException e, Locale locale) {
-        return new ExceptionResult(Collections.singletonList(e.getMessage()), ErrorCode.HANDLER_NOT_FOUND.getCode());
+        return new ExceptionResult(e.getMessage(), ErrorCode.HANDLER_NOT_FOUND.getCode());
     }
-// TODO: 12/23/2021  
-//    /**
-//     * Handle RuntimeException.
-//     *
-//     * @param e      the exception
-//     * @param locale the locale
-//     * @return the exception result
-//     */
-//    @ExceptionHandler(RuntimeException.class)
-//    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-//    @ResponseBody
-//    public ExceptionResult handle(RuntimeException e, Locale locale) {
-//        return new ExceptionResult(e.getMessage(), ErrorCode.INTERNAL_ERROR.getCode());
-//    }
+
+    /**
+     * Handle RuntimeException.
+     *
+     * @param e      the exception
+     * @param locale the locale
+     * @return the exception result
+     */
+    @ExceptionHandler(RuntimeException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseBody
+    public ExceptionResult handle(RuntimeException e, Locale locale) {
+        return new ExceptionResult(e.getMessage(), ErrorCode.INTERNAL_ERROR.getCode());
+    }
 
     /**
      * Handle HttpRequestMethodNotSupportedException.
@@ -109,7 +106,7 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     @ResponseBody
     public ExceptionResult handle(HttpRequestMethodNotSupportedException e, Locale locale) {
-        return new ExceptionResult(Collections.singletonList(e.getMessage()), ErrorCode.METHOD_NOT_ALLOWED.getCode());
+        return new ExceptionResult(e.getMessage(), ErrorCode.METHOD_NOT_ALLOWED.getCode());
     }
 
     /**
@@ -123,14 +120,14 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
     @ResponseBody
     public ExceptionResult handle(HttpMediaTypeNotSupportedException e, Locale locale) {
-        return new ExceptionResult(Collections.singletonList(e.getMessage()), ErrorCode.UNSUPPORTED_MEDIA_TYPE.getCode());
+        return new ExceptionResult(e.getMessage(), ErrorCode.UNSUPPORTED_MEDIA_TYPE.getCode());
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public ExceptionResult handle(MethodArgumentTypeMismatchException e, Locale locale) {
-        return new ExceptionResult(Collections.singletonList(e.getMessage()), ErrorCode.NOT_VALID_PARAM.getCode());
+        return new ExceptionResult(e.getMessage(), ErrorCode.NOT_VALID_PARAM.getCode());
     }
 
     private String createMessage(Locale locale, String messageKey, String messageParameter) {
