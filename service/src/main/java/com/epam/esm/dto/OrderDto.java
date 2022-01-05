@@ -23,7 +23,7 @@ import static com.epam.esm.exception.ExceptionKey.USER_ID_IS_NOT_VALID;
 public class OrderDto extends RepresentationModel<OrderDto> {
 
     private long id;
-    @NotNull(message = ExceptionKey.USER_ID_MIGHT_NOT_BE_NULL) // FIXME: 1/4/2022
+    @NotNull(message = ExceptionKey.USER_ID_MIGHT_NOT_BE_NULL)
     @Min(value = 0, message = USER_ID_IS_NOT_VALID)
     private long userId;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")

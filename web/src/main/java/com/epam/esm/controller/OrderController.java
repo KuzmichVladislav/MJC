@@ -41,7 +41,7 @@ public class OrderController {
     public PageWrapper<OrderDto> getAllOrders(@RequestParam(required = false, defaultValue = "1") int page,
                                               @RequestParam(required = false, defaultValue = "10") int size,
                                               @RequestParam(value = "order-by", required = false, defaultValue = "ASC")
-                                                          QueryParameterDto.SortingDirection sortingDirection) {
+                                                      QueryParameterDto.SortingDirection sortingDirection) {
         QueryParameterDto queryParameterDto = QueryParameterDto.builder()
                 .page(page)
                 .size(size)

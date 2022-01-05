@@ -32,4 +32,7 @@ subprojects {
         implementation 'org.hibernate:hibernate-validator:7.0.2.Final'
         implementation 'javax.validation:validation-api:2.0.1.Final'
     }
+    test {
+        useJUnitPlatform()
+    }
 }

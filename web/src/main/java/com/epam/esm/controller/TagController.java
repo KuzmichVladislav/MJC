@@ -47,7 +47,7 @@ public class TagController {
     public PageWrapper<TagDto> getAllTags(@RequestParam(required = false, defaultValue = "1") int page,
                                           @RequestParam(required = false, defaultValue = "10") int size,
                                           @RequestParam(value = "order-by", required = false, defaultValue = "ASC")
-                                                      QueryParameterDto.SortingDirection sortingDirection) {
+                                                  QueryParameterDto.SortingDirection sortingDirection) {
         QueryParameterDto queryParameterDto = QueryParameterDto.builder()
                 .page(page)
                 .size(size)
@@ -96,7 +96,7 @@ public class TagController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("/users/{id}/most")
+    @GetMapping("/users/{id}/most-used")
     public TagDto findMostUsedTag(@PathVariable("id") @Min(1) long id) {
         TagDto resultTag = tagService.findMostUsedTag(id);
         linkCreator.addTagLinks(resultTag);

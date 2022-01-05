@@ -66,7 +66,7 @@ public class OrderServiceImpl implements OrderService {
             orderDao.addGiftCertificateToOrder(orderCertificateDetails);
             orderCertificateDetailsSet.add(orderCertificateDetails);
         });
-        order.setOrderCertificates(orderCertificateDetailsSet);
+        order.setOrderCertificateDetails(orderCertificateDetailsSet);
         return getOrderDto(order);
     }
 
@@ -111,7 +111,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private List<OrderCertificateDetailsDto> getOrderCertificateDetails(Order order) {
-        return order.getOrderCertificates().stream()
+        return order.getOrderCertificateDetails().stream()
                 .map(t -> {
                     GiftCertificateDto giftCertificate = modelMapper.map(t.getGiftCertificate(), GiftCertificateDto.class);
                     giftCertificate.setPrice(t.getGiftCertificateCost());

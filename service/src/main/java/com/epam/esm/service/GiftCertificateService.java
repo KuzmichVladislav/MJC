@@ -1,9 +1,6 @@
 package com.epam.esm.service;
 
 import com.epam.esm.dto.GiftCertificateDto;
-import com.epam.esm.dto.QueryParameterDto;
-
-import java.util.List;
 
 /**
  * The Interface GiftCertificateService.

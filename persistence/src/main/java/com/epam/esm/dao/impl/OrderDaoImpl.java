@@ -57,7 +57,7 @@ public class OrderDaoImpl implements OrderDao {
         } else {
             entityManager.remove(entityManager.merge(order));
         }
-        return order != null; // FIXME: 12/27/2021
+        return order != null;
     }
 
     @Override

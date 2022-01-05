@@ -31,11 +31,23 @@ public interface BaseDao<T> {
     /**
      * Find all entities.
      *
+     * @param queryParameter the query parameter
      * @return the list of entity
      */
     List<T> findAll(QueryParameter queryParameter);
 
+    /**
+     * Gets total number of items.
+     *
+     * @return the total number of items
+     */
     long getTotalNumberOfItems();
 
+    /**
+     * Remove boolean.
+     *
+     * @param t the entity
+     * @return the boolean
+     */
     boolean remove(T t);
 }

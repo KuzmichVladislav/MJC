@@ -1,6 +1,5 @@
 package com.epam.esm.dto;
 
-import com.epam.esm.exception.ExceptionKey;
 import lombok.*;
 
 import javax.validation.constraints.Min;
@@ -8,7 +7,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.epam.esm.exception.ExceptionKey.PAGE_MIGHT_NOT_BE_NEGATIVE;
-import static com.epam.esm.exception.ExceptionKey.SIZE_MIGHT_NOT_BE_NEGATIVE;
 
 /**
  * DTO Class GiftCertificateQueryParameterDto contains parameters for generation query

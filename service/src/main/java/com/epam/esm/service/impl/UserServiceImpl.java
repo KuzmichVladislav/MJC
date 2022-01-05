@@ -37,12 +37,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto add(UserDto userDto) {
-        // FIXME: 12/24/2021
-        return null;
-    }
-
-    @Override
     public UserDto findById(long id) {
         return convertToUserDto(userDao.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException(ExceptionKey.USER_NOT_FOUND, String.valueOf(id))));
@@ -55,13 +49,6 @@ public class UserServiceImpl implements UserService {
         List<UserDto> users = listConverter.convertList(userDao.findAll(modelMapper.map(queryParameterDto,
                 QueryParameter.class)), this::convertToUserDto);
         return new PageWrapper<>(users, totalPage);
-    }
-
-
-    @Override
-    public boolean removeById(long id) {
-        // FIXME: 12/24/2021
-        return false;
     }
 
     private UserDto convertToUserDto(User user) {

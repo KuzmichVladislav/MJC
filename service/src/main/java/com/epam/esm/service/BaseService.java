@@ -1,7 +1,7 @@
 package com.epam.esm.service;
 
-import com.epam.esm.dto.QueryParameterDto;
 import com.epam.esm.dto.PageWrapper;
+import com.epam.esm.dto.QueryParameterDto;
 
 /**
  * A generic interface for the Service layer. The interface

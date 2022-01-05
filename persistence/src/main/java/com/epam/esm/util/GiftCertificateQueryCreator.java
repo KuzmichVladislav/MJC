@@ -17,6 +17,7 @@ public class GiftCertificateQueryCreator {
     private static final String ORDER_BY = " ORDER BY gc.{0} {1}";
     private static final String WHERE = " WHERE ";
     private static final String AND = " AND ";
+    private static final String IS_ACTIVE = " AND gc.isActive = true ";
 
     public String mapRequestParameters(QueryParameter requestParameter) {
         StringBuilder builder = new StringBuilder();
@@ -35,6 +36,7 @@ public class GiftCertificateQueryCreator {
                 builder.append(MessageFormat.format(TAG_NAME, t));
             });
         }
+        builder.append(IS_ACTIVE);
         String sortOrderParameter = requestParameter.getSortParameter().getParameter();
         String orderParameterPostfix = requestParameter.getSortingDirection().name();
         builder.append(MessageFormat.format(ORDER_BY, sortOrderParameter, orderParameterPostfix));

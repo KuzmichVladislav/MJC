@@ -65,8 +65,8 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public TagDto findMostUsedTag(long id) {
-        // FIXME: 1/3/2022 orElse?
-        return modelMapper.map(tagDao.findMostUsedTag(id).get(), TagDto.class);
+        return modelMapper.map(tagDao.findMostUsedTag(id).orElseThrow(() ->
+                new ResourceNotFoundException(ExceptionKey.TAG_NOT_FOUND, String.valueOf(id))), TagDto.class);
     }
 
 
@@ -86,7 +86,6 @@ public class TagServiceImpl implements TagService {
         }
         return tagDao.remove(tagDao.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException(ExceptionKey.TAG_NOT_FOUND, String.valueOf(id))));
-// FIXME: 1/4/2022 catch (SQLIntegrityConstraintViolationException e){
     }
 
     @Override

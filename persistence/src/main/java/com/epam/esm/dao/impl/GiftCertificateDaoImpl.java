@@ -44,11 +44,8 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
     @Override
     public List<GiftCertificate> findAll(QueryParameter queryParameter) {
-        // TODO: 1/3/2022 fix removed
-        String qlString = FIND_ALL_GIFT_CERTIFICATES + giftCertificateQueryCreator.mapRequestParameters(queryParameter);
-        System.out.println(qlString);
         return entityManager.createQuery
-                (qlString,
+                (FIND_ALL_GIFT_CERTIFICATES + giftCertificateQueryCreator.mapRequestParameters(queryParameter),
                         GiftCertificate.class)
                 .setFirstResult(queryParameter.getFirstValue())
                 .setMaxResults(queryParameter.getSize())

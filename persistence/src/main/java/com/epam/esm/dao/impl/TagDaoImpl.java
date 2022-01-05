@@ -74,7 +74,6 @@ public class TagDaoImpl implements TagDao {
     @Override
     @Transactional
     public boolean remove(Tag tag) {
-        // TODO: 1/3/2022 check is part of gc
         entityManager.remove(tag);
         return tag != null;
     }

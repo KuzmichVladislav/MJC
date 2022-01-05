@@ -43,12 +43,6 @@ public class GiftCertificate {
             joinColumns = @JoinColumn(name = "gift_certificate_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id"))
     private List<Tag> tags;
-
-
     @OneToMany(mappedBy = "giftCertificate")
-//    @ManyToMany
-//    @JoinTable(name = "order_certificates",
-//            joinColumns = @JoinColumn(name = "gift_certificate_id"),
-//            inverseJoinColumns = @JoinColumn(name = "order_id"))
     private Set<OrderCertificateDetails> orderCertificates;
 }

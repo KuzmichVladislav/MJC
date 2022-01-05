@@ -17,7 +17,6 @@ public interface TagDao extends BaseDao<Tag> {
      */
     Optional<Tag> findByName(String name);
 
-    // TODO: 12/28/2021 add JD
     Optional<Tag> findMostUsedTag(long id);
 
     boolean isPartOfGiftCertificate(long id);

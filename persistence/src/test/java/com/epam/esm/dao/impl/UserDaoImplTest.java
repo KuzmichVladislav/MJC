@@ -2,7 +2,7 @@ package com.epam.esm.dao.impl;
 
 import com.epam.esm.configuration.PersistenceTestConfiguration;
 import com.epam.esm.entity.QueryParameter;
-import com.epam.esm.entity.Tag;
+import com.epam.esm.entity.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,10 +19,10 @@ import java.util.Optional;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ActiveProfiles("dev")
 @Transactional
-class TagDaoImplTest {
+class UserDaoImplTest {
 
     @Autowired
-    private TagDaoImpl tagDao;
+    private UserDaoImpl userDao;
     private QueryParameter queryParameter;
 
     @BeforeEach
@@ -36,32 +36,19 @@ class TagDaoImplTest {
     }
 
     @Test
-    void testAdd_AllFieldsArePopulated_SavesDataToDatabase() {
-        // Given
-        Tag tag = Tag.builder().name("result1").build();
-        // When
-        Tag result = tagDao.add(tag);
-        // Then
-        Assertions.assertNotNull(result);
-        Assertions.assertEquals("result1", result.getName());
-    }
-
-    @Test
     void testFindById_IdExists_ReadsDataFromDatabase() {
         // Given
         // When
-        Tag result = tagDao.findById(1L).get();
+        Optional<User> result = userDao.findById(1L);
         // Then
-        Assertions.assertEquals(new Tag(1L, "people"), result);
-        Assertions.assertFalse(tagDao.findById(999999999L).isPresent());
-        Assertions.assertTrue(tagDao.findById(1L).isPresent());
+        Assertions.assertTrue(result.isPresent());
     }
 
     @Test
     void testFindById_IdDoesNotExist_False() {
         // Given
         // When
-        Optional<Tag> result = tagDao.findById(999999999L);
+        Optional<User> result = userDao.findById(999999999L);
         // Then
         Assertions.assertFalse(result.isPresent());
     }
@@ -70,37 +57,9 @@ class TagDaoImplTest {
     void testFindAll_DatabaseExists_ReadsDataFromDatabase() {
         // Given
         // When
-        List<Tag> result = tagDao.findAll(queryParameter);
+        List<User> result = userDao.findAll(queryParameter);
         // Then
         Assertions.assertNotNull(result);
         Assertions.assertEquals(10, result.size());
-    }
-
-    @Test
-    void testRemoveById_IdExists_RemovesDataFromDatabase() {
-        // Given
-        // When
-        Tag result = tagDao.findById(1L).get();
-        // Then
-        Assertions.assertTrue(tagDao.remove(result));
-    }
-
-    @Test
-    void testFindByName_NameExists_ReadsDataFromDatabase() {
-        // Given
-        // When
-        Optional<Tag> result = tagDao.findByName("people");
-        // Then
-        Assertions.assertTrue(result.isPresent());
-        Assertions.assertEquals(new Tag(1L, "people"), result.get());
-    }
-
-    @Test
-    void testFindByName_NameDoesNotExist_False() {
-        // Given
-        // When
-        Optional<Tag> result = tagDao.findByName("nonexistent");
-        // Then
-        Assertions.assertTrue(result.isEmpty());
     }
 }

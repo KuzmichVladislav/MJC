@@ -8,7 +8,7 @@ import java.util.Set;
 
 @Getter
 @Setter
-@EqualsAndHashCode(exclude = {"orderCertificates"})
+@EqualsAndHashCode(exclude = {"orderCertificateDetails"})
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -24,5 +24,5 @@ public class Order {
     @Column(name = "purchase_time")
     private LocalDateTime purchaseTime;
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<OrderCertificateDetails> orderCertificates;
+    private Set<OrderCertificateDetails> orderCertificateDetails;
 }

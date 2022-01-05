@@ -23,10 +23,8 @@ public class OrderCertificateDetails {
     private BigDecimal giftCertificateCost;
     @Column(name = "number_of_certificates")
     private int numberOfCertificates;
-
     @ManyToOne
     private Order order;
-
     @ManyToOne
     private GiftCertificate giftCertificate;
 }

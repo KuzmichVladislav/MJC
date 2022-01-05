@@ -54,7 +54,6 @@ public class GiftCertificateController {
         return resultGiftCertificate;
     }
 
-    // TODO: 1/3/2022
     @GetMapping
     public PageWrapper<GiftCertificateDto>
     getAllGiftCertificates(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
