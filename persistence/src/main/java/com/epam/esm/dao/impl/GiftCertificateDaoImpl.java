@@ -6,7 +6,6 @@ import com.epam.esm.entity.GiftCertificateQueryParameter;
 import com.epam.esm.util.GiftCertificateCriteriaQueryCreator;
 import com.epam.esm.util.GiftCertificateQueryCreator;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -36,7 +35,6 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
-    @Transactional
     public GiftCertificate add(GiftCertificate giftCertificate) {
         entityManager.persist(giftCertificate);
         return giftCertificate;
@@ -71,15 +69,12 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
-    @Transactional
-    public boolean remove(GiftCertificate giftCertificate) {
-        int result = entityManager.createQuery(REMOVE_GIFT_CERTIFICATE)
+    public void remove(GiftCertificate giftCertificate) {
+        entityManager.createQuery(REMOVE_GIFT_CERTIFICATE)
                 .setParameter(1, giftCertificate.getId()).executeUpdate();
-        return result > 0;
     }
 
     @Override
-    @Transactional
     public void update(GiftCertificate giftCertificate) {
         entityManager.merge(giftCertificate);
     }

@@ -5,7 +5,6 @@ import com.epam.esm.entity.Order;
 import com.epam.esm.entity.OrderCertificateDetails;
 import com.epam.esm.entity.QueryParameter;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -22,14 +21,12 @@ public class OrderDaoImpl implements OrderDao {
     private EntityManager entityManager;
 
     @Override
-    @Transactional
     public Order add(Order order) {
         entityManager.persist(order);
         return order;
     }
 
     @Override
-    @Transactional
     public Optional<Order> findById(long id) {
         return Optional.ofNullable(entityManager.find(Order.class, id));
     }
@@ -50,18 +47,12 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     @Override
-    @Transactional
-    public boolean remove(Order order) {
-        if (entityManager.contains(order)) {
-            entityManager.remove(order);
-        } else {
-            entityManager.remove(entityManager.merge(order));
-        }
-        return order != null;
+    public void remove(Order order) {
+        entityManager.remove(order);
+
     }
 
     @Override
-    @Transactional
     public void addGiftCertificateToOrder(OrderCertificateDetails orderCertificateDetails) {
         entityManager.persist(orderCertificateDetails);
     }

@@ -2,7 +2,6 @@ package com.epam.esm.util;
 
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.GiftCertificateQueryParameter;
-import com.epam.esm.entity.QueryParameter;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;

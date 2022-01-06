@@ -26,13 +26,9 @@ public class GiftCertificate {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @Column(name = "name")
     private String name;
-    @Column(name = "description")
     private String description;
-    @Column(name = "price")
     private BigDecimal price;
-    @Column(name = "duration")
     private Integer duration;
     @Column(name = "create_date")
     private LocalDateTime createDate;
@@ -47,20 +43,4 @@ public class GiftCertificate {
     private List<Tag> tags;
     @OneToMany(mappedBy = "giftCertificate")
     private Set<OrderCertificateDetails> orderCertificates;
-
-    @Override
-    public String toString() {
-        return "GiftCertificate{" +
-                "removed=" + isRemoved() +
-                ", id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", price=" + price +
-                ", duration=" + duration +
-                ", createDate=" + createDate +
-                ", lastUpdateDate=" + lastUpdateDate +
-                ", isRemoved=" + isRemoved +
-                ", tags=" + tags +
-                '}';
-    }
 }

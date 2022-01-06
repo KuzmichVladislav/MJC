@@ -53,7 +53,6 @@ class UserServiceImplTest {
                 .lastName("Surname")
                 .build();
         queryParameter = QueryParameterDto.builder()
-                .sortParameter(QueryParameterDto.SortParameter.NAME)
                 .page(1)
                 .size(10)
                 .firstValue(1)
@@ -79,6 +78,6 @@ class UserServiceImplTest {
         // When
         PageWrapper<UserDto> result = userService.findAll(queryParameter);
         // Then
-        Assertions.assertEquals(Collections.singletonList(userDto), result.getPageValues());
+        Assertions.assertEquals(Collections.singletonList(userDto), result.getItemsPerPage());
     }
 }

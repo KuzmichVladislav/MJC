@@ -47,7 +47,6 @@ public interface BaseDao<T, P extends QueryParameter> {
      * Remove boolean.
      *
      * @param t the entity
-     * @return the boolean
      */
-    boolean remove(T t);
+    void remove(T t);
 }

@@ -1,31 +1,33 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.GiftCertificateDao;
-import com.epam.esm.dto.*;
+import com.epam.esm.dto.GiftCertificateDto;
+import com.epam.esm.dto.GiftCertificateQueryParameterDto;
+import com.epam.esm.dto.PageWrapper;
+import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.GiftCertificateQueryParameter;
-import com.epam.esm.entity.QueryParameter;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.ExceptionKey;
-import com.epam.esm.exception.RequestValidationException;
 import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.TagService;
 import com.epam.esm.util.ListConverter;
 import com.epam.esm.util.TotalPageCountCalculator;
+import com.epam.esm.validator.GiftCertificateValidator;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
  * The Class GiftCertificateServiceImpl is the implementation of the {@link GiftCertificateService} interface.
  */
 @Service
+@RequiredArgsConstructor
 public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     private final GiftCertificateDao giftCertificateDao;
@@ -33,37 +35,24 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     private final ModelMapper modelMapper;
     private final ListConverter listConverter;
     private final TotalPageCountCalculator totalPageCountCalculator;
-
-    @Autowired
-    public GiftCertificateServiceImpl(GiftCertificateDao giftCertificateDao,
-                                      TagService tagService,
-                                      ModelMapper modelMapper,
-                                      ListConverter listConverter,
-                                      TotalPageCountCalculator totalPageCountCalculator) {
-        this.giftCertificateDao = giftCertificateDao;
-        this.tagService = tagService;
-        this.modelMapper = modelMapper;
-        this.listConverter = listConverter;
-        this.totalPageCountCalculator = totalPageCountCalculator;
-    }
+    private final GiftCertificateValidator giftCertificateValidator;
 
     @Override
     @Transactional
     public GiftCertificateDto add(GiftCertificateDto giftCertificateDto) {
-        checkGiftCertificateFields(giftCertificateDto);
+        giftCertificateValidator.checkGiftCertificateFields(giftCertificateDto);
         findAndSetTags(giftCertificateDto);
         return convertToGiftCertificateDto(giftCertificateDao.add(convertToGiftCertificateEntity(giftCertificateDto)));
     }
 
     @Override
     public GiftCertificateDto findById(long id) {
-        Optional<GiftCertificate> byId = giftCertificateDao
-                .findById(id);
-        return convertToGiftCertificateDto(byId.orElseThrow(() ->
+        return convertToGiftCertificateDto(giftCertificateDao.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException(ExceptionKey.CERTIFICATE_NOT_FOUND, String.valueOf(id))));
     }
 
     @Override
+    @Transactional
     public PageWrapper<GiftCertificateDto> findAll(GiftCertificateQueryParameterDto queryParameterDto) {
         long totalNumberOfItems = giftCertificateDao.getTotalNumberOfItems();
         int totalPage = totalPageCountCalculator.getTotalPage(queryParameterDto, totalNumberOfItems);
@@ -86,8 +75,13 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     @Transactional
-    public boolean removeById(long id) {
-        return giftCertificateDao.remove(modelMapper.map(findById(id), GiftCertificate.class));
+    public void removeById(long id) {
+        GiftCertificate giftCertificate = giftCertificateDao.findById(id).orElseThrow(() ->
+                new ResourceNotFoundException(ExceptionKey.CERTIFICATE_NOT_FOUND, String.valueOf(id)));
+        if (giftCertificate.isRemoved()) {
+            throw new ResourceNotFoundException(ExceptionKey.CERTIFICATE_NOT_FOUND, String.valueOf(id));
+        }
+        giftCertificateDao.remove(giftCertificate);
     }
 
     private void copyNonNullProperties(GiftCertificateDto giftCertificateDto, GiftCertificateDto existing) {
@@ -127,20 +121,5 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
                     .collect(Collectors.toList());
         }
         giftCertificateDto.setTags(tags);
-    }
-
-    private void checkGiftCertificateFields(GiftCertificateDto giftCertificateDto) {
-        if (giftCertificateDto.getName() == null) {
-            throw new RequestValidationException(ExceptionKey.TAG_NAME_MIGHT_NOT_BE_NULL);
-        }
-        if (giftCertificateDto.getDescription() == null) {
-            throw new RequestValidationException(ExceptionKey.CERTIFICATE_DESCRIPTION_MIGHT_NOT_BE_NULL);
-        }
-        if (giftCertificateDto.getPrice() == null) {
-            throw new RequestValidationException(ExceptionKey.CERTIFICATE_PRICE_MIGHT_NOT_BE_NULL);
-        }
-        if (giftCertificateDto.getDuration() == null) {
-            throw new RequestValidationException(ExceptionKey.CERTIFICATE_DURATION_MIGHT_NOT_BE_NULL);
-        }
     }
 }

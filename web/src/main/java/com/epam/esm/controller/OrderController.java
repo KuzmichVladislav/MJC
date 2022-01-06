@@ -48,7 +48,7 @@ public class OrderController {
                 .sortingDirection(sortingDirection)
                 .build();
         PageWrapper<OrderDto> orderPage = orderService.findAll(queryParameterDto);
-        orderPage.getPageValues().forEach(linkCreator::addOrderLinks);
+        orderPage.getItemsPerPage().forEach(linkCreator::addOrderLinks);
         return orderPage;
     }
 

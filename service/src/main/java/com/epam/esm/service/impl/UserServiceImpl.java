@@ -11,30 +11,20 @@ import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.service.UserService;
 import com.epam.esm.util.ListConverter;
 import com.epam.esm.util.TotalPageCountCalculator;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserDao userDao;
     private final ModelMapper modelMapper;
     private final ListConverter listConverter;
     private final TotalPageCountCalculator totalPageCountCalculator;
-
-    @Autowired
-    public UserServiceImpl(UserDao userDao,
-                           ModelMapper modelMapper,
-                           ListConverter listConverter,
-                           TotalPageCountCalculator totalPageCountCalculator) {
-        this.userDao = userDao;
-        this.modelMapper = modelMapper;
-        this.listConverter = listConverter;
-        this.totalPageCountCalculator = totalPageCountCalculator;
-    }
 
     @Override
     public UserDto findById(long id) {

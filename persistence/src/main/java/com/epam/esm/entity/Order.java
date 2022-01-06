@@ -1,6 +1,5 @@
 package com.epam.esm.entity;
 
-import com.epam.esm.entity.audit.GiftCertificateListener;
 import com.epam.esm.entity.audit.OrderListener;
 import lombok.*;
 

@@ -12,8 +12,8 @@ import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.service.TagService;
 import com.epam.esm.util.ListConverter;
 import com.epam.esm.util.TotalPageCountCalculator;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,23 +24,13 @@ import java.util.Optional;
  * The Class GiftCertificateServiceImpl is the implementation of the {@link TagService} interface.
  */
 @Service
+@RequiredArgsConstructor
 public class TagServiceImpl implements TagService {
 
     private final TagDao tagDao;
     private final ModelMapper modelMapper;
     private final ListConverter listConverter;
     private final TotalPageCountCalculator totalPageCountCalculator;
-
-    @Autowired
-    public TagServiceImpl(TagDao tagDao,
-                          ModelMapper modelMapper,
-                          ListConverter listConverter,
-                          TotalPageCountCalculator totalPageCountCalculator) {
-        this.tagDao = tagDao;
-        this.modelMapper = modelMapper;
-        this.listConverter = listConverter;
-        this.totalPageCountCalculator = totalPageCountCalculator;
-    }
 
     @Override
     @Transactional
@@ -64,6 +54,7 @@ public class TagServiceImpl implements TagService {
 
 
     @Override
+    @Transactional
     public TagDto findMostUsedTag(long id) {
         return modelMapper.map(tagDao.findMostUsedTag(id).orElseThrow(() ->
                 new ResourceNotFoundException(ExceptionKey.TAG_NOT_FOUND, String.valueOf(id))), TagDto.class);
@@ -71,6 +62,7 @@ public class TagServiceImpl implements TagService {
 
 
     @Override
+    @Transactional
     public PageWrapper<TagDto> findAll(QueryParameterDto queryParameterDto) {
         long totalNumberOfItems = tagDao.getTotalNumberOfItems();
         int totalPage = totalPageCountCalculator.getTotalPage(queryParameterDto, totalNumberOfItems);
@@ -80,11 +72,11 @@ public class TagServiceImpl implements TagService {
 
     @Override
     @Transactional
-    public boolean removeById(long id) {
+    public void removeById(long id) {
         if (tagDao.isPartOfGiftCertificate(id)) {
             throw new RequestValidationException(ExceptionKey.TAG_BELONGS_TO_CERTIFICATE, String.valueOf(id));
         }
-        return tagDao.remove(tagDao.findById(id).orElseThrow(() ->
+        tagDao.remove(tagDao.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException(ExceptionKey.TAG_NOT_FOUND, String.valueOf(id))));
     }
 

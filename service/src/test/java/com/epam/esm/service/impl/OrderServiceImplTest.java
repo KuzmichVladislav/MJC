@@ -134,17 +134,6 @@ class OrderServiceImplTest {
     }
 
     @Test
-    void testRemoveById_ValidId_True() {
-        // Given
-        when(orderDao.findById(1L)).thenReturn(Optional.ofNullable(order));
-        when(orderDao.remove(any())).thenReturn(true);
-        // When
-        boolean result = orderService.removeById(1L);
-        // Then
-        Assertions.assertTrue(result);
-    }
-
-    @Test
     void testFindOrdersByUserId_ValidUserId_findsOrder() {
         // Given
         when(orderDao.findOrdersByUserId(1L)).thenReturn(Collections.singletonList(order));

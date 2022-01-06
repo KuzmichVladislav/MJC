@@ -13,6 +13,6 @@ import java.util.List;
 @AllArgsConstructor
 public class PageWrapper<T> {
 
-    List<T> pageValues;
-    int totalPage;
+    List<T> itemsPerPage;
+    int totalPages;
 }

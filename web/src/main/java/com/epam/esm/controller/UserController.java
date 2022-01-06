@@ -35,7 +35,7 @@ public class UserController {
                 .sortingDirection(sortingDirection)
                 .build();
         PageWrapper<UserDto> userPage = userService.findAll(queryParameterDto);
-        userPage.getPageValues().forEach(linkCreator::addUserLinks);
+        userPage.getItemsPerPage().forEach(linkCreator::addUserLinks);
         return userPage;
     }
 

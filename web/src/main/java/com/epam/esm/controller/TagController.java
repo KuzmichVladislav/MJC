@@ -54,7 +54,7 @@ public class TagController {
                 .sortingDirection(sortingDirection)
                 .build();
         PageWrapper<TagDto> tagPage = tagService.findAll(queryParameterDto);
-        tagPage.getPageValues().forEach(linkCreator::addTagLinks);
+        tagPage.getItemsPerPage().forEach(linkCreator::addTagLinks);
         return tagPage;
     }
 

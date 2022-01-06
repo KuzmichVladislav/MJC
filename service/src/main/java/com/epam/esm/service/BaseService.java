@@ -39,7 +39,6 @@ public interface BaseService<T, P extends QueryParameterDto> {
      * Removes the by DTO object identifier.
      *
      * @param id the the DTO object identifier
-     * @return true, if successful
      */
-    boolean removeById(long id);
+    void removeById(long id);
 }

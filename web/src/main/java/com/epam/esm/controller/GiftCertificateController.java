@@ -75,7 +75,7 @@ public class GiftCertificateController {
                 .sortingDirection(sortingDirection)
                 .build();
         PageWrapper<GiftCertificateDto> giftCertificatePage = giftCertificateService.findAll(giftCertificateQueryParameterDto);
-        giftCertificatePage.getPageValues().forEach(linkCreator::addGiftCertificateLinks);
+        giftCertificatePage.getItemsPerPage().forEach(linkCreator::addGiftCertificateLinks);
         return giftCertificatePage;
     }
 

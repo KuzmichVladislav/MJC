@@ -61,7 +61,6 @@ class TagServiceImplTest {
                 .name("name")
                 .build();
         queryParameter = QueryParameterDto.builder()
-                .sortParameter(QueryParameterDto.SortParameter.NAME)
                 .page(1)
                 .size(10)
                 .firstValue(1)
@@ -109,18 +108,7 @@ class TagServiceImplTest {
         // When
         PageWrapper<TagDto> result = tagService.findAll(queryParameter);
         // Then
-        Assertions.assertEquals(Collections.singletonList(tagDto), result.getPageValues());
-    }
-
-    @Test
-    void testRemoveById_ValidId_True() {
-        // Given
-        when(tagDao.remove(any())).thenReturn(true);
-        when(tagDao.findById(anyLong())).thenReturn(Optional.ofNullable(tag));
-        // When
-        boolean result = tagService.removeById(1L);
-        // Then
-        Assertions.assertTrue(result);
+        Assertions.assertEquals(Collections.singletonList(tagDto), result.getItemsPerPage());
     }
 
     @Test

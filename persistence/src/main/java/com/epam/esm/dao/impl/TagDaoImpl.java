@@ -5,7 +5,6 @@ import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.QueryParameter;
 import com.epam.esm.entity.Tag;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -45,7 +44,6 @@ public class TagDaoImpl implements TagDao {
     private EntityManager entityManager;
 
     @Override
-    @Transactional
     public Tag add(Tag tag) {
         this.entityManager.persist(tag);
         return tag;
@@ -72,10 +70,8 @@ public class TagDaoImpl implements TagDao {
     }
 
     @Override
-    @Transactional
-    public boolean remove(Tag tag) {
+    public void remove(Tag tag) {
         entityManager.remove(tag);
-        return tag != null;
     }
 
     @Override

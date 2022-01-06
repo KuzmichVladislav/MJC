@@ -11,8 +11,8 @@ import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.util.TotalPageCountCalculator;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,23 +26,13 @@ import java.util.stream.Collectors;
 import static java.util.stream.Collectors.counting;
 
 @Service
+@RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
 
     private final OrderDao orderDao;
     private final ModelMapper modelMapper;
     private final GiftCertificateService giftCertificateService;
     private final TotalPageCountCalculator totalPageCountCalculator;
-
-    @Autowired
-    public OrderServiceImpl(OrderDao orderDao,
-                            ModelMapper modelMapper,
-                            GiftCertificateService giftCertificateService,
-                            TotalPageCountCalculator totalPageCountCalculator) {
-        this.orderDao = orderDao;
-        this.totalPageCountCalculator = totalPageCountCalculator;
-        this.modelMapper = modelMapper;
-        this.giftCertificateService = giftCertificateService;
-    }
 
     @Override
     @Transactional
@@ -69,6 +59,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     public PageWrapper<OrderDto> findAll(QueryParameterDto queryParameterDto) {
         long totalNumberOfItems = orderDao.getTotalNumberOfItems();
         int totalPage = totalPageCountCalculator.getTotalPage(queryParameterDto, totalNumberOfItems);
@@ -78,9 +69,10 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public boolean removeById(long id) {
-        OrderDto orderDto = findById(id);
-        return orderDao.remove(modelMapper.map(orderDto, Order.class));
+    @Transactional
+    public void removeById(long id) {
+        orderDao.remove(orderDao.findById(id).orElseThrow(() ->
+                new ResourceNotFoundException(ExceptionKey.ORDER_NOT_FOUND, String.valueOf(id))));
     }
 
     @Override

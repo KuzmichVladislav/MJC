@@ -1,9 +1,9 @@
 package com.epam.esm.entity;
 
-import lombok.*;
-
-import java.util.List;
-import java.util.Optional;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Entity Class GiftCertificateQueryParameter contains parameters for generation query

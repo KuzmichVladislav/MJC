@@ -1,17 +1,9 @@
 package com.epam.esm.util;
 
 import com.epam.esm.entity.GiftCertificateQueryParameter;
-import com.epam.esm.entity.QueryParameter;
-import org.hibernate.Session;
-import org.hibernate.cache.spi.support.AbstractReadWriteAccess;
-import org.hibernate.query.Query;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import java.text.MessageFormat;
-import java.util.List;
 
 /**
  * The Class GiftCertificateQueryCreator for creating a query based on parameters obtained from request parameters.
