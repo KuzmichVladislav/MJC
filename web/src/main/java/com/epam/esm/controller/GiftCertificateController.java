@@ -1,8 +1,8 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.dto.GiftCertificateDto;
+import com.epam.esm.dto.GiftCertificateQueryParameterDto;
 import com.epam.esm.dto.PageWrapper;
-import com.epam.esm.dto.QueryParameterDto;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.util.LinkCreator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,19 +62,19 @@ public class GiftCertificateController {
                            @RequestParam(value = "description", required = false) Optional<String> description,
                            @RequestParam(value = "tag-name", required = false) Optional<List<String>> tagNames,
                            @RequestParam(value = "sort", required = false, defaultValue = "NAME")
-                                   QueryParameterDto.SortParameter sortParameter,
+                                   GiftCertificateQueryParameterDto.SortParameter sortParameter,
                            @RequestParam(value = "order-by", required = false, defaultValue = "ASC")
-                                   QueryParameterDto.SortingDirection sortingDirection) {
-        QueryParameterDto queryParameterDto = QueryParameterDto.builder()
-                .page(page)
-                .size(size)
+                                   GiftCertificateQueryParameterDto.SortingDirection sortingDirection) {
+        GiftCertificateQueryParameterDto giftCertificateQueryParameterDto = GiftCertificateQueryParameterDto.giftCertificateQueryParameterDtoBuilder()
                 .name(name)
                 .description(description)
                 .tagNames(tagNames)
                 .sortParameter(sortParameter)
+                .page(page)
+                .size(size)
                 .sortingDirection(sortingDirection)
                 .build();
-        PageWrapper<GiftCertificateDto> giftCertificatePage = giftCertificateService.findAll(queryParameterDto);
+        PageWrapper<GiftCertificateDto> giftCertificatePage = giftCertificateService.findAll(giftCertificateQueryParameterDto);
         giftCertificatePage.getPageValues().forEach(linkCreator::addGiftCertificateLinks);
         return giftCertificatePage;
     }

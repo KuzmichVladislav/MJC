@@ -94,7 +94,7 @@ class OrderServiceImplTest {
                 .totalCost(new BigDecimal(1))
                 .userId(1L)
                 .purchaseTime(LocalDateTime.of(2021, Month.DECEMBER, 11, 20, 24, 43))
-                .orderCertificateDetails(Collections.singletonList(orderCertificateDetailsDto))
+                .orderCertificateDetailsDtos(Collections.singletonList(orderCertificateDetailsDto))
                 .build();
     }
 

@@ -1,5 +1,6 @@
 package com.epam.esm.dao;
 
+import com.epam.esm.entity.QueryParameter;
 import com.epam.esm.entity.Tag;
 
 import java.util.Optional;
@@ -7,7 +8,7 @@ import java.util.Optional;
 /**
  * The Interface TagDao describes some query methods based on query object construction.
  */
-public interface TagDao extends BaseDao<Tag> {
+public interface TagDao extends BaseDao<Tag, QueryParameter> {
 
     /**
      * Find tag entity by name.

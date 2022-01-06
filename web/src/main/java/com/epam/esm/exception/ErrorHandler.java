@@ -88,12 +88,12 @@ public class ErrorHandler {
      * @param locale the locale
      * @return the exception result
      */
-    @ExceptionHandler(RuntimeException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ResponseBody
-    public ExceptionResult handle(RuntimeException e, Locale locale) {
-        return new ExceptionResult(e.getMessage(), ErrorCode.INTERNAL_ERROR.getCode());
-    }
+//    @ExceptionHandler(RuntimeException.class)
+//    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+//    @ResponseBody
+//    public ExceptionResult handle(RuntimeException e, Locale locale) {
+//        return new ExceptionResult(e.getMessage(), ErrorCode.INTERNAL_ERROR.getCode());
+//    }
 
     /**
      * Handle HttpRequestMethodNotSupportedException.

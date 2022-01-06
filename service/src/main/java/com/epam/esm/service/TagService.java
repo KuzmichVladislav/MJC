@@ -1,5 +1,6 @@
 package com.epam.esm.service;
 
+import com.epam.esm.dto.QueryParameterDto;
 import com.epam.esm.dto.TagDto;
 
 import java.util.Optional;
@@ -8,7 +9,7 @@ import java.util.Optional;
  * The Interface TagService.
  * A interface to define all required methods for tag DTO object.
  */
-public interface TagService extends BaseService<TagDto> {
+public interface TagService extends BaseService<TagDto, QueryParameterDto> {
 
     /**
      * Find tag DTO object by name.

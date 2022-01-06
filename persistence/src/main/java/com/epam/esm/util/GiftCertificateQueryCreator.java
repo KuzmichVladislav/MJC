@@ -1,9 +1,17 @@
 package com.epam.esm.util;
 
+import com.epam.esm.entity.GiftCertificateQueryParameter;
 import com.epam.esm.entity.QueryParameter;
+import org.hibernate.Session;
+import org.hibernate.cache.spi.support.AbstractReadWriteAccess;
+import org.hibernate.query.Query;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.text.MessageFormat;
+import java.util.List;
 
 /**
  * The Class GiftCertificateQueryCreator for creating a query based on parameters obtained from request parameters.
@@ -17,9 +25,9 @@ public class GiftCertificateQueryCreator {
     private static final String ORDER_BY = " ORDER BY gc.{0} {1}";
     private static final String WHERE = " WHERE ";
     private static final String AND = " AND ";
-    private static final String IS_ACTIVE = " AND gc.isActive = true ";
+    private static final String IS_ACTIVE = "gc.isRemoved = false ";
 
-    public String mapRequestParameters(QueryParameter requestParameter) {
+    public String mapRequestParameters(GiftCertificateQueryParameter requestParameter) {
         StringBuilder builder = new StringBuilder();
         if (requestParameter.getName().isPresent()) {
             addCondition(builder);
@@ -36,6 +44,7 @@ public class GiftCertificateQueryCreator {
                 builder.append(MessageFormat.format(TAG_NAME, t));
             });
         }
+        addCondition(builder);
         builder.append(IS_ACTIVE);
         String sortOrderParameter = requestParameter.getSortParameter().getParameter();
         String orderParameterPostfix = requestParameter.getSortingDirection().name();

@@ -19,6 +19,13 @@ dependencies {
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.6.1")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.6.1")
+
+    // https://mvnrepository.com/artifact/org.hibernate/hibernate-envers
+    implementation 'org.hibernate:hibernate-envers:5.6.3.Final'
+
+    // https://mvnrepository.com/artifact/org.hibernate/hibernate-core
+    implementation 'org.hibernate:hibernate-core:5.6.3.Final'
+
 }
 
 test {

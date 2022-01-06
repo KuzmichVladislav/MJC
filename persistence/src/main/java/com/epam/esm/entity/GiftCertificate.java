@@ -1,5 +1,6 @@
 package com.epam.esm.entity;
 
+import com.epam.esm.entity.audit.GiftCertificateListener;
 import lombok.*;
 
 import javax.persistence.*;
@@ -19,6 +20,7 @@ import java.util.Set;
 @Builder
 @Entity
 @Table(name = "gift_certificate")
+@EntityListeners(GiftCertificateListener.class)
 public class GiftCertificate {
 
     @Id
@@ -45,4 +47,20 @@ public class GiftCertificate {
     private List<Tag> tags;
     @OneToMany(mappedBy = "giftCertificate")
     private Set<OrderCertificateDetails> orderCertificates;
+
+    @Override
+    public String toString() {
+        return "GiftCertificate{" +
+                "removed=" + isRemoved() +
+                ", id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", price=" + price +
+                ", duration=" + duration +
+                ", createDate=" + createDate +
+                ", lastUpdateDate=" + lastUpdateDate +
+                ", isRemoved=" + isRemoved +
+                ", tags=" + tags +
+                '}';
+    }
 }

@@ -21,7 +21,7 @@ public class TotalPageCountCalculator {
         if (page > totalPage) {
             throw new RequestValidationException(ExceptionKey.SPECIFIED_PAGE_DOES_NOT_EXIST, String.valueOf(page));
         }
-        queryParameterDto.setFirstValue(page * size - size);
+        queryParameterDto.setFirstValue((page-1)*size);
         return totalPage;
     }
 }

@@ -1,11 +1,9 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.GiftCertificateDao;
-import com.epam.esm.dto.GiftCertificateDto;
-import com.epam.esm.dto.PageWrapper;
-import com.epam.esm.dto.QueryParameterDto;
-import com.epam.esm.dto.TagDto;
+import com.epam.esm.dto.*;
 import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.entity.GiftCertificateQueryParameter;
 import com.epam.esm.entity.QueryParameter;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.ExceptionKey;
@@ -20,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -54,8 +51,6 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Transactional
     public GiftCertificateDto add(GiftCertificateDto giftCertificateDto) {
         checkGiftCertificateFields(giftCertificateDto);
-        giftCertificateDto.setCreateDate(LocalDateTime.now());
-        giftCertificateDto.setLastUpdateDate(LocalDateTime.now());
         findAndSetTags(giftCertificateDto);
         return convertToGiftCertificateDto(giftCertificateDao.add(convertToGiftCertificateEntity(giftCertificateDto)));
     }
@@ -69,11 +64,11 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public PageWrapper<GiftCertificateDto> findAll(QueryParameterDto queryParameterDto) {
+    public PageWrapper<GiftCertificateDto> findAll(GiftCertificateQueryParameterDto queryParameterDto) {
         long totalNumberOfItems = giftCertificateDao.getTotalNumberOfItems();
         int totalPage = totalPageCountCalculator.getTotalPage(queryParameterDto, totalNumberOfItems);
         List<GiftCertificateDto> giftCertificates =
-                listConverter.convertList(giftCertificateDao.findAll(modelMapper.map(queryParameterDto, QueryParameter.class)),
+                listConverter.convertList(giftCertificateDao.findAll(modelMapper.map(queryParameterDto, GiftCertificateQueryParameter.class)),
                         this::convertToGiftCertificateDto);
         return new PageWrapper<>(giftCertificates, totalPage);
     }
@@ -82,12 +77,11 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Transactional
     public GiftCertificateDto update(long id, GiftCertificateDto giftCertificateDto) {
         giftCertificateDto.setId(id);
-        giftCertificateDto.setLastUpdateDate(LocalDateTime.now());
         findAndSetTags(giftCertificateDto);
         GiftCertificateDto existing = findById(id);
         copyNonNullProperties(giftCertificateDto, existing);
         giftCertificateDao.update(modelMapper.map(existing, GiftCertificate.class));
-        return existing;
+        return findById(id);
     }
 
     @Override

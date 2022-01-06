@@ -2,13 +2,15 @@ package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.entity.QueryParameter;
+import com.epam.esm.entity.GiftCertificateQueryParameter;
+import com.epam.esm.util.GiftCertificateCriteriaQueryCreator;
 import com.epam.esm.util.GiftCertificateQueryCreator;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.CriteriaQuery;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,15 +21,18 @@ import java.util.Optional;
 public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
     private static final String REMOVE_GIFT_CERTIFICATE = "update GiftCertificate gc set gc.isRemoved = true where gc.id = ?1";
-    private static final String TOTAL_NUMBER_OF_ITEMS = "select count(gc) from GiftCertificate gc";
+    private static final String TOTAL_NUMBER_OF_ITEMS = "select count(gc) from GiftCertificate gc where gc.isRemoved = false";
     private static final String FIND_ALL_GIFT_CERTIFICATES = "select gc from GiftCertificate gc left join gc.tags t";
     private final GiftCertificateQueryCreator giftCertificateQueryCreator;
+    private final GiftCertificateCriteriaQueryCreator giftCertificateCriteriaQueryCreator;
 
     @PersistenceContext
     private EntityManager entityManager;
 
-    public GiftCertificateDaoImpl(GiftCertificateQueryCreator giftCertificateQueryCreator) {
+    public GiftCertificateDaoImpl(GiftCertificateQueryCreator giftCertificateQueryCreator,
+                                  GiftCertificateCriteriaQueryCreator giftCertificateCriteriaQueryCreator) {
         this.giftCertificateQueryCreator = giftCertificateQueryCreator;
+        this.giftCertificateCriteriaQueryCreator = giftCertificateCriteriaQueryCreator;
     }
 
     @Override
@@ -43,13 +48,21 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
-    public List<GiftCertificate> findAll(QueryParameter queryParameter) {
+    public List<GiftCertificate> findAll(GiftCertificateQueryParameter queryParameter) {
+        CriteriaQuery<GiftCertificate> giftCertificateCriteriaQuery = giftCertificateCriteriaQueryCreator.getGiftCertificateCriteriaQuery(queryParameter, entityManager);
+        return entityManager.createQuery(giftCertificateCriteriaQuery)
+                .setFirstResult(queryParameter.getFirstValue())
+                .setMaxResults(queryParameter.getSize())
+                .getResultList();
+/*
+ FIXME: 1/6/2022
         return entityManager.createQuery
                 (FIND_ALL_GIFT_CERTIFICATES + giftCertificateQueryCreator.mapRequestParameters(queryParameter),
                         GiftCertificate.class)
                 .setFirstResult(queryParameter.getFirstValue())
                 .setMaxResults(queryParameter.getSize())
                 .getResultList();
+*/
     }
 
     @Override

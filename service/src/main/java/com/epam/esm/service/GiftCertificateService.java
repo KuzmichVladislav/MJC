@@ -1,12 +1,13 @@
 package com.epam.esm.service;
 
 import com.epam.esm.dto.GiftCertificateDto;
+import com.epam.esm.dto.GiftCertificateQueryParameterDto;
 
 /**
  * The Interface GiftCertificateService.
  * A interface to define all required methods for gift certificate DTO object.
  */
-public interface GiftCertificateService extends BaseService<GiftCertificateDto> {
+public interface GiftCertificateService extends BaseService<GiftCertificateDto, GiftCertificateQueryParameterDto> {
 
     /**
      * Update gift certificate DTO object.

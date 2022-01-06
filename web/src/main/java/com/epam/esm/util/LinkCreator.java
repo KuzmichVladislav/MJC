@@ -43,7 +43,7 @@ public class LinkCreator {
     public void addOrderLinks(OrderDto order) {
         order.add(linkTo(methodOn(OrderController.class).getOrderById(order.getId())).withSelfRel());
         order.add(linkTo(methodOn(OrderController.class).deleteOrder(order.getId())).withRel(DELETE));
-        order.getOrderCertificateDetails().forEach(od -> addGiftCertificateLinks(od.getGiftCertificate()));
+        order.getOrderCertificateDetailsDtos().forEach(od -> addGiftCertificateLinks(od.getGiftCertificate()));
     }
 
     private void addTagLinksToGiftCertificate(List<TagDto> tags) {

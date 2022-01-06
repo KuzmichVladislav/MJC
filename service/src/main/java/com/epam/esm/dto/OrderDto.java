@@ -28,6 +28,6 @@ public class OrderDto extends RepresentationModel<OrderDto> {
     private long userId;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime purchaseTime;
-    private List<OrderCertificateDetailsDto> orderCertificateDetails;
+    private List<OrderCertificateDetailsDto> orderCertificateDetailsDtos;
     private BigDecimal totalCost;
 }

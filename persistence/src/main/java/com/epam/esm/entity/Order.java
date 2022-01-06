@@ -1,5 +1,7 @@
 package com.epam.esm.entity;
 
+import com.epam.esm.entity.audit.GiftCertificateListener;
+import com.epam.esm.entity.audit.OrderListener;
 import lombok.*;
 
 import javax.persistence.*;
@@ -14,6 +16,7 @@ import java.util.Set;
 @Builder
 @Entity
 @Table(name = "orders")
+@EntityListeners(OrderListener.class)
 public class Order {
 
     @Id

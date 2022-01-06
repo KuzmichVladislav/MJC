@@ -10,7 +10,7 @@ import com.epam.esm.dto.QueryParameterDto;
  * @param <T> the generic DTO object type
  */
 
-public interface BaseService<T> {
+public interface BaseService<T, P extends QueryParameterDto> {
 
     /**
      * Adds the DTO object.
@@ -33,7 +33,7 @@ public interface BaseService<T> {
      *
      * @return the list of DTO objects
      */
-    PageWrapper<T> findAll(QueryParameterDto queryParameterDto);
+    PageWrapper<T> findAll(P queryParameterDto);
 
     /**
      * Removes the by DTO object identifier.

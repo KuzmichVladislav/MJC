@@ -17,10 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -49,23 +47,16 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public OrderDto add(OrderDto orderDto) {
-        orderDto.setPurchaseTime(LocalDateTime.now());
         Order order = orderDao.add(modelMapper.map(orderDto, Order.class));
-        List<GiftCertificateDto> giftCertificates = orderDto.getOrderCertificateDetails().stream()
-                .map(t -> giftCertificateService.findById(t.getGiftCertificate().getId()))
-                .collect(Collectors.toList());
-        Map<GiftCertificateDto, Long> collect = giftCertificates.stream()
-                .collect(Collectors.groupingBy(Function.identity(), counting()));
         Set<OrderCertificateDetails> orderCertificateDetailsSet = new HashSet<>();
-        collect.forEach((g, c) -> {
-            OrderCertificateDetails orderCertificateDetails = new OrderCertificateDetails();
-            orderCertificateDetails.setOrder(order);
-            orderCertificateDetails.setGiftCertificate(modelMapper.map(g, GiftCertificate.class));
-            orderCertificateDetails.setGiftCertificateCost(g.getPrice());
-            orderCertificateDetails.setNumberOfCertificates(Math.toIntExact(c));
-            orderDao.addGiftCertificateToOrder(orderCertificateDetails);
-            orderCertificateDetailsSet.add(orderCertificateDetails);
-        });
+        orderDto.getOrderCertificateDetailsDtos().stream()
+                .map(t -> giftCertificateService.findById(t.getGiftCertificate().getId()))
+                .collect(Collectors.groupingBy(Function.identity(), counting()))
+                .forEach((g, c) -> {
+                    OrderCertificateDetails orderCertificateDetails = getOrderCertificateDetails(order, g, c);
+                    orderDao.addGiftCertificateToOrder(orderCertificateDetails);
+                    orderCertificateDetailsSet.add(orderCertificateDetails);
+                });
         order.setOrderCertificateDetails(orderCertificateDetailsSet);
         return getOrderDto(order);
     }
@@ -102,11 +93,12 @@ public class OrderServiceImpl implements OrderService {
 
     private OrderDto getOrderDto(Order order) {
         OrderDto orderDto = modelMapper.map(order, OrderDto.class);
-        final BigDecimal[] totalCost = {new BigDecimal(0)};
         List<OrderCertificateDetailsDto> orderCertificateDetails = getOrderCertificateDetails(order);
-        orderDto.setOrderCertificateDetails(orderCertificateDetails);
-        orderCertificateDetails.forEach(t -> totalCost[0] = totalCost[0].add(t.getPrice().multiply(BigDecimal.valueOf(t.getNumberOfCertificates()))));
-        orderDto.setTotalCost(totalCost[0]);
+        orderDto.setOrderCertificateDetailsDtos(orderCertificateDetails);
+        BigDecimal totalCost = orderCertificateDetails.stream()
+                .map(details -> details.getPrice().multiply(BigDecimal.valueOf(details.getNumberOfCertificates())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        orderDto.setTotalCost(totalCost);
         return orderDto;
     }
 
@@ -122,5 +114,14 @@ public class OrderServiceImpl implements OrderService {
                             .build();
                 })
                 .collect(Collectors.toList());
+    }
+
+    private OrderCertificateDetails getOrderCertificateDetails(Order order, GiftCertificateDto giftCertificateDto, Long giftCertificateCount) {
+        return OrderCertificateDetails.builder()
+                .order(order)
+                .giftCertificate(modelMapper.map(giftCertificateDto, GiftCertificate.class))
+                .giftCertificateCost(giftCertificateDto.getPrice())
+                .numberOfCertificates(Math.toIntExact(giftCertificateCount))
+                .build();
     }
 }

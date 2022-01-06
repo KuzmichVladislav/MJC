@@ -10,7 +10,7 @@ import java.util.Optional;
  *
  * @param <T> the generic entity type
  */
-public interface BaseDao<T> {
+public interface BaseDao<T, P extends QueryParameter> {
 
     /**
      * Adds the entity.
@@ -34,7 +34,7 @@ public interface BaseDao<T> {
      * @param queryParameter the query parameter
      * @return the list of entity
      */
-    List<T> findAll(QueryParameter queryParameter);
+    List<T> findAll(P queryParameter);
 
     /**
      * Gets total number of items.
