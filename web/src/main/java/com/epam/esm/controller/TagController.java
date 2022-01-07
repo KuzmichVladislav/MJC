@@ -5,7 +5,7 @@ import com.epam.esm.dto.QueryParameterDto;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.service.TagService;
 import com.epam.esm.util.LinkCreator;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,27 +20,18 @@ import javax.validation.constraints.Min;
  */
 @RestController
 @RequestMapping("/v1/tags")
+@RequiredArgsConstructor
 public class TagController {
 
     private final LinkCreator linkCreator;
     private final TagService tagService;
 
     /**
-     * Instantiates a new tag controller.
+     * Get list of tags based on GET request.
      *
-     * @param tagService  the tag service
-     * @param linkCreator
-     */
-    @Autowired
-    public TagController(TagService tagService,
-                         LinkCreator linkCreator) {
-        this.tagService = tagService;
-        this.linkCreator = linkCreator;
-    }
-
-    /**
-     * Get list of tags users based on GET request.
-     *
+     * @param page             the number of page
+     * @param size             the size of display items
+     * @param sortingDirection the sorting direction
      * @return the all tags
      */
     @GetMapping
@@ -61,8 +52,8 @@ public class TagController {
     /**
      * Create a new tag based on POST request.
      *
-     * @param tagDto the tag dto
-     * @return the tag dto
+     * @param tagDto the tag DTO
+     * @return the tag DTO
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -89,6 +80,7 @@ public class TagController {
      * Delete tag by tag identifier based on DELETE request.
      *
      * @param id the tag identifier
+     * @return the http entity
      */
     @DeleteMapping("/{id}")
     public HttpEntity<Void> deleteTag(@PathVariable("id") @Min(1) long id) {
@@ -96,6 +88,12 @@ public class TagController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    /**
+     * Find most used tag based on GET request.
+     *
+     * @param id the identifier
+     * @return the tag dto
+     */
     @GetMapping("/users/{id}/most-used")
     public TagDto findMostUsedTag(@PathVariable("id") @Min(1) long id) {
         TagDto resultTag = tagService.findMostUsedTag(id);

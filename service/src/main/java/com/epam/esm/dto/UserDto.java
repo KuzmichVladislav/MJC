@@ -6,6 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.hateoas.RepresentationModel;
 
+/**
+ * DTO Class UserDto for user DTO object
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

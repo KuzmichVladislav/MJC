@@ -5,7 +5,7 @@ import com.epam.esm.dto.GiftCertificateQueryParameterDto;
 import com.epam.esm.dto.PageWrapper;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.util.LinkCreator;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,23 +22,11 @@ import java.util.Optional;
  */
 @RestController
 @RequestMapping("/v1/gift-certificates")
+@RequiredArgsConstructor
 public class GiftCertificateController {
 
     private final GiftCertificateService giftCertificateService;
     private final LinkCreator linkCreator;
-
-    /**
-     * Instantiates a new gift certificate controller.
-     *
-     * @param giftCertificateService the gift certificate service
-     * @param linkCreator
-     */
-    @Autowired
-    public GiftCertificateController(GiftCertificateService giftCertificateService,
-                                     LinkCreator linkCreator) {
-        this.giftCertificateService = giftCertificateService;
-        this.linkCreator = linkCreator;
-    }
 
     /**
      * Create a new gift certificate based on POST request.
@@ -54,6 +42,18 @@ public class GiftCertificateController {
         return resultGiftCertificate;
     }
 
+    /**
+     * Gets all gift certificates based on GET request.
+     *
+     * @param page             the number of page
+     * @param size             the size of display items
+     * @param name             the name of gift certificate
+     * @param description      the description  of gift certificate
+     * @param tagNames         the tag names
+     * @param sortParameter    the sort parameter
+     * @param sortingDirection the sorting direction
+     * @return the all gift certificates
+     */
     @GetMapping
     public PageWrapper<GiftCertificateDto>
     getAllGiftCertificates(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
@@ -111,6 +111,7 @@ public class GiftCertificateController {
      * Delete gift certificate by gift certificate identifier based on DELETE request.
      *
      * @param id the gift certificate identifier
+     * @return the http entity
      */
     @DeleteMapping("/{id}")
     public HttpEntity<Void> deleteGiftCertificate(@PathVariable("id") @Min(1) long id) {

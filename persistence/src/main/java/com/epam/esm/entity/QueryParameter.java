@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Entity Class GiftCertificateQueryParameter contains parameters for generation query
+ * Entity Class QueryParameter contains parameters for generation query
  */
 @Data
 @AllArgsConstructor

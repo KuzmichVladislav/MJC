@@ -19,5 +19,11 @@ public interface TagService extends BaseService<TagDto, QueryParameterDto> {
      */
     Optional<TagDto> findByName(String name);
 
+    /**
+     * Find most used tag tag DTO.
+     *
+     * @param id the user identifier
+     * @return the tag DTO
+     */
     TagDto findMostUsedTag(long id);
 }

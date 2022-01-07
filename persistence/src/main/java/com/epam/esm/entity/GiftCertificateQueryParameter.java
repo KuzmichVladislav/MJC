@@ -5,6 +5,9 @@ import lombok.*;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Entity Class GiftCertificateQueryParameter for gift certificate query parameter entity
+ */
 @EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor

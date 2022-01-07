@@ -16,6 +16,9 @@ import java.util.List;
 
 import static com.epam.esm.exception.ExceptionKey.USER_ID_IS_NOT_VALID;
 
+/**
+ * DTO Class OrderDto for order DTO object
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

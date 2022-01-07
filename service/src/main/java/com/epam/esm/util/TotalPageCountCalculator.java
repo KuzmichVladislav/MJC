@@ -5,9 +5,19 @@ import com.epam.esm.exception.ExceptionKey;
 import com.epam.esm.exception.RequestValidationException;
 import org.springframework.stereotype.Component;
 
+/**
+ * Utility Class TotalPageCountCalculator to calculate the number of pages possible to display.
+ */
 @Component
 public class TotalPageCountCalculator {
 
+    /**
+     * Сalculate the number of pages possible to display.
+     *
+     * @param queryParameterDto  the query parameter DTO
+     * @param totalNumberOfItems the total number of items
+     * @return the total number of pages
+     */
     public int getTotalPage(QueryParameterDto queryParameterDto, long totalNumberOfItems) {
         int page = queryParameterDto.getPage();
         int size = queryParameterDto.getSize();

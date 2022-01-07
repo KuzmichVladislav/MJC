@@ -9,6 +9,9 @@ import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The Class GiftCertificateCriteriaQueryCreator for creating a query based on parameters obtained from request parameters.
+ */
 @Component
 public class GiftCertificateCriteriaQueryCreator {
 

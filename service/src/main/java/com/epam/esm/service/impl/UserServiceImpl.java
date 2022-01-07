@@ -17,6 +17,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * The Class UserServiceImpl is the implementation of the {@link UserService} interface.
+ */
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {

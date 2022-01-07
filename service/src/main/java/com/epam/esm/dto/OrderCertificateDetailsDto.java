@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
+/**
+ * DTO Class OrderCertificateDetailsDto for order certificate details DTO object
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

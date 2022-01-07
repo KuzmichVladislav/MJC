@@ -9,6 +9,9 @@ import java.util.Optional;
 import static com.epam.esm.exception.ExceptionKey.PAGE_MIGHT_NOT_BE_NEGATIVE;
 import static com.epam.esm.exception.ExceptionKey.SIZE_MIGHT_NOT_BE_NEGATIVE;
 
+/**
+ * DTO Class GiftCertificateQueryParameterDto contains parameters for generation query
+ */
 @EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor

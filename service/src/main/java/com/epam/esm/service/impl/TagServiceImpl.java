@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * The Class GiftCertificateServiceImpl is the implementation of the {@link TagService} interface.
+ * The Class TagServiceImpl is the implementation of the {@link TagService} interface.
  */
 @Service
 @RequiredArgsConstructor

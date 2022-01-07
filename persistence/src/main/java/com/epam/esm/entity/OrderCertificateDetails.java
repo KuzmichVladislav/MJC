@@ -5,6 +5,9 @@ import lombok.*;
 import javax.persistence.*;
 import java.math.BigDecimal;
 
+/**
+ * Entity Class OrderCertificateDetails contains parameters for generation query for order certificate
+ */
 @Getter
 @Setter
 @EqualsAndHashCode(exclude = {"order", "giftCertificate"})

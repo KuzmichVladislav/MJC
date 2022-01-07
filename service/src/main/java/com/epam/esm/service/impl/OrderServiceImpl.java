@@ -25,6 +25,9 @@ import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.counting;
 
+/**
+ * The Class OrderServiceImpl is the implementation of the {@link OrderService} interface.
+ */
 @Service
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {

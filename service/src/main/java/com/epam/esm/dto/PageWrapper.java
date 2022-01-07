@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+/**
+ * The Class PageWrapper for Page object
+ */
 @Data
 @Builder
 @NoArgsConstructor

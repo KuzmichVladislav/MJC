@@ -18,7 +18,19 @@ public interface TagDao extends BaseDao<Tag, QueryParameter> {
      */
     Optional<Tag> findByName(String name);
 
+    /**
+     * Get the most widely used tag of a user with the highest cost of all orders.
+     *
+     * @param id the identifier
+     * @return the optional
+     */
     Optional<Tag> findMostUsedTag(long id);
 
+    /**
+     * Is part of gift certificate.
+     *
+     * @param id the identifier
+     * @return true if the tag is part of gift certificate
+     */
     boolean isPartOfGiftCertificate(long id);
 }

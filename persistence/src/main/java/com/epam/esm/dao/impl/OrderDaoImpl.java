@@ -1,5 +1,6 @@
 package com.epam.esm.dao.impl;
 
+import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dao.OrderDao;
 import com.epam.esm.entity.Order;
 import com.epam.esm.entity.OrderCertificateDetails;
@@ -11,6 +12,9 @@ import javax.persistence.PersistenceContext;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * The Class OrderDaoImpl is the implementation of the {@link OrderDao} interface.
+ */
 @Repository
 public class OrderDaoImpl implements OrderDao {
 

@@ -7,6 +7,9 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Set;
 
+/**
+ * Entity Class Order for order entity
+ */
 @Getter
 @Setter
 @EqualsAndHashCode(exclude = {"orderCertificateDetails"})

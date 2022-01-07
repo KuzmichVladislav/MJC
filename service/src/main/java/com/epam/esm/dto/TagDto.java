@@ -13,7 +13,7 @@ import javax.validation.constraints.Size;
 import static com.epam.esm.exception.ExceptionKey.*;
 
 /**
- * DTO Class GiftCertificate for tag DTO object
+ * DTO Class TagDto for tag DTO object
  */
 @Data
 @Builder

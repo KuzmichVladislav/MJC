@@ -8,8 +8,8 @@ import com.epam.esm.dto.QueryParameterDto;
  * describes base business logic operations for DTO objects.
  *
  * @param <T> the generic DTO object type
+ * @param <P> the query parameter
  */
-
 public interface BaseService<T, P extends QueryParameterDto> {
 
     /**
@@ -31,7 +31,8 @@ public interface BaseService<T, P extends QueryParameterDto> {
     /**
      * Find all DTO objects.
      *
-     * @return the list of DTO objects
+     * @param queryParameterDto the query parameter dto
+     * @return the page
      */
     PageWrapper<T> findAll(P queryParameterDto);
 

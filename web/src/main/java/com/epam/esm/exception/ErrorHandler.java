@@ -23,10 +23,22 @@ public class ErrorHandler {
 
     private final MessageSource messageSource;
 
+    /**
+     * Instantiates a new Error handler.
+     *
+     * @param messageSource the message source
+     */
     public ErrorHandler(MessageSource messageSource) {
         this.messageSource = messageSource;
     }
 
+    /**
+     * Handle exception result.
+     *
+     * @param e      the exception
+     * @param locale the locale
+     * @return the exception result
+     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
@@ -88,12 +100,12 @@ public class ErrorHandler {
      * @param locale the locale
      * @return the exception result
      */
-//    @ExceptionHandler(RuntimeException.class)
-//    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-//    @ResponseBody
-//    public ExceptionResult handle(RuntimeException e, Locale locale) {
-//        return new ExceptionResult(e.getMessage(), ErrorCode.INTERNAL_ERROR.getCode());
-//    }
+    @ExceptionHandler(RuntimeException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseBody
+    public ExceptionResult handle(RuntimeException e, Locale locale) {
+        return new ExceptionResult(e.getMessage(), ErrorCode.INTERNAL_ERROR.getCode());
+    }
 
     /**
      * Handle HttpRequestMethodNotSupportedException.
@@ -123,6 +135,13 @@ public class ErrorHandler {
         return new ExceptionResult(e.getMessage(), ErrorCode.UNSUPPORTED_MEDIA_TYPE.getCode());
     }
 
+    /**
+     * Handle exception result.
+     *
+     * @param e      the exception
+     * @param locale the locale
+     * @return the exception result
+     */
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody

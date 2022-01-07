@@ -9,6 +9,7 @@ import java.util.Optional;
  * The Interface BaseDao. A generic interface for persistence layer describes CRUD operations for working with database.
  *
  * @param <T> the generic entity type
+ * @param <P> the query parameter
  */
 public interface BaseDao<T, P extends QueryParameter> {
 

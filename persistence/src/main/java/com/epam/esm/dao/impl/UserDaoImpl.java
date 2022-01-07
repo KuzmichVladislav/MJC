@@ -1,5 +1,6 @@
 package com.epam.esm.dao.impl;
 
+import com.epam.esm.dao.OrderDao;
 import com.epam.esm.dao.UserDao;
 import com.epam.esm.entity.QueryParameter;
 import com.epam.esm.entity.User;
@@ -10,6 +11,9 @@ import javax.persistence.PersistenceContext;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * The Class UserDaoImpl is the implementation of the {@link UserDao} interface.
+ */
 @Repository
 public class UserDaoImpl implements UserDao {
 
