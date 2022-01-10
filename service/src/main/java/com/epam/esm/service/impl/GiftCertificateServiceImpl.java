@@ -9,6 +9,7 @@ import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.GiftCertificateQueryParameter;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.ExceptionKey;
+import com.epam.esm.exception.RequestValidationException;
 import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.TagService;
@@ -52,29 +53,31 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    @Transactional
     public PageWrapper<GiftCertificateDto> findAll(GiftCertificateQueryParameterDto queryParameterDto) {
-        long totalNumberOfItems = giftCertificateDao.getTotalNumberOfItems();
-        int totalPage = totalPageCountCalculator.getTotalPage(queryParameterDto, totalNumberOfItems);
         List<GiftCertificateDto> giftCertificates =
                 listConverter.convertList(giftCertificateDao.findAll(modelMapper.map(queryParameterDto, GiftCertificateQueryParameter.class)),
                         this::convertToGiftCertificateDto);
+        long totalNumberOfItems = giftCertificateDao.getTotalNumberOfItems(modelMapper.map(queryParameterDto, GiftCertificateQueryParameter.class));
+        int totalPage = totalPageCountCalculator.getTotalPage(queryParameterDto, totalNumberOfItems);
         return new PageWrapper<>(giftCertificates, totalPage);
     }
 
     @Override
     @Transactional
     public GiftCertificateDto update(long id, GiftCertificateDto giftCertificateDto) {
-        giftCertificateDto.setId(id);
-        findAndSetTags(giftCertificateDto);
+        if (giftCertificateDto.getId() != id && giftCertificateDto.getId() != 0) {
+            throw new RequestValidationException(ExceptionKey.CERTIFICATE_ID_IS_NOT_VALID, String.valueOf(giftCertificateDto.getId()));
+        } else {
+            giftCertificateDto.setId(id);
+        }
         GiftCertificateDto existing = findById(id);
-        copyNonNullProperties(giftCertificateDto, existing);
-        giftCertificateDao.update(modelMapper.map(existing, GiftCertificate.class));
-        return findById(id);
+        GiftCertificateDto updatedGiftCertificateDto = copyNonNullProperties(giftCertificateDto, existing);
+        findAndSetTags(updatedGiftCertificateDto);
+        giftCertificateDao.update(modelMapper.map(updatedGiftCertificateDto, GiftCertificate.class));
+        return updatedGiftCertificateDto;
     }
 
     @Override
-    @Transactional
     public void removeById(long id) {
         GiftCertificate giftCertificate = giftCertificateDao.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException(ExceptionKey.CERTIFICATE_NOT_FOUND, String.valueOf(id)));
@@ -84,20 +87,23 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         giftCertificateDao.remove(giftCertificate);
     }
 
-    private void copyNonNullProperties(GiftCertificateDto giftCertificateDto, GiftCertificateDto existing) {
-        giftCertificateDto.setCreateDate(existing.getCreateDate());
-        if (giftCertificateDto.getName() == null) {
-            giftCertificateDto.setName(existing.getName());
+    private GiftCertificateDto copyNonNullProperties(GiftCertificateDto giftCertificateDto, GiftCertificateDto existing) {
+        if (giftCertificateDto.getName() != null) {
+            existing.setName(giftCertificateDto.getName());
         }
-        if (giftCertificateDto.getDescription() == null) {
-            giftCertificateDto.setDescription(existing.getDescription());
+        if (giftCertificateDto.getDescription() != null) {
+            existing.setDescription(giftCertificateDto.getDescription());
         }
-        if (giftCertificateDto.getDuration() == null) {
-            giftCertificateDto.setDuration(existing.getDuration());
+        if (giftCertificateDto.getDuration() != null) {
+            existing.setDuration(giftCertificateDto.getDuration());
         }
-        if (giftCertificateDto.getPrice() == null) {
-            giftCertificateDto.setPrice(existing.getPrice());
+        if (giftCertificateDto.getPrice() != null) {
+            existing.setPrice(giftCertificateDto.getPrice());
         }
+        if (giftCertificateDto.getTags() != null) {
+            existing.setTags(giftCertificateDto.getTags());
+        }
+        return existing;
     }
 
     private GiftCertificate convertToGiftCertificateEntity(GiftCertificateDto giftCertificateDto) {

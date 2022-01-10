@@ -62,14 +62,4 @@ class OrderDaoImplTest {
         Assertions.assertNotNull(result);
         Assertions.assertEquals(10, result.size());
     }
-
-    @Test
-    void testRemove_OrderExists_RemovesDataFromDatabase() {
-        // Given
-        // When
-        Order result = orderDao.findById(1L).get();
-        // Then
-        Assertions.assertTrue(orderDao.remove(result));
-    }
-
 }

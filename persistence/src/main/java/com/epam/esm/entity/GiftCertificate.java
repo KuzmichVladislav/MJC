@@ -7,14 +7,12 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Entity Class GiftCertificate for gift certificate entity
  */
 @Getter
 @Setter
-@EqualsAndHashCode(exclude = {"tags", "orderCertificates"})
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -41,6 +39,4 @@ public class GiftCertificate {
             joinColumns = @JoinColumn(name = "gift_certificate_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id"))
     private List<Tag> tags;
-    @OneToMany(mappedBy = "giftCertificate")
-    private Set<OrderCertificateDetails> orderCertificates;
 }

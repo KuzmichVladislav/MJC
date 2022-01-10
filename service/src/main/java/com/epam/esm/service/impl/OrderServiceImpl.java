@@ -46,7 +46,7 @@ public class OrderServiceImpl implements OrderService {
                 .map(t -> giftCertificateService.findById(t.getGiftCertificate().getId()))
                 .collect(Collectors.groupingBy(Function.identity(), counting()))
                 .forEach((g, c) -> {
-                    OrderCertificateDetails orderCertificateDetails = getOrderCertificateDetails(order, g, c);
+                    OrderCertificateDetails orderCertificateDetails = getOrderCertificateDetails(g, c);
                     orderDao.addGiftCertificateToOrder(orderCertificateDetails);
                     orderCertificateDetailsSet.add(orderCertificateDetails);
                 });
@@ -62,7 +62,6 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    @Transactional
     public PageWrapper<OrderDto> findAll(QueryParameterDto queryParameterDto) {
         long totalNumberOfItems = orderDao.getTotalNumberOfItems();
         int totalPage = totalPageCountCalculator.getTotalPage(queryParameterDto, totalNumberOfItems);
@@ -72,7 +71,6 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    @Transactional
     public void removeById(long id) {
         orderDao.remove(orderDao.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException(ExceptionKey.ORDER_NOT_FOUND, String.valueOf(id))));
@@ -111,9 +109,8 @@ public class OrderServiceImpl implements OrderService {
                 .collect(Collectors.toList());
     }
 
-    private OrderCertificateDetails getOrderCertificateDetails(Order order, GiftCertificateDto giftCertificateDto, Long giftCertificateCount) {
+    private OrderCertificateDetails getOrderCertificateDetails(GiftCertificateDto giftCertificateDto, Long giftCertificateCount) {
         return OrderCertificateDetails.builder()
-                .order(order)
                 .giftCertificate(modelMapper.map(giftCertificateDto, GiftCertificate.class))
                 .giftCertificateCost(giftCertificateDto.getPrice())
                 .numberOfCertificates(Math.toIntExact(giftCertificateCount))

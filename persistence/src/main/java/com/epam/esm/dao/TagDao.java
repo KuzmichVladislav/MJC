@@ -33,4 +33,11 @@ public interface TagDao extends BaseDao<Tag, QueryParameter> {
      * @return true if the tag is part of gift certificate
      */
     boolean isPartOfGiftCertificate(long id);
+
+    /**
+     * Gets total number of items.
+     *
+     * @return the total number of items
+     */
+    long getTotalNumberOfItems();
 }

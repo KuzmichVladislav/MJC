@@ -77,15 +77,6 @@ class TagDaoImplTest {
     }
 
     @Test
-    void testRemoveById_IdExists_RemovesDataFromDatabase() {
-        // Given
-        // When
-        Tag result = tagDao.findById(1L).get();
-        // Then
-        Assertions.assertTrue(tagDao.remove(result));
-    }
-
-    @Test
     void testFindByName_NameExists_ReadsDataFromDatabase() {
         // Given
         // When

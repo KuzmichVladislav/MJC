@@ -12,7 +12,6 @@ import java.util.Set;
  */
 @Getter
 @Setter
-@EqualsAndHashCode(exclude = {"orderCertificateDetails"})
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

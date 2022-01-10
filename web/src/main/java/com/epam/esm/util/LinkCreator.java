@@ -4,10 +4,8 @@ import com.epam.esm.controller.GiftCertificateController;
 import com.epam.esm.controller.OrderController;
 import com.epam.esm.controller.TagController;
 import com.epam.esm.controller.UserController;
-import com.epam.esm.dto.GiftCertificateDto;
-import com.epam.esm.dto.OrderDto;
-import com.epam.esm.dto.TagDto;
-import com.epam.esm.dto.UserDto;
+import com.epam.esm.dto.*;
+import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -23,6 +21,8 @@ public class LinkCreator {
 
     private static final String DELETE = "delete";
     private static final String UPDATE = "update";
+    private static final String NEXT_PAGE = "next page";
+    private static final String PREVIOUS_PAGE = "previous page";
 
     /**
      * Add tag HATEOAS links.
@@ -67,6 +67,88 @@ public class LinkCreator {
         order.add(linkTo(methodOn(OrderController.class).getOrderById(order.getId())).withSelfRel());
         order.add(linkTo(methodOn(OrderController.class).deleteOrder(order.getId())).withRel(DELETE));
         order.getOrderCertificateDetailsDtos().forEach(od -> addGiftCertificateLinks(od.getGiftCertificate()));
+    }
+
+    /**
+     * Add gift certificate pagination HATEOAS links.
+     *
+     * @param giftCertificateQueryParameterDto the gift certificate query parameter DTO
+     * @param giftCertificatePage              the gift certificate page number
+     */
+    public void addGiftCertificatePaginationLinks(GiftCertificateQueryParameterDto giftCertificateQueryParameterDto, PageWrapper<GiftCertificateDto> giftCertificatePage) {
+        if (giftCertificatePage.getTotalPages() > giftCertificateQueryParameterDto.getPage()) {
+            giftCertificatePage.add(Link.of(linkTo(methodOn(GiftCertificateController.class)
+                    .getAllGiftCertificates(giftCertificateQueryParameterDto.getPage() + 1,
+                            giftCertificateQueryParameterDto.getSize(),
+                            giftCertificateQueryParameterDto.getName(),
+                            giftCertificateQueryParameterDto.getDescription(),
+                            giftCertificateQueryParameterDto.getTagNames(),
+                            giftCertificateQueryParameterDto.getSortParameter(),
+                            giftCertificateQueryParameterDto.getSortingDirection()))
+                    .toString().replaceAll("\\{.*?\\}", "")).withRel(NEXT_PAGE));
+        }
+        if (giftCertificateQueryParameterDto.getPage() > 1) {
+            giftCertificatePage.add(Link.of(linkTo(methodOn(GiftCertificateController.class)
+                    .getAllGiftCertificates(giftCertificateQueryParameterDto.getPage() + 1,
+                            giftCertificateQueryParameterDto.getSize(),
+                            giftCertificateQueryParameterDto.getName(),
+                            giftCertificateQueryParameterDto.getDescription(),
+                            giftCertificateQueryParameterDto.getTagNames(),
+                            giftCertificateQueryParameterDto.getSortParameter(),
+                            giftCertificateQueryParameterDto.getSortingDirection()))
+                    .toString().replaceAll("\\{.*?\\}", "")).withRel(PREVIOUS_PAGE));
+        }
+    }
+
+    /**
+     * Add order pagination HATEOAS links.
+     *
+     * @param queryParameterDto the query parameter DTO
+     * @param orderPage         the order page number
+     */
+    public void addOrderPaginationLinks(QueryParameterDto queryParameterDto, PageWrapper<OrderDto> orderPage) {
+        if (orderPage.getTotalPages() > queryParameterDto.getPage()) {
+            orderPage.add(linkTo(methodOn(OrderController.class).getAllOrders(queryParameterDto.getPage() + 1,
+                    queryParameterDto.getSize(), queryParameterDto.getSortingDirection())).withRel(NEXT_PAGE));
+        }
+        if (queryParameterDto.getPage() > 1) {
+            orderPage.add(linkTo(methodOn(OrderController.class).getAllOrders(queryParameterDto.getPage() - 1,
+                    queryParameterDto.getSize(), queryParameterDto.getSortingDirection())).withRel(PREVIOUS_PAGE));
+        }
+    }
+
+    /**
+     * Add tag pagination HATEOAS links.
+     *
+     * @param queryParameterDto the query parameter DTO
+     * @param tagPage           the tag page number
+     */
+    public void addTagPaginationLinks(QueryParameterDto queryParameterDto, PageWrapper<TagDto> tagPage) {
+        if (tagPage.getTotalPages() > queryParameterDto.getPage()) {
+            tagPage.add(linkTo(methodOn(TagController.class).getAllTags(queryParameterDto.getPage() + 1,
+                    queryParameterDto.getSize(), queryParameterDto.getSortingDirection())).withRel(NEXT_PAGE));
+        }
+        if (queryParameterDto.getPage() > 1) {
+            tagPage.add(linkTo(methodOn(TagController.class).getAllTags(queryParameterDto.getPage() - 1,
+                    queryParameterDto.getSize(), queryParameterDto.getSortingDirection())).withRel(PREVIOUS_PAGE));
+        }
+    }
+
+    /**
+     * Add user pagination HATEOAS links.
+     *
+     * @param queryParameterDto the query parameter DTO
+     * @param userPage          the user page number
+     */
+    public void addUserPaginationLinks(QueryParameterDto queryParameterDto, PageWrapper<UserDto> userPage) {
+        if (userPage.getTotalPages() > queryParameterDto.getPage()) {
+            userPage.add(linkTo(methodOn(UserController.class).getAllUsers(queryParameterDto.getPage() + 1,
+                    queryParameterDto.getSize(), queryParameterDto.getSortingDirection())).withRel(NEXT_PAGE));
+        }
+        if (queryParameterDto.getPage() > 1) {
+            userPage.add(linkTo(methodOn(UserController.class).getAllUsers(queryParameterDto.getPage() - 1,
+                    queryParameterDto.getSize(), queryParameterDto.getSortingDirection())).withRel(PREVIOUS_PAGE));
+        }
     }
 
     private void addTagLinksToGiftCertificate(List<TagDto> tags) {

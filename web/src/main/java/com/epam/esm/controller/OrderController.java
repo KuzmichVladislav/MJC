@@ -61,6 +61,7 @@ public class OrderController {
                 .build();
         PageWrapper<OrderDto> orderPage = orderService.findAll(queryParameterDto);
         orderPage.getItemsPerPage().forEach(linkCreator::addOrderLinks);
+        linkCreator.addOrderPaginationLinks(queryParameterDto, orderPage);
         return orderPage;
     }
 

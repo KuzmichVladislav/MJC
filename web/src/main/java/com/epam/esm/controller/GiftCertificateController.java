@@ -3,6 +3,7 @@ package com.epam.esm.controller;
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.GiftCertificateQueryParameterDto;
 import com.epam.esm.dto.PageWrapper;
+import com.epam.esm.dto.QueryParameterDto;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.util.LinkCreator;
 import lombok.RequiredArgsConstructor;
@@ -64,7 +65,7 @@ public class GiftCertificateController {
                            @RequestParam(value = "sort", required = false, defaultValue = "NAME")
                                    GiftCertificateQueryParameterDto.SortParameter sortParameter,
                            @RequestParam(value = "order-by", required = false, defaultValue = "ASC")
-                                   GiftCertificateQueryParameterDto.SortingDirection sortingDirection) {
+                                   QueryParameterDto.SortingDirection sortingDirection) {
         GiftCertificateQueryParameterDto giftCertificateQueryParameterDto = GiftCertificateQueryParameterDto.giftCertificateQueryParameterDtoBuilder()
                 .name(name)
                 .description(description)
@@ -74,8 +75,10 @@ public class GiftCertificateController {
                 .size(size)
                 .sortingDirection(sortingDirection)
                 .build();
-        PageWrapper<GiftCertificateDto> giftCertificatePage = giftCertificateService.findAll(giftCertificateQueryParameterDto);
+        PageWrapper<GiftCertificateDto> giftCertificatePage =
+                giftCertificateService.findAll(giftCertificateQueryParameterDto);
         giftCertificatePage.getItemsPerPage().forEach(linkCreator::addGiftCertificateLinks);
+        linkCreator.addGiftCertificatePaginationLinks(giftCertificateQueryParameterDto, giftCertificatePage);
         return giftCertificatePage;
     }
 

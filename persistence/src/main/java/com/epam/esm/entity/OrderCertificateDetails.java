@@ -10,7 +10,6 @@ import java.math.BigDecimal;
  */
 @Getter
 @Setter
-@EqualsAndHashCode(exclude = {"order", "giftCertificate"})
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor

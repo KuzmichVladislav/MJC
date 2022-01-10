@@ -38,13 +38,6 @@ public interface BaseDao<T, P extends QueryParameter> {
     List<T> findAll(P queryParameter);
 
     /**
-     * Gets total number of items.
-     *
-     * @return the total number of items
-     */
-    long getTotalNumberOfItems();
-
-    /**
      * Remove boolean.
      *
      * @param t the entity

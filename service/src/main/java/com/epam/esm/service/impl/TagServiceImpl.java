@@ -54,7 +54,6 @@ public class TagServiceImpl implements TagService {
 
 
     @Override
-    @Transactional
     public TagDto findMostUsedTag(long id) {
         return modelMapper.map(tagDao.findMostUsedTag(id).orElseThrow(() ->
                 new ResourceNotFoundException(ExceptionKey.TAG_NOT_FOUND, String.valueOf(id))), TagDto.class);
@@ -62,7 +61,6 @@ public class TagServiceImpl implements TagService {
 
 
     @Override
-    @Transactional
     public PageWrapper<TagDto> findAll(QueryParameterDto queryParameterDto) {
         long totalNumberOfItems = tagDao.getTotalNumberOfItems();
         int totalPage = totalPageCountCalculator.getTotalPage(queryParameterDto, totalNumberOfItems);
@@ -71,7 +69,6 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    @Transactional
     public void removeById(long id) {
         if (tagDao.isPartOfGiftCertificate(id)) {
             throw new RequestValidationException(ExceptionKey.TAG_BELONGS_TO_CERTIFICATE, String.valueOf(id));

@@ -2,6 +2,7 @@ package com.epam.esm.dao.impl;
 
 import com.epam.esm.configuration.PersistenceTestConfiguration;
 import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.entity.GiftCertificateQueryParameter;
 import com.epam.esm.entity.QueryParameter;
 import com.epam.esm.entity.Tag;
 import org.junit.jupiter.api.Assertions;
@@ -27,15 +28,15 @@ class GiftCertificateDaoImplTest {
 
     @Autowired
     private GiftCertificateDaoImpl giftCertificateDao;
-    private QueryParameter queryParameter;
+    private GiftCertificateQueryParameter queryParameter;
 
     @BeforeEach
     void setUp() {
-        queryParameter = QueryParameter.builder()
+        queryParameter = GiftCertificateQueryParameter.giftCertificateQueryParameterBuilder()
                 .name(Optional.ofNullable(null))
                 .description(Optional.ofNullable(null))
                 .tagNames(Optional.ofNullable(null))
-                .sortParameter(QueryParameter.SortParameter.NAME)
+                .sortParameter(GiftCertificateQueryParameter.SortParameter.NAME)
                 .page(1)
                 .size(10)
                 .firstValue(1)
@@ -116,38 +117,6 @@ class GiftCertificateDaoImplTest {
         Assertions.assertEquals("result", result.getDescription());
         Assertions.assertEquals(1, result.getDuration());
         Assertions.assertEquals(2, result.getTags().size());
-    }
-
-    @Test
-    void testRemoveById_IdExists_RemovesDataFromDatabase() {
-        // Given
-        GiftCertificate giftCertificate = GiftCertificate.builder()
-                .id(1L)
-                .description("result")
-                .duration(1)
-                .lastUpdateDate(LocalDateTime.now())
-                .tags(Arrays.asList(new Tag(500, "tag500"),
-                        new Tag(500, "tag500")))
-                .build();
-        // When
-        // Then
-        Assertions.assertTrue(giftCertificateDao.remove(giftCertificate));
-    }
-
-    @Test
-    void testRemoveById_IdDoesNotExist_False() {
-        // Given
-        GiftCertificate giftCertificate = GiftCertificate.builder()
-                .id(-1L)
-                .description("result")
-                .duration(1)
-                .lastUpdateDate(LocalDateTime.now())
-                .tags(Arrays.asList(new Tag(500, "tag500"),
-                        new Tag(500, "tag500")))
-                .build();
-        // When
-        // Then
-        Assertions.assertFalse(giftCertificateDao.remove(giftCertificate));
     }
 
     @Test

@@ -25,4 +25,11 @@ public interface OrderDao extends BaseDao<Order, QueryParameter> {
      * @return the list
      */
     List<Order> findOrdersByUserId(long userId);
+
+    /**
+     * Gets total number of items.
+     *
+     * @return the total number of items
+     */
+    long getTotalNumberOfItems();
 }

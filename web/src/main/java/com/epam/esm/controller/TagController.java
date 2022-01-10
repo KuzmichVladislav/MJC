@@ -46,6 +46,7 @@ public class TagController {
                 .build();
         PageWrapper<TagDto> tagPage = tagService.findAll(queryParameterDto);
         tagPage.getItemsPerPage().forEach(linkCreator::addTagLinks);
+        linkCreator.addTagPaginationLinks(queryParameterDto, tagPage);
         return tagPage;
     }
 

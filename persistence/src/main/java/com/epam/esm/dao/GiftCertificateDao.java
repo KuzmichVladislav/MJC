@@ -14,4 +14,11 @@ public interface GiftCertificateDao extends BaseDao<GiftCertificate, GiftCertifi
      * @param giftCertificate the gift certificate entity
      */
     void update(GiftCertificate giftCertificate);
+
+    /**
+     * Gets total number of items.
+     *
+     * @return the total number of items
+     */
+    long getTotalNumberOfItems(GiftCertificateQueryParameter queryParameter);
 }

@@ -42,6 +42,7 @@ public class UserController {
                 .build();
         PageWrapper<UserDto> userPage = userService.findAll(queryParameterDto);
         userPage.getItemsPerPage().forEach(linkCreator::addUserLinks);
+        linkCreator.addUserPaginationLinks(queryParameterDto, userPage);
         return userPage;
     }
 
