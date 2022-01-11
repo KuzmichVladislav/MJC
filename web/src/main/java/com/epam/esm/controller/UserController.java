@@ -6,9 +6,13 @@ import com.epam.esm.dto.UserDto;
 import com.epam.esm.service.UserService;
 import com.epam.esm.util.LinkCreator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.Min;
+import javax.validation.constraints.Positive;
+
+import static com.epam.esm.exception.ExceptionKey.*;
 
 /**
  * The Class UserController is a Rest Controller class which will have
@@ -17,6 +21,7 @@ import javax.validation.constraints.Min;
 @RestController
 @RequestMapping("/v1/users")
 @RequiredArgsConstructor
+@Validated
 public class UserController {
 
     private final UserService userService;
@@ -31,7 +36,9 @@ public class UserController {
      * @return the all users
      */
     @GetMapping
-    public PageWrapper<UserDto> getAllUsers(@RequestParam(required = false, defaultValue = "1") int page,
+    public PageWrapper<UserDto> getAllUsers(@Min(value = 1, message = PAGE_MIGHT_NOT_BE_NEGATIVE)
+                                            @RequestParam(required = false, defaultValue = "1") int page,
+                                            @Min(value = 1, message = SIZE_MIGHT_NOT_BE_NEGATIVE)
                                             @RequestParam(required = false, defaultValue = "10") int size,
                                             @RequestParam(value = "order-by", required = false, defaultValue = "ASC")
                                                     QueryParameterDto.SortingDirection sortingDirection) {
@@ -53,7 +60,8 @@ public class UserController {
      * @return the user by identifier
      */
     @GetMapping("/{id}")
-    public UserDto getUserById(@PathVariable("id") @Min(1) long id) {
+    public UserDto getUserById(@Positive(message = ID_MIGHT_NOT_BE_NEGATIVE)
+                               @PathVariable("id") long id) {
         UserDto user = userService.findById(id);
         linkCreator.addUserLinks(user);
         return user;

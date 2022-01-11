@@ -9,10 +9,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.Positive;
+
+import static com.epam.esm.exception.ExceptionKey.*;
 
 /**
  * The Class TagController is a Rest Controller class which will have
@@ -21,6 +25,7 @@ import javax.validation.constraints.Min;
 @RestController
 @RequestMapping("/v1/tags")
 @RequiredArgsConstructor
+@Validated
 public class TagController {
 
     private final LinkCreator linkCreator;
@@ -35,7 +40,9 @@ public class TagController {
      * @return the all tags
      */
     @GetMapping
-    public PageWrapper<TagDto> getAllTags(@RequestParam(required = false, defaultValue = "1") int page,
+    public PageWrapper<TagDto> getAllTags(@Min(value = 1, message = PAGE_MIGHT_NOT_BE_NEGATIVE)
+                                          @RequestParam(required = false, defaultValue = "1") int page,
+                                          @Min(value = 1, message = SIZE_MIGHT_NOT_BE_NEGATIVE)
                                           @RequestParam(required = false, defaultValue = "10") int size,
                                           @RequestParam(value = "order-by", required = false, defaultValue = "ASC")
                                                   QueryParameterDto.SortingDirection sortingDirection) {
@@ -71,7 +78,8 @@ public class TagController {
      * @return the tag
      */
     @GetMapping("/{id}")
-    public TagDto getTagById(@PathVariable("id") @Min(1) long id) {
+    public TagDto getTagById(@Positive(message = ID_MIGHT_NOT_BE_NEGATIVE)
+                             @PathVariable("id") long id) {
         TagDto resultTag = tagService.findById(id);
         linkCreator.addTagLinks(resultTag);
         return resultTag;
@@ -84,7 +92,8 @@ public class TagController {
      * @return the http entity
      */
     @DeleteMapping("/{id}")
-    public HttpEntity<Void> deleteTag(@PathVariable("id") @Min(1) long id) {
+    public HttpEntity<Void> deleteTag(@Positive(message = ID_MIGHT_NOT_BE_NEGATIVE)
+                                      @PathVariable("id") long id) {
         tagService.removeById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -96,7 +105,8 @@ public class TagController {
      * @return the tag dto
      */
     @GetMapping("/users/{id}/most-used")
-    public TagDto findMostUsedTag(@PathVariable("id") @Min(1) long id) {
+    public TagDto findMostUsedTag(@Positive(message = ID_MIGHT_NOT_BE_NEGATIVE)
+                                  @PathVariable("id") long id) {
         TagDto resultTag = tagService.findMostUsedTag(id);
         linkCreator.addTagLinks(resultTag);
         return resultTag;

@@ -77,26 +77,12 @@ public class LinkCreator {
      */
     public void addGiftCertificatePaginationLinks(GiftCertificateQueryParameterDto giftCertificateQueryParameterDto, PageWrapper<GiftCertificateDto> giftCertificatePage) {
         if (giftCertificatePage.getTotalPages() > giftCertificateQueryParameterDto.getPage()) {
-            giftCertificatePage.add(Link.of(linkTo(methodOn(GiftCertificateController.class)
-                    .getAllGiftCertificates(giftCertificateQueryParameterDto.getPage() + 1,
-                            giftCertificateQueryParameterDto.getSize(),
-                            giftCertificateQueryParameterDto.getName(),
-                            giftCertificateQueryParameterDto.getDescription(),
-                            giftCertificateQueryParameterDto.getTagNames(),
-                            giftCertificateQueryParameterDto.getSortParameter(),
-                            giftCertificateQueryParameterDto.getSortingDirection()))
-                    .toString().replaceAll("\\{.*?\\}", "")).withRel(NEXT_PAGE));
+            int page = giftCertificateQueryParameterDto.getPage() + 1;
+            addGiftCertificatePaginationLink(giftCertificateQueryParameterDto, giftCertificatePage, NEXT_PAGE, page);
         }
         if (giftCertificateQueryParameterDto.getPage() > 1) {
-            giftCertificatePage.add(Link.of(linkTo(methodOn(GiftCertificateController.class)
-                    .getAllGiftCertificates(giftCertificateQueryParameterDto.getPage() + 1,
-                            giftCertificateQueryParameterDto.getSize(),
-                            giftCertificateQueryParameterDto.getName(),
-                            giftCertificateQueryParameterDto.getDescription(),
-                            giftCertificateQueryParameterDto.getTagNames(),
-                            giftCertificateQueryParameterDto.getSortParameter(),
-                            giftCertificateQueryParameterDto.getSortingDirection()))
-                    .toString().replaceAll("\\{.*?\\}", "")).withRel(PREVIOUS_PAGE));
+            int page = giftCertificateQueryParameterDto.getPage() - 1;
+            addGiftCertificatePaginationLink(giftCertificateQueryParameterDto, giftCertificatePage, PREVIOUS_PAGE, page);
         }
     }
 
@@ -156,5 +142,19 @@ public class LinkCreator {
             tags.forEach(t ->
                     t.add(linkTo(methodOn(TagController.class).getTagById(t.getId())).withSelfRel()));
         }
+    }
+
+    private void addGiftCertificatePaginationLink(GiftCertificateQueryParameterDto giftCertificateQueryParameterDto,
+                                                  PageWrapper<GiftCertificateDto> giftCertificatePage,
+                                                  String linkName, int page) {
+        giftCertificatePage.add(Link.of(linkTo(methodOn(GiftCertificateController.class)
+                .getAllGiftCertificates(page,
+                        giftCertificateQueryParameterDto.getSize(),
+                        giftCertificateQueryParameterDto.getName(),
+                        giftCertificateQueryParameterDto.getDescription(),
+                        giftCertificateQueryParameterDto.getTagNames(),
+                        giftCertificateQueryParameterDto.getSortParameter(),
+                        giftCertificateQueryParameterDto.getSortingDirection()))
+                .toString().replaceAll("\\{.*?\\}", "")).withRel(linkName));
     }
 }

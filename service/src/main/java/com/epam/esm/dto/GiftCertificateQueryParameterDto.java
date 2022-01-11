@@ -2,12 +2,8 @@ package com.epam.esm.dto;
 
 import lombok.*;
 
-import javax.validation.constraints.Min;
 import java.util.List;
 import java.util.Optional;
-
-import static com.epam.esm.exception.ExceptionKey.PAGE_MIGHT_NOT_BE_NEGATIVE;
-import static com.epam.esm.exception.ExceptionKey.SIZE_MIGHT_NOT_BE_NEGATIVE;
 
 /**
  * DTO Class GiftCertificateQueryParameterDto contains parameters for generation query
@@ -23,9 +19,8 @@ public class GiftCertificateQueryParameterDto extends QueryParameterDto {
 
 
     @Builder(builderMethodName = "giftCertificateQueryParameterDtoBuilder")
-    public GiftCertificateQueryParameterDto(@Min(value = 1, message = PAGE_MIGHT_NOT_BE_NEGATIVE) int page,
-                                            @Min(value = 1, message = SIZE_MIGHT_NOT_BE_NEGATIVE) int size,
-                                            int firstValue, SortingDirection sortingDirection, Optional<String> name,
+    public GiftCertificateQueryParameterDto(int page, int size, int firstValue,
+                                            SortingDirection sortingDirection, Optional<String> name,
                                             Optional<String> description, Optional<List<String>> tagNames,
                                             SortParameter sortParameter) {
         super(page, size, firstValue, sortingDirection);

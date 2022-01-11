@@ -9,11 +9,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.Positive;
 import java.util.List;
+
+import static com.epam.esm.exception.ExceptionKey.*;
 
 /**
  * The Class OrderController is a Rest Controller class which will have
@@ -22,6 +26,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/v1/orders")
 @RequiredArgsConstructor
+@Validated
 public class OrderController {
 
     private final OrderService orderService;
@@ -50,7 +55,9 @@ public class OrderController {
      * @return the all orders
      */
     @GetMapping
-    public PageWrapper<OrderDto> getAllOrders(@RequestParam(required = false, defaultValue = "1") int page,
+    public PageWrapper<OrderDto> getAllOrders(@Min(value = 1, message = PAGE_MIGHT_NOT_BE_NEGATIVE)
+                                              @RequestParam(required = false, defaultValue = "1") int page,
+                                              @Min(value = 1, message = SIZE_MIGHT_NOT_BE_NEGATIVE)
                                               @RequestParam(required = false, defaultValue = "10") int size,
                                               @RequestParam(value = "order-by", required = false, defaultValue = "ASC")
                                                       QueryParameterDto.SortingDirection sortingDirection) {
@@ -72,7 +79,8 @@ public class OrderController {
      * @return the order identifier
      */
     @GetMapping("/{id}")
-    public OrderDto getOrderById(@PathVariable("id") @Min(1) long id) {
+    public OrderDto getOrderById(@Positive(message = ID_MIGHT_NOT_BE_NEGATIVE)
+                                 @PathVariable("id") long id) {
         OrderDto resultOrder = orderService.findById(id);
         linkCreator.addOrderLinks(resultOrder);
         return resultOrder;
@@ -85,7 +93,8 @@ public class OrderController {
      * @return the http entity
      */
     @DeleteMapping("/{id}")
-    public HttpEntity<Void> deleteOrder(@PathVariable("id") @Min(1) long id) {
+    public HttpEntity<Void> deleteOrder(@Positive(message = ID_MIGHT_NOT_BE_NEGATIVE)
+                                        @PathVariable("id") long id) {
         orderService.removeById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -97,7 +106,8 @@ public class OrderController {
      * @return the orders
      */
     @GetMapping("/users/{userId}")
-    public List<OrderDto> getOrdersByUserId(@PathVariable("userId") long userId) {
+    public List<OrderDto> getOrdersByUserId(@Positive(message = ID_MIGHT_NOT_BE_NEGATIVE)
+                                            @PathVariable("userId") long userId) {
         return orderService.findOrdersByUserId(userId);
     }
 }

@@ -54,11 +54,13 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     public PageWrapper<GiftCertificateDto> findAll(GiftCertificateQueryParameterDto queryParameterDto) {
-        List<GiftCertificateDto> giftCertificates =
-                listConverter.convertList(giftCertificateDao.findAll(modelMapper.map(queryParameterDto, GiftCertificateQueryParameter.class)),
-                        this::convertToGiftCertificateDto);
-        long totalNumberOfItems = giftCertificateDao.getTotalNumberOfItems(modelMapper.map(queryParameterDto, GiftCertificateQueryParameter.class));
+        long totalNumberOfItems = giftCertificateDao.getTotalNumberOfItems(modelMapper.map(queryParameterDto,
+                GiftCertificateQueryParameter.class));
         int totalPage = totalPageCountCalculator.getTotalPage(queryParameterDto, totalNumberOfItems);
+        List<GiftCertificateDto> giftCertificates =
+                listConverter.convertList(giftCertificateDao.findAll(modelMapper.map(queryParameterDto,
+                        GiftCertificateQueryParameter.class)),
+                        this::convertToGiftCertificateDto);
         return new PageWrapper<>(giftCertificates, totalPage);
     }
 
@@ -66,7 +68,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Transactional
     public GiftCertificateDto update(long id, GiftCertificateDto giftCertificateDto) {
         if (giftCertificateDto.getId() != id && giftCertificateDto.getId() != 0) {
-            throw new RequestValidationException(ExceptionKey.CERTIFICATE_ID_IS_NOT_VALID, String.valueOf(giftCertificateDto.getId()));
+            throw new RequestValidationException(ExceptionKey.CERTIFICATE_ID_DOES_NOT_MATCH,
+                    String.valueOf(giftCertificateDto.getId()));
         } else {
             giftCertificateDto.setId(id);
         }
@@ -78,6 +81,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
+    @Transactional
     public void removeById(long id) {
         GiftCertificate giftCertificate = giftCertificateDao.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException(ExceptionKey.CERTIFICATE_NOT_FOUND, String.valueOf(id)));

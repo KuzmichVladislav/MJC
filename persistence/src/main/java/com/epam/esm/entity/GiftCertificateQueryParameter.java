@@ -19,7 +19,14 @@ public class GiftCertificateQueryParameter extends QueryParameter {
     private SortParameter sortParameter;
 
     @Builder(builderMethodName = "giftCertificateQueryParameterBuilder")
-    public GiftCertificateQueryParameter(int page, int size, int firstValue, SortingDirection sortingDirection, Optional<String> name, Optional<String> description, Optional<List<String>> tagNames, SortParameter sortParameter) {
+    public GiftCertificateQueryParameter(int page,
+                                         int size,
+                                         int firstValue,
+                                         SortingDirection sortingDirection,
+                                         Optional<String> name,
+                                         Optional<String> description,
+                                         Optional<List<String>> tagNames,
+                                         SortParameter sortParameter) {
         super(page, size, firstValue, sortingDirection);
         this.name = name;
         this.description = description;

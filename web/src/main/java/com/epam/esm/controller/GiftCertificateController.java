@@ -10,12 +10,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.Positive;
 import java.util.List;
 import java.util.Optional;
+
+import static com.epam.esm.exception.ExceptionKey.*;
 
 /**
  * The Class GiftCertificateController is a Rest Controller class which will have
@@ -24,6 +28,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/v1/gift-certificates")
 @RequiredArgsConstructor
+@Validated
 public class GiftCertificateController {
 
     private final GiftCertificateService giftCertificateService;
@@ -57,7 +62,9 @@ public class GiftCertificateController {
      */
     @GetMapping
     public PageWrapper<GiftCertificateDto>
-    getAllGiftCertificates(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
+    getAllGiftCertificates(@Min(value = 1, message = PAGE_MIGHT_NOT_BE_NEGATIVE)
+                           @RequestParam(value = "page", required = false, defaultValue = "1") int page,
+                           @Min(value = 1, message = SIZE_MIGHT_NOT_BE_NEGATIVE)
                            @RequestParam(value = "size", required = false, defaultValue = "10") int size,
                            @RequestParam(value = "name", required = false) Optional<String> name,
                            @RequestParam(value = "description", required = false) Optional<String> description,
@@ -89,7 +96,8 @@ public class GiftCertificateController {
      * @return the gift certificate
      */
     @GetMapping("/{id}")
-    public GiftCertificateDto getGiftCertificateById(@PathVariable("id") @Min(1) long id) {
+    public GiftCertificateDto getGiftCertificateById(@Positive(message = ID_MIGHT_NOT_BE_NEGATIVE)
+                                                     @PathVariable("id") long id) {
         GiftCertificateDto resultGiftCertificate = giftCertificateService.findById(id);
         linkCreator.addGiftCertificateLinks(resultGiftCertificate);
         return resultGiftCertificate;
@@ -103,7 +111,8 @@ public class GiftCertificateController {
      * @return the gift certificate DTO object
      */
     @PatchMapping("/{id}")
-    public GiftCertificateDto updateGiftCertificate(@PathVariable("id") @Min(1) long id,
+    public GiftCertificateDto updateGiftCertificate(@Positive(message = ID_MIGHT_NOT_BE_NEGATIVE)
+                                                    @PathVariable("id") long id,
                                                     @Valid @RequestBody GiftCertificateDto giftCertificateDto) {
         GiftCertificateDto resultGiftCertificate = giftCertificateService.update(id, giftCertificateDto);
         linkCreator.addGiftCertificateLinks(resultGiftCertificate);
@@ -117,7 +126,8 @@ public class GiftCertificateController {
      * @return the http entity
      */
     @DeleteMapping("/{id}")
-    public HttpEntity<Void> deleteGiftCertificate(@PathVariable("id") @Min(1) long id) {
+    public HttpEntity<Void> deleteGiftCertificate(@Positive(message = ID_MIGHT_NOT_BE_NEGATIVE)
+                                                  @PathVariable("id") long id) {
         giftCertificateService.removeById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

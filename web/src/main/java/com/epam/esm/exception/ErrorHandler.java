@@ -13,7 +13,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
+import javax.validation.ConstraintViolationException;
+import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 /**
  * The Class ErrorHandler maps exceptions to HTTP responses
@@ -47,6 +50,24 @@ public class ErrorHandler {
         e.getBindingResult().getAllErrors().forEach(error -> errorMessage.append(createMessage(locale, error.getDefaultMessage(),
                 String.valueOf(((FieldError) error).getRejectedValue()))));
         return new ExceptionResult(errorMessage.toString(), ErrorCode.NOT_VALID_PARAM.getCode());
+    }
+
+    /**
+     * Handle exception result.
+     *
+     * @param e      the exception
+     * @param locale the locale
+     * @return the exception result
+     */
+    @ExceptionHandler
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ExceptionResult handle(ConstraintViolationException e, Locale locale) {
+        List<String> collect = e.getConstraintViolations()
+                .stream()
+                .map(error -> createMessage(locale, error.getMessageTemplate(), String.valueOf(error.getInvalidValue())))
+                .collect(Collectors.toList());
+        return new ExceptionResult(collect.get(0), ErrorCode.NOT_VALID_PARAM.getCode());
     }
 
     /**

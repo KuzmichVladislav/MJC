@@ -46,7 +46,7 @@ public class OrderServiceImpl implements OrderService {
                 .map(t -> giftCertificateService.findById(t.getGiftCertificate().getId()))
                 .collect(Collectors.groupingBy(Function.identity(), counting()))
                 .forEach((g, c) -> {
-                    OrderCertificateDetails orderCertificateDetails = getOrderCertificateDetails(g, c);
+                    OrderCertificateDetails orderCertificateDetails = getOrderCertificateDetails(order, g, c);
                     orderDao.addGiftCertificateToOrder(orderCertificateDetails);
                     orderCertificateDetailsSet.add(orderCertificateDetails);
                 });
@@ -71,17 +71,18 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void removeById(long id) {
-        orderDao.remove(orderDao.findById(id).orElseThrow(() ->
-                new ResourceNotFoundException(ExceptionKey.ORDER_NOT_FOUND, String.valueOf(id))));
-    }
-
-    @Override
     public List<OrderDto> findOrdersByUserId(long userId) {
         List<Order> orders = orderDao.findOrdersByUserId(userId);
         return orders.stream()
                 .map(this::getOrderDto)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public void removeById(long id) {
+        orderDao.remove(orderDao.findById(id).orElseThrow(() ->
+                new ResourceNotFoundException(ExceptionKey.ORDER_NOT_FOUND, String.valueOf(id))));
     }
 
     private OrderDto getOrderDto(Order order) {
@@ -109,8 +110,9 @@ public class OrderServiceImpl implements OrderService {
                 .collect(Collectors.toList());
     }
 
-    private OrderCertificateDetails getOrderCertificateDetails(GiftCertificateDto giftCertificateDto, Long giftCertificateCount) {
+    private OrderCertificateDetails getOrderCertificateDetails(Order order, GiftCertificateDto giftCertificateDto, Long giftCertificateCount) {
         return OrderCertificateDetails.builder()
+                .order(order)
                 .giftCertificate(modelMapper.map(giftCertificateDto, GiftCertificate.class))
                 .giftCertificateCost(giftCertificateDto.getPrice())
                 .numberOfCertificates(Math.toIntExact(giftCertificateCount))

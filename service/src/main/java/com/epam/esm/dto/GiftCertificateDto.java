@@ -5,10 +5,7 @@ import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,6 +22,7 @@ import static com.epam.esm.exception.ExceptionKey.*;
 @AllArgsConstructor
 public class GiftCertificateDto extends RepresentationModel<GiftCertificateDto> {
 
+    @PositiveOrZero(message = ID_MIGHT_NOT_BE_NEGATIVE)
     private long id;
     @Size(min = 2, max = 16, message = CERTIFICATE_NAME_LENGTH_IS_NOT_VALID)
     @Pattern(regexp = "^[\\w_]{2,16}$", message = CERTIFICATE_NAME_IS_NOT_VALID)

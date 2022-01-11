@@ -69,6 +69,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
+    @Transactional
     public void removeById(long id) {
         if (tagDao.isPartOfGiftCertificate(id)) {
             throw new RequestValidationException(ExceptionKey.TAG_BELONGS_TO_CERTIFICATE, String.valueOf(id));
