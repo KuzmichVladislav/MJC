@@ -15,6 +15,10 @@ public class RequestValidationException extends RuntimeException {
         this.messageParameter = messageParameter;
     }
 
+    public RequestValidationException(String messageKey) {
+        this.messageKey = messageKey;
+    }
+
     public String getMessageKey() {
         return this.messageKey;
     }

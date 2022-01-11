@@ -1,23 +1,15 @@
 package com.epam.esm.service;
 
+import com.epam.esm.dto.QueryParameterDto;
 import com.epam.esm.dto.TagDto;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
  * The Interface TagService.
  * A interface to define all required methods for tag DTO object.
  */
-public interface TagService extends BaseService<TagDto> {
-
-    /**
-     * Find tag DTO object by certificate id.
-     *
-     * @param giftCertificateId the gift certificate id
-     * @return the list of tag DTO objects
-     */
-    List<TagDto> findByCertificateId(long giftCertificateId);
+public interface TagService extends BaseService<TagDto, QueryParameterDto> {
 
     /**
      * Find tag DTO object by name.
@@ -26,4 +18,12 @@ public interface TagService extends BaseService<TagDto> {
      * @return the optional of tag DTO object
      */
     Optional<TagDto> findByName(String name);
+
+    /**
+     * Find most used tag tag DTO.
+     *
+     * @param id the user identifier
+     * @return the tag DTO
+     */
+    TagDto findMostUsedTag(long id);
 }

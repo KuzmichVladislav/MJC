@@ -1,14 +1,14 @@
 package com.epam.esm.dao;
 
+import com.epam.esm.entity.QueryParameter;
 import com.epam.esm.entity.Tag;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
  * The Interface TagDao describes some query methods based on query object construction.
  */
-public interface TagDao extends BaseDao<Tag> {
+public interface TagDao extends BaseDao<Tag, QueryParameter> {
 
     /**
      * Find tag entity by name.
@@ -19,10 +19,25 @@ public interface TagDao extends BaseDao<Tag> {
     Optional<Tag> findByName(String name);
 
     /**
-     * Find by certificate identifier.
+     * Get the most widely used tag of a user with the highest cost of all orders.
      *
-     * @param giftCertificateId the gift certificate identifier
-     * @return the list of tags
+     * @param id the identifier
+     * @return the optional
      */
-    List<Tag> findByCertificateId(long giftCertificateId);
+    Optional<Tag> findMostUsedTag(long id);
+
+    /**
+     * Is part of gift certificate.
+     *
+     * @param id the identifier
+     * @return true if the tag is part of gift certificate
+     */
+    boolean isPartOfGiftCertificate(long id);
+
+    /**
+     * Gets total number of items.
+     *
+     * @return the total number of items
+     */
+    long getTotalNumberOfItems();
 }

@@ -2,13 +2,24 @@ package com.epam.esm.controller;
 
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.GiftCertificateQueryParameterDto;
+import com.epam.esm.dto.PageWrapper;
+import com.epam.esm.dto.QueryParameterDto;
 import com.epam.esm.service.GiftCertificateService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.epam.esm.util.LinkCreator;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Positive;
 import java.util.List;
 import java.util.Optional;
+
+import static com.epam.esm.exception.ExceptionKey.*;
 
 /**
  * The Class GiftCertificateController is a Rest Controller class which will have
@@ -16,19 +27,12 @@ import java.util.Optional;
  */
 @RestController
 @RequestMapping("/v1/gift-certificates")
+@RequiredArgsConstructor
+@Validated
 public class GiftCertificateController {
 
     private final GiftCertificateService giftCertificateService;
-
-    /**
-     * Instantiates a new gift certificate controller.
-     *
-     * @param giftCertificateService the gift certificate service
-     */
-    @Autowired
-    public GiftCertificateController(GiftCertificateService giftCertificateService) {
-        this.giftCertificateService = giftCertificateService;
-    }
+    private final LinkCreator linkCreator;
 
     /**
      * Create a new gift certificate based on POST request.
@@ -38,35 +42,51 @@ public class GiftCertificateController {
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public GiftCertificateDto addGiftCertificate(@RequestBody GiftCertificateDto giftCertificateDto) {
-        return giftCertificateService.add(giftCertificateDto);
+    public GiftCertificateDto addGiftCertificate(@Valid @RequestBody GiftCertificateDto giftCertificateDto) {
+        GiftCertificateDto resultGiftCertificate = giftCertificateService.add(giftCertificateDto);
+        linkCreator.addGiftCertificateLinks(resultGiftCertificate);
+        return resultGiftCertificate;
     }
 
     /**
-     * Get list of gift certificates based on GET request.
+     * Gets all gift certificates based on GET request.
      *
-     * @param name        the name parameter
-     * @param description the description parameter
-     * @param tagName     the tag name parameter
-     * @param sortType    the sort type parameter
-     * @param sortOrder   the sort order parameter
-     * @return all gift certificates
+     * @param page             the number of page
+     * @param size             the size of display items
+     * @param name             the name of gift certificate
+     * @param description      the description  of gift certificate
+     * @param tagNames         the tag names
+     * @param sortParameter    the sort parameter
+     * @param sortingDirection the sorting direction
+     * @return the all gift certificates
      */
     @GetMapping
-    public List<GiftCertificateDto> getAllGiftCertificates
-    (@RequestParam(value = "name", required = false) Optional<String> name,
-     @RequestParam(value = "description", required = false) Optional<String> description,
-     @RequestParam(value = "tag-name", required = false) Optional<String> tagName,
-     @RequestParam(value = "sort", required = false) Optional<List<String>> sortType,
-     @RequestParam(value = "order-by", required = false) Optional<String> sortOrder) {
-        GiftCertificateQueryParameterDto queryParameterDto = GiftCertificateQueryParameterDto.builder()
+    public PageWrapper<GiftCertificateDto>
+    getAllGiftCertificates(@Min(value = 1, message = PAGE_MIGHT_NOT_BE_NEGATIVE)
+                           @RequestParam(value = "page", required = false, defaultValue = "1") int page,
+                           @Min(value = 1, message = SIZE_MIGHT_NOT_BE_NEGATIVE)
+                           @RequestParam(value = "size", required = false, defaultValue = "10") int size,
+                           @RequestParam(value = "name", required = false) Optional<String> name,
+                           @RequestParam(value = "description", required = false) Optional<String> description,
+                           @RequestParam(value = "tag-name", required = false) Optional<List<String>> tagNames,
+                           @RequestParam(value = "sort", required = false, defaultValue = "NAME")
+                                   GiftCertificateQueryParameterDto.SortParameter sortParameter,
+                           @RequestParam(value = "order-by", required = false, defaultValue = "ASC")
+                                   QueryParameterDto.SortingDirection sortingDirection) {
+        GiftCertificateQueryParameterDto giftCertificateQueryParameterDto = GiftCertificateQueryParameterDto.giftCertificateQueryParameterDtoBuilder()
                 .name(name)
-                .tagName(tagName)
                 .description(description)
-                .sortType(sortType)
-                .sortOrder(sortOrder)
+                .tagNames(tagNames)
+                .sortParameter(sortParameter)
+                .page(page)
+                .size(size)
+                .sortingDirection(sortingDirection)
                 .build();
-        return giftCertificateService.findByParameters(queryParameterDto);
+        PageWrapper<GiftCertificateDto> giftCertificatePage =
+                giftCertificateService.findAll(giftCertificateQueryParameterDto);
+        giftCertificatePage.getItemsPerPage().forEach(linkCreator::addGiftCertificateLinks);
+        linkCreator.addGiftCertificatePaginationLinks(giftCertificateQueryParameterDto, giftCertificatePage);
+        return giftCertificatePage;
     }
 
     /**
@@ -76,8 +96,11 @@ public class GiftCertificateController {
      * @return the gift certificate
      */
     @GetMapping("/{id}")
-    public GiftCertificateDto getGiftCertificate(@PathVariable("id") String id) {
-        return giftCertificateService.findById(id);
+    public GiftCertificateDto getGiftCertificateById(@Positive(message = ID_MIGHT_NOT_BE_NEGATIVE)
+                                                     @PathVariable("id") long id) {
+        GiftCertificateDto resultGiftCertificate = giftCertificateService.findById(id);
+        linkCreator.addGiftCertificateLinks(resultGiftCertificate);
+        return resultGiftCertificate;
     }
 
     /**
@@ -88,19 +111,24 @@ public class GiftCertificateController {
      * @return the gift certificate DTO object
      */
     @PatchMapping("/{id}")
-    public GiftCertificateDto updateGiftCertificate(@PathVariable("id") String id,
-                                                    @RequestBody GiftCertificateDto giftCertificateDto) {
-        return giftCertificateService.update(id, giftCertificateDto);
+    public GiftCertificateDto updateGiftCertificate(@Positive(message = ID_MIGHT_NOT_BE_NEGATIVE)
+                                                    @PathVariable("id") long id,
+                                                    @Valid @RequestBody GiftCertificateDto giftCertificateDto) {
+        GiftCertificateDto resultGiftCertificate = giftCertificateService.update(id, giftCertificateDto);
+        linkCreator.addGiftCertificateLinks(resultGiftCertificate);
+        return resultGiftCertificate;
     }
 
     /**
      * Delete gift certificate by gift certificate identifier based on DELETE request.
      *
      * @param id the gift certificate identifier
+     * @return the http entity
      */
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteGiftCertificate(@PathVariable("id") long id) {
+    public HttpEntity<Void> deleteGiftCertificate(@Positive(message = ID_MIGHT_NOT_BE_NEGATIVE)
+                                                  @PathVariable("id") long id) {
         giftCertificateService.removeById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

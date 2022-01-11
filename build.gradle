@@ -3,12 +3,13 @@ version '1.0-SNAPSHOT'
 
 subprojects {
     apply plugin: 'java'
+    apply plugin: 'idea'
 
     repositories {
         mavenCentral()
     }
 
-    ext{
+    ext {
         springVersion = '5.3.13'
         lombokVersion = '1.18.22'
         jacksonVersion = '2.13.0'
@@ -27,5 +28,8 @@ subprojects {
         implementation "com.fasterxml.jackson.core:jackson-core:$jacksonVersion"
         implementation "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
         implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion"
+    }
+    test {
+        useJUnitPlatform()
     }
 }
