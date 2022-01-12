@@ -1,8 +1,8 @@
 package com.epam.esm.service;
 
-import com.epam.esm.dto.PageWrapper;
 import com.epam.esm.dto.QueryParameterDto;
 import com.epam.esm.dto.UserDto;
+import org.springframework.hateoas.PagedModel;
 
 /**
  * The Interface UserService.
@@ -24,5 +24,5 @@ public interface UserService {
      * @param queryParameterDto the query parameter DTO
      * @return the page
      */
-    PageWrapper<UserDto> findAll(QueryParameterDto queryParameterDto);
+    PagedModel<UserDto> findAll(QueryParameterDto queryParameterDto);
 }

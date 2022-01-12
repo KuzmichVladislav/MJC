@@ -1,7 +1,6 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.TagDao;
-import com.epam.esm.dto.PageWrapper;
 import com.epam.esm.dto.QueryParameterDto;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.QueryParameter;
@@ -14,6 +13,7 @@ import com.epam.esm.util.ListConverter;
 import com.epam.esm.util.TotalPageCountCalculator;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,13 +59,15 @@ public class TagServiceImpl implements TagService {
                 new ResourceNotFoundException(ExceptionKey.TAG_NOT_FOUND, String.valueOf(id))), TagDto.class);
     }
 
-
     @Override
-    public PageWrapper<TagDto> findAll(QueryParameterDto queryParameterDto) {
+    public PagedModel<TagDto> findAll(QueryParameterDto queryParameterDto) {
         long totalNumberOfItems = tagDao.getTotalNumberOfItems();
         int totalPage = totalPageCountCalculator.getTotalPage(queryParameterDto, totalNumberOfItems);
-        List<TagDto> tags = listConverter.convertList(tagDao.findAll(modelMapper.map(queryParameterDto, QueryParameter.class)), this::convertToTagDto);
-        return new PageWrapper<>(tags, totalPage);
+        List<TagDto> tags = listConverter.convertList(tagDao.findAll(modelMapper
+                .map(queryParameterDto, QueryParameter.class)), this::convertToTagDto);
+        PagedModel.PageMetadata pageMetadata = new PagedModel.PageMetadata(queryParameterDto.getSize(),
+                queryParameterDto.getPage(), totalNumberOfItems, totalPage);
+        return PagedModel.of(tags, pageMetadata);
     }
 
     @Override

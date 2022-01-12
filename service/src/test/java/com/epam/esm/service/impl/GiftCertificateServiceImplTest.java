@@ -1,7 +1,10 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.GiftCertificateDao;
-import com.epam.esm.dto.*;
+import com.epam.esm.dto.GiftCertificateDto;
+import com.epam.esm.dto.GiftCertificateQueryParameterDto;
+import com.epam.esm.dto.QueryParameterDto;
+import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.ResourceNotFoundException;
@@ -20,6 +23,7 @@ import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.config.Configuration;
 import org.modelmapper.convention.MatchingStrategies;
+import org.springframework.hateoas.PagedModel;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -28,6 +32,7 @@ import javax.validation.ValidatorFactory;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
@@ -37,11 +42,11 @@ import static org.mockito.Mockito.when;
 
 class GiftCertificateServiceImplTest {
 
-    private Validator validator;
     @Mock
     private GiftCertificateDao giftCertificateDao;
     @Mock
     private TagService tagService;
+    private Validator validator;
     private ListConverter listConverter;
     private ModelMapper modelMapper;
     private GiftCertificateService giftCertificateService;
@@ -194,11 +199,11 @@ class GiftCertificateServiceImplTest {
     void testFindAll_GiftCertificatesExist_findsGiftCertificates() {
         // Given
         when(giftCertificateDao.findAll(any())).thenReturn(Collections.singletonList(giftCertificate));
-        when(giftCertificateDao.getTotalNumberOfItems()).thenReturn(20L);
+        when(giftCertificateDao.getTotalNumberOfItems(any())).thenReturn(20L);
         // When
-        PageWrapper<GiftCertificateDto> result = giftCertificateService.findAll(queryParameter);
+        PagedModel<GiftCertificateDto> result = giftCertificateService.findAll(queryParameter);
         // Then
-        Assertions.assertEquals(Collections.singletonList(giftCertificateDto), result.getItemsPerPage());
+        Assertions.assertEquals(Collections.singletonList(giftCertificateDto), new ArrayList<>(result.getContent()));
     }
 
 

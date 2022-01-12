@@ -1,7 +1,6 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.TagDao;
-import com.epam.esm.dto.PageWrapper;
 import com.epam.esm.dto.QueryParameterDto;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.Tag;
@@ -17,11 +16,13 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
+import org.springframework.hateoas.PagedModel;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
@@ -106,9 +107,9 @@ class TagServiceImplTest {
         when(tagDao.findAll(any())).thenReturn(Collections.singletonList(tag));
         when(tagDao.getTotalNumberOfItems()).thenReturn(20L);
         // When
-        PageWrapper<TagDto> result = tagService.findAll(queryParameter);
+        PagedModel<TagDto> result = tagService.findAll(queryParameter);
         // Then
-        Assertions.assertEquals(Collections.singletonList(tagDto), result.getItemsPerPage());
+        Assertions.assertEquals(Collections.singletonList(tagDto), new ArrayList<>(result.getContent()));
     }
 
     @Test

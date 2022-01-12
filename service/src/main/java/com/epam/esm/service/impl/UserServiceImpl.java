@@ -1,7 +1,6 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.UserDao;
-import com.epam.esm.dto.PageWrapper;
 import com.epam.esm.dto.QueryParameterDto;
 import com.epam.esm.dto.UserDto;
 import com.epam.esm.entity.QueryParameter;
@@ -13,6 +12,7 @@ import com.epam.esm.util.ListConverter;
 import com.epam.esm.util.TotalPageCountCalculator;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,12 +36,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public PageWrapper<UserDto> findAll(QueryParameterDto queryParameterDto) {
+    public PagedModel<UserDto> findAll(QueryParameterDto queryParameterDto) {
         long totalNumberOfItems = userDao.getTotalNumberOfItems();
         int totalPage = totalPageCountCalculator.getTotalPage(queryParameterDto, totalNumberOfItems);
         List<UserDto> users = listConverter.convertList(userDao.findAll(modelMapper.map(queryParameterDto,
                 QueryParameter.class)), this::convertToUserDto);
-        return new PageWrapper<>(users, totalPage);
+        PagedModel.PageMetadata pageMetadata = new PagedModel.PageMetadata(queryParameterDto.getSize(),
+                queryParameterDto.getPage(), totalNumberOfItems, totalPage);
+        return PagedModel.of(users, pageMetadata);
     }
 
     private UserDto convertToUserDto(User user) {

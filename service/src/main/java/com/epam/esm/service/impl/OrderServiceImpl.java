@@ -1,7 +1,10 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.OrderDao;
-import com.epam.esm.dto.*;
+import com.epam.esm.dto.GiftCertificateDto;
+import com.epam.esm.dto.OrderCertificateDetailsDto;
+import com.epam.esm.dto.OrderDto;
+import com.epam.esm.dto.QueryParameterDto;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Order;
 import com.epam.esm.entity.OrderCertificateDetails;
@@ -13,6 +16,7 @@ import com.epam.esm.service.OrderService;
 import com.epam.esm.util.TotalPageCountCalculator;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -62,12 +66,14 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public PageWrapper<OrderDto> findAll(QueryParameterDto queryParameterDto) {
+    public PagedModel<OrderDto> findAll(QueryParameterDto queryParameterDto) {
         long totalNumberOfItems = orderDao.getTotalNumberOfItems();
         int totalPage = totalPageCountCalculator.getTotalPage(queryParameterDto, totalNumberOfItems);
         List<Order> orders = orderDao.findAll(modelMapper.map(queryParameterDto, QueryParameter.class));
         List<OrderDto> orderDtos = orders.stream().map(this::getOrderDto).collect(Collectors.toList());
-        return new PageWrapper<>(orderDtos, totalPage);
+        PagedModel.PageMetadata pageMetadata = new PagedModel.PageMetadata(queryParameterDto.getSize(),
+                queryParameterDto.getPage(), totalNumberOfItems, totalPage);
+        return PagedModel.of(orderDtos, pageMetadata);
     }
 
     @Override

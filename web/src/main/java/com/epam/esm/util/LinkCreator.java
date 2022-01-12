@@ -4,8 +4,14 @@ import com.epam.esm.controller.GiftCertificateController;
 import com.epam.esm.controller.OrderController;
 import com.epam.esm.controller.TagController;
 import com.epam.esm.controller.UserController;
-import com.epam.esm.dto.*;
+import com.epam.esm.dto.GiftCertificateDto;
+import com.epam.esm.dto.GiftCertificateQueryParameterDto;
+import com.epam.esm.dto.OrderDto;
+import com.epam.esm.dto.QueryParameterDto;
+import com.epam.esm.dto.TagDto;
+import com.epam.esm.dto.UserDto;
 import org.springframework.hateoas.Link;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -75,8 +81,8 @@ public class LinkCreator {
      * @param giftCertificateQueryParameterDto the gift certificate query parameter DTO
      * @param giftCertificatePage              the gift certificate page number
      */
-    public void addGiftCertificatePaginationLinks(GiftCertificateQueryParameterDto giftCertificateQueryParameterDto, PageWrapper<GiftCertificateDto> giftCertificatePage) {
-        if (giftCertificatePage.getTotalPages() > giftCertificateQueryParameterDto.getPage()) {
+    public void addGiftCertificatePaginationLinks(GiftCertificateQueryParameterDto giftCertificateQueryParameterDto, PagedModel<GiftCertificateDto> giftCertificatePage) {
+        if (giftCertificatePage.getMetadata().getTotalPages() > giftCertificateQueryParameterDto.getPage()) {
             int page = giftCertificateQueryParameterDto.getPage() + 1;
             addGiftCertificatePaginationLink(giftCertificateQueryParameterDto, giftCertificatePage, NEXT_PAGE, page);
         }
@@ -92,8 +98,8 @@ public class LinkCreator {
      * @param queryParameterDto the query parameter DTO
      * @param orderPage         the order page number
      */
-    public void addOrderPaginationLinks(QueryParameterDto queryParameterDto, PageWrapper<OrderDto> orderPage) {
-        if (orderPage.getTotalPages() > queryParameterDto.getPage()) {
+    public void addOrderPaginationLinks(QueryParameterDto queryParameterDto, PagedModel<OrderDto> orderPage) {
+        if (orderPage.getMetadata().getTotalPages() > queryParameterDto.getPage()) {
             orderPage.add(linkTo(methodOn(OrderController.class).getAllOrders(queryParameterDto.getPage() + 1,
                     queryParameterDto.getSize(), queryParameterDto.getSortingDirection())).withRel(NEXT_PAGE));
         }
@@ -109,8 +115,8 @@ public class LinkCreator {
      * @param queryParameterDto the query parameter DTO
      * @param tagPage           the tag page number
      */
-    public void addTagPaginationLinks(QueryParameterDto queryParameterDto, PageWrapper<TagDto> tagPage) {
-        if (tagPage.getTotalPages() > queryParameterDto.getPage()) {
+    public void addTagPaginationLinks(QueryParameterDto queryParameterDto, PagedModel<TagDto> tagPage) {
+        if (tagPage.getMetadata().getTotalPages() > queryParameterDto.getPage()) {
             tagPage.add(linkTo(methodOn(TagController.class).getAllTags(queryParameterDto.getPage() + 1,
                     queryParameterDto.getSize(), queryParameterDto.getSortingDirection())).withRel(NEXT_PAGE));
         }
@@ -126,8 +132,8 @@ public class LinkCreator {
      * @param queryParameterDto the query parameter DTO
      * @param userPage          the user page number
      */
-    public void addUserPaginationLinks(QueryParameterDto queryParameterDto, PageWrapper<UserDto> userPage) {
-        if (userPage.getTotalPages() > queryParameterDto.getPage()) {
+    public void addUserPaginationLinks(QueryParameterDto queryParameterDto, PagedModel<UserDto> userPage) {
+        if (userPage.getMetadata().getTotalPages() > queryParameterDto.getPage()) {
             userPage.add(linkTo(methodOn(UserController.class).getAllUsers(queryParameterDto.getPage() + 1,
                     queryParameterDto.getSize(), queryParameterDto.getSortingDirection())).withRel(NEXT_PAGE));
         }
@@ -145,7 +151,7 @@ public class LinkCreator {
     }
 
     private void addGiftCertificatePaginationLink(GiftCertificateQueryParameterDto giftCertificateQueryParameterDto,
-                                                  PageWrapper<GiftCertificateDto> giftCertificatePage,
+                                                  PagedModel<GiftCertificateDto> giftCertificatePage,
                                                   String linkName, int page) {
         giftCertificatePage.add(Link.of(linkTo(methodOn(GiftCertificateController.class)
                 .getAllGiftCertificates(page,

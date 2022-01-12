@@ -1,7 +1,7 @@
 package com.epam.esm.service;
 
-import com.epam.esm.dto.PageWrapper;
 import com.epam.esm.dto.QueryParameterDto;
+import org.springframework.hateoas.PagedModel;
 
 /**
  * A generic interface for the Service layer. The interface
@@ -34,7 +34,7 @@ public interface BaseService<T, P extends QueryParameterDto> {
      * @param queryParameterDto the query parameter dto
      * @return the page
      */
-    PageWrapper<T> findAll(P queryParameterDto);
+    PagedModel<T> findAll(P queryParameterDto);
 
     /**
      * Removes the by DTO object identifier.

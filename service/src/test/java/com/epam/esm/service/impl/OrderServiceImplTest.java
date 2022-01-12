@@ -1,7 +1,11 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.OrderDao;
-import com.epam.esm.dto.*;
+import com.epam.esm.dto.GiftCertificateDto;
+import com.epam.esm.dto.OrderCertificateDetailsDto;
+import com.epam.esm.dto.OrderDto;
+import com.epam.esm.dto.QueryParameterDto;
+import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Order;
 import com.epam.esm.entity.OrderCertificateDetails;
@@ -15,6 +19,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
+import org.springframework.hateoas.PagedModel;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -29,6 +34,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 class OrderServiceImplTest {
+
     @Mock
     OrderDao orderDao;
     @Mock
@@ -128,9 +134,9 @@ class OrderServiceImplTest {
         when(orderDao.getTotalNumberOfItems()).thenReturn(1L);
         when(totalPageCountCalculator.getTotalPage(any(), anyLong())).thenReturn(1);
         // When
-        PageWrapper<OrderDto> result = orderService.findAll(new QueryParameterDto());
+        PagedModel<OrderDto> result = orderService.findAll(new QueryParameterDto());
         // Then
-        Assertions.assertEquals(new PageWrapper<>(Collections.singletonList(orderDto), 1), result);
+        Assertions.assertEquals(1, result.getMetadata().getTotalElements());
     }
 
     @Test

@@ -2,7 +2,6 @@ package com.epam.esm.configuration;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
 
@@ -10,7 +9,6 @@ import org.springframework.context.support.ResourceBundleMessageSource;
  * The Class WebConfiguration contains a spring configuration for web.
  */
 @Configuration
-@ComponentScan("com.epam.esm")
 public class WebConfiguration {
 
     @Bean

@@ -3,7 +3,6 @@ package com.epam.esm.service.impl;
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.GiftCertificateQueryParameterDto;
-import com.epam.esm.dto.PageWrapper;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.GiftCertificateQueryParameter;
@@ -18,6 +17,7 @@ import com.epam.esm.util.TotalPageCountCalculator;
 import com.epam.esm.validator.GiftCertificateValidator;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,7 +53,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public PageWrapper<GiftCertificateDto> findAll(GiftCertificateQueryParameterDto queryParameterDto) {
+    public PagedModel<GiftCertificateDto> findAll(GiftCertificateQueryParameterDto queryParameterDto) {
         long totalNumberOfItems = giftCertificateDao.getTotalNumberOfItems(modelMapper.map(queryParameterDto,
                 GiftCertificateQueryParameter.class));
         int totalPage = totalPageCountCalculator.getTotalPage(queryParameterDto, totalNumberOfItems);
@@ -61,7 +61,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
                 listConverter.convertList(giftCertificateDao.findAll(modelMapper.map(queryParameterDto,
                         GiftCertificateQueryParameter.class)),
                         this::convertToGiftCertificateDto);
-        return new PageWrapper<>(giftCertificates, totalPage);
+        PagedModel.PageMetadata pageMetadata = new PagedModel.PageMetadata(queryParameterDto.getSize(),
+                queryParameterDto.getPage(), totalNumberOfItems, totalPage);
+        return PagedModel.of(giftCertificates, pageMetadata);
     }
 
     @Override

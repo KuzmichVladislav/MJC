@@ -26,7 +26,7 @@ public class TagDaoImpl implements TagDao {
             "                         (oc.gift_certificate_cost * oc.number_of_certificates) AS 'cost',\n" +
             "                         oc.number_of_certificates\n" +
             "                  FROM tag t\n" +
-            "                           LEFT JOIN gift_certificate_tag_include gcti ON t.id = gcti.tag_id\n" +
+            "                           LEFT JOIN gift_certificate_has_tag gcti ON t.id = gcti.tag_id\n" +
             "                           LEFT JOIN gift_certificate gc ON gc.id = gcti.gift_certificate_id\n" +
             "                           LEFT JOIN order_certificates oc ON gc.id = oc.gift_certificate_id\n" +
             "                           LEFT JOIN orders o ON oc.order_id = o.id\n" +

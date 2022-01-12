@@ -1,7 +1,6 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.UserDao;
-import com.epam.esm.dto.PageWrapper;
 import com.epam.esm.dto.QueryParameterDto;
 import com.epam.esm.dto.UserDto;
 import com.epam.esm.entity.User;
@@ -14,12 +13,17 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
+import org.springframework.hateoas.PagedModel;
 
+import java.util.ArrayList;
 import java.util.Collections;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.when;
 
 class UserServiceImplTest {
+
     @Mock
     private UserDao userDao;
     private ModelMapper modelMapper;
@@ -76,8 +80,8 @@ class UserServiceImplTest {
         when(userDao.findAll(any())).thenReturn(Collections.singletonList(user));
         when(userDao.getTotalNumberOfItems()).thenReturn(20L);
         // When
-        PageWrapper<UserDto> result = userService.findAll(queryParameter);
+        PagedModel<UserDto> result = userService.findAll(queryParameter);
         // Then
-        Assertions.assertEquals(Collections.singletonList(userDto), result.getItemsPerPage());
+        Assertions.assertEquals(Collections.singletonList(userDto), new ArrayList<>(result.getContent()));
     }
 }
