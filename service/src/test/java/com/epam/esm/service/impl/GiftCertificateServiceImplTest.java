@@ -2,15 +2,17 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dto.GiftCertificateDto;
+import com.epam.esm.dto.GiftCertificateQueryParameterDto;
+import com.epam.esm.dto.QueryParameterDto;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
-import com.epam.esm.exception.RequestValidationException;
+import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.TagService;
 import com.epam.esm.util.ListConverter;
-import com.epam.esm.validator.GiftCertificateRequestValidator;
-import com.epam.esm.validator.TagRequestValidator;
+import com.epam.esm.util.TotalPageCountCalculator;
+import com.epam.esm.validator.GiftCertificateValidator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,13 +23,19 @@ import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.config.Configuration;
 import org.modelmapper.convention.MatchingStrategies;
+import org.springframework.hateoas.PagedModel;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
@@ -38,29 +46,34 @@ class GiftCertificateServiceImplTest {
     private GiftCertificateDao giftCertificateDao;
     @Mock
     private TagService tagService;
+    private Validator validator;
     private ListConverter listConverter;
     private ModelMapper modelMapper;
-    private GiftCertificateRequestValidator giftCertificateRequestValidator;
-    private TagRequestValidator tagRequestValidator;
     private GiftCertificateService giftCertificateService;
     private GiftCertificateDto giftCertificateDto;
     private GiftCertificate giftCertificate;
     private TagDto tagDto;
+    private TotalPageCountCalculator totalPageCountCalculator;
+    private GiftCertificateQueryParameterDto queryParameter;
+    private GiftCertificateValidator giftCertificateValidator;
+
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+        ValidatorFactory config = Validation.buildDefaultValidatorFactory();
+        validator = config.getValidator();
         listConverter = new ListConverter();
+        totalPageCountCalculator = new TotalPageCountCalculator();
         modelMapper = new ModelMapper();
-        giftCertificateRequestValidator = new GiftCertificateRequestValidator();
-        tagRequestValidator = new TagRequestValidator();
+        giftCertificateValidator = new GiftCertificateValidator();
         modelMapper.getConfiguration()
                 .setFieldAccessLevel(Configuration.AccessLevel.PRIVATE)
                 .setSkipNullEnabled(true)
                 .setMatchingStrategy(MatchingStrategies.STRICT)
                 .setFieldMatchingEnabled(true);
         giftCertificateService = new GiftCertificateServiceImpl(giftCertificateDao,
-                tagService, modelMapper, listConverter, giftCertificateRequestValidator, tagRequestValidator);
+                tagService, modelMapper, listConverter, totalPageCountCalculator, giftCertificateValidator);
         giftCertificateDto = GiftCertificateDto.builder()
                 .id(1L)
                 .name("name")
@@ -82,22 +95,43 @@ class GiftCertificateServiceImplTest {
                 .tags(Collections.singletonList(new Tag(1L, "name")))
                 .build();
         tagDto = new TagDto(1L, "name");
+        queryParameter = GiftCertificateQueryParameterDto.giftCertificateQueryParameterDtoBuilder()
+                .name(Optional.ofNullable(null))
+                .description(Optional.ofNullable(null))
+                .tagNames(Optional.ofNullable(null))
+                .sortParameter(GiftCertificateQueryParameterDto.SortParameter.NAME)
+                .page(1)
+                .size(10)
+                .firstValue(1)
+                .sortingDirection(QueryParameterDto.SortingDirection.ASC)
+                .build();
     }
 
     @Test
     void testAdd_AllFieldsAreValid_CreatesGiftCertificate() {
+        // Given
         when(giftCertificateDao.add(any())).thenReturn(giftCertificate);
         when(tagService.findByName("name")).thenReturn(Optional.ofNullable(tagDto));
         when(tagService.add(any())).thenReturn(tagDto);
+        // When
         GiftCertificateDto result = giftCertificateService.add(giftCertificateDto);
-        Assertions.assertEquals(giftCertificateDto, result);
+        // Then
+        Assertions.assertEquals(giftCertificateDto.getId(), result.getId());
+        Assertions.assertEquals(giftCertificateDto.getName(), result.getName());
+        Assertions.assertEquals(giftCertificateDto.getDuration(), result.getDuration());
+        Assertions.assertEquals(giftCertificateDto.getDescription(), result.getDescription());
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {">name", "<name", "~name", "ab", "Name with space", "NameMoreThen16Char"})
+    @ValueSource(strings = {">name", "<name", "~name", "b", "Name with space", "NameMoreThen16Char"})
     void testAdd_InvalidName_ExceptionThrown(String name) {
-        Assertions.assertThrows(RequestValidationException.class,
-                () -> giftCertificateService.add(GiftCertificateDto.builder().name(name).build()));
+        // Given
+        giftCertificateDto.setName(name);
+        // When
+        Set<ConstraintViolation<GiftCertificateDto>> constraintViolations = validator
+                .validate(giftCertificateDto);
+        // Then
+        Assertions.assertTrue(constraintViolations.size() > 0);
     }
 
     @ParameterizedTest
@@ -109,43 +143,45 @@ class GiftCertificateServiceImplTest {
             "more then 250 characters more then 250 characters more then 250 characters more then 250 characters " +
             "more then 250 characters more then 250 characters more then 250 characters more then 250 characters"})
     void testAdd_InvalidDescription_ExceptionThrown(String description) {
-        Assertions.assertThrows(RequestValidationException.class,
-                () -> giftCertificateService.add(GiftCertificateDto.builder()
-                        .name("name")
-                        .description(description)
-                        .build()));
+        // Given
+        giftCertificateDto.setDescription(description);
+        // When
+        Set<ConstraintViolation<GiftCertificateDto>> constraintViolations = validator
+                .validate(giftCertificateDto);
+        // Then
+        Assertions.assertTrue(constraintViolations.size() > 0);
     }
 
     @ParameterizedTest
     @ValueSource(ints = {-500, -1, 1_000_001, 2_000_000})
     void testAdd_InvalidPrice_ExceptionThrown(int price) {
-        Assertions.assertThrows(RequestValidationException.class,
-                () -> giftCertificateService.add(GiftCertificateDto.builder()
-                        .name("name")
-                        .description("description")
-                        .price(new BigDecimal(price))
-                        .build()));
+        // Given
+        giftCertificateDto.setPrice(new BigDecimal(price));
+        // When
+        Set<ConstraintViolation<GiftCertificateDto>> constraintViolations = validator
+                .validate(giftCertificateDto);
+        // Then
+        Assertions.assertTrue(constraintViolations.size() > 0);
     }
 
     @ParameterizedTest
     @ValueSource(ints = {-500, -1, 0, 367, 500})
     void testAdd_InvalidDuration_ExceptionThrown(int duration) {
-        Assertions.assertThrows(RequestValidationException.class,
-                () -> giftCertificateService.add(GiftCertificateDto.builder()
-                        .name("name")
-                        .price(new BigDecimal(1))
-                        .description("description")
-                        .duration(duration)
-                        .build()));
+        // Given
+        giftCertificateDto.setDuration(duration);
+        // When
+        Set<ConstraintViolation<GiftCertificateDto>> constraintViolations = validator
+                .validate(giftCertificateDto);
+        // Then
+        Assertions.assertTrue(constraintViolations.size() > 0);
     }
 
     @Test
     void testFindById_ValidId_findsGiftCertificate() {
         // Given
         when(giftCertificateDao.findById(1L)).thenReturn(Optional.ofNullable(giftCertificate));
-        when(tagService.findByCertificateId(1L)).thenReturn(Collections.singletonList(tagDto));
         // When
-        GiftCertificateDto result = giftCertificateService.findById(String.valueOf(1L));
+        GiftCertificateDto result = giftCertificateService.findById(1L);
         // Then
         Assertions.assertEquals(giftCertificateDto, result);
     }
@@ -155,34 +191,52 @@ class GiftCertificateServiceImplTest {
         // Given
         // When
         // Then
-        Assertions.assertThrows(RequestValidationException.class,
-                () -> giftCertificateService.findById(String.valueOf(-10L)));
+        Assertions.assertThrows(ResourceNotFoundException.class,
+                () -> giftCertificateService.findById(-10L));
     }
 
     @Test
     void testFindAll_GiftCertificatesExist_findsGiftCertificates() {
         // Given
-        when(giftCertificateDao.findAll()).thenReturn(Collections.singletonList(giftCertificate));
-        when(tagService.findByCertificateId(1L)).thenReturn(Collections.singletonList(tagDto));
+        when(giftCertificateDao.findAll(any())).thenReturn(Collections.singletonList(giftCertificate));
+        when(giftCertificateDao.getTotalNumberOfItems(any())).thenReturn(20L);
         // When
-        List<GiftCertificateDto> result = giftCertificateService.findAll();
+        PagedModel<GiftCertificateDto> result = giftCertificateService.findAll(queryParameter);
         // Then
-        Assertions.assertEquals(Collections.singletonList(giftCertificateDto), result);
+        Assertions.assertEquals(Collections.singletonList(giftCertificateDto), new ArrayList<>(result.getContent()));
     }
 
 
     @Test
     void testUpdate_AllFieldsAreValid_CreatesGiftCertificate() {
         // Given
-        when(giftCertificateDao.update(any())).thenReturn(giftCertificate);
-        when(giftCertificateDao.findById(1L)).thenReturn(Optional.ofNullable(giftCertificate));
-        when(tagService.findByCertificateId(1L)).thenReturn(Collections.singletonList(tagDto));
-        when(tagService.findByName("name")).thenReturn(Optional.empty());
+        GiftCertificate updatedGiftCertificate = GiftCertificate.builder()
+                .id(1L)
+                .name("newName")
+                .description("New description")
+                .price(new BigDecimal(1))
+                .duration(1)
+                .createDate(LocalDateTime.of(2021, Month.DECEMBER, 11, 20, 24, 43))
+                .lastUpdateDate(LocalDateTime.of(2021, Month.DECEMBER, 11, 20, 24, 43))
+                .tags(Collections.singletonList(new Tag(1L, "name")))
+                .build();
+        when(giftCertificateDao.findById(1L)).thenReturn(Optional.ofNullable(updatedGiftCertificate));
+        when(tagService.findByName("name")).thenReturn(Optional.ofNullable(tagDto));
         when(tagService.add(tagDto)).thenReturn(tagDto);
+        GiftCertificateDto updatedGiftCertificateDto = GiftCertificateDto.builder()
+                .id(1L)
+                .name("newName")
+                .description("New description")
+                .price(new BigDecimal(1))
+                .duration(1)
+                .createDate(LocalDateTime.of(2021, Month.DECEMBER, 11, 20, 24, 43))
+                .lastUpdateDate(LocalDateTime.of(2021, Month.DECEMBER, 11, 20, 24, 43))
+                .tags(Collections.singletonList(new TagDto(1L, "name")))
+                .build();
         // When
-        GiftCertificateDto result = giftCertificateService.update(String.valueOf(1L), giftCertificateDto);
+        GiftCertificateDto result = giftCertificateService.update(1L, updatedGiftCertificateDto);
         // Then
-        Assertions.assertNotEquals(giftCertificateDto.getLastUpdateDate(), result.getLastUpdateDate());
+        Assertions.assertNotEquals(giftCertificateDto, result);
     }
 
     @ParameterizedTest
@@ -191,8 +245,8 @@ class GiftCertificateServiceImplTest {
         // Given
         // When
         // Then
-        Assertions.assertThrows(RequestValidationException.class,
-                () -> giftCertificateService.update(String.valueOf(1L), GiftCertificateDto.builder().name(name).build()));
+        Assertions.assertThrows(ResourceNotFoundException.class,
+                () -> giftCertificateService.update(1L, GiftCertificateDto.builder().name(name).build()));
     }
 
     @ParameterizedTest
@@ -207,8 +261,8 @@ class GiftCertificateServiceImplTest {
         // Given
         // When
         // Then
-        Assertions.assertThrows(RequestValidationException.class,
-                () -> giftCertificateService.update(String.valueOf(1L), GiftCertificateDto.builder().name("name").description(description).build()));
+        Assertions.assertThrows(ResourceNotFoundException.class,
+                () -> giftCertificateService.update(1L, GiftCertificateDto.builder().name("name").description(description).build()));
     }
 
     @ParameterizedTest
@@ -217,8 +271,8 @@ class GiftCertificateServiceImplTest {
         // Given
         // When
         // Then
-        Assertions.assertThrows(RequestValidationException.class,
-                () -> giftCertificateService.update(String.valueOf(1L), GiftCertificateDto.builder()
+        Assertions.assertThrows(ResourceNotFoundException.class,
+                () -> giftCertificateService.update(1L, GiftCertificateDto.builder()
                         .name("name")
                         .description("description")
                         .price(new BigDecimal(price))
@@ -231,8 +285,8 @@ class GiftCertificateServiceImplTest {
         // Given
         // When
         // Then
-        Assertions.assertThrows(RequestValidationException.class,
-                () -> giftCertificateService.update(String.valueOf(1L), GiftCertificateDto.builder()
+        Assertions.assertThrows(ResourceNotFoundException.class,
+                () -> giftCertificateService.update(1L, GiftCertificateDto.builder()
                         .name("name")
                         .price(new BigDecimal(1))
                         .description("description")
@@ -241,21 +295,11 @@ class GiftCertificateServiceImplTest {
     }
 
     @Test
-    void testRemoveById_ValidId_True() {
-        // Given
-        when(giftCertificateDao.removeById(1L)).thenReturn(true);
-        // When
-        boolean result = giftCertificateService.removeById(1L);
-        // Then
-        Assertions.assertTrue(result);
-    }
-
-    @Test
     void testRemoveById_InvalidId_ExceptionThrown() {
         // Given
         // When
         // Then
-        Assertions.assertThrows(RequestValidationException.class,
+        Assertions.assertThrows(ResourceNotFoundException.class,
                 () -> giftCertificateService.removeById(-10L));
     }
 }

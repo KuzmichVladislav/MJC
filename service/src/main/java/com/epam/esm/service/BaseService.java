@@ -1,15 +1,16 @@
 package com.epam.esm.service;
 
-import java.util.List;
+import com.epam.esm.dto.QueryParameterDto;
+import org.springframework.hateoas.PagedModel;
 
 /**
  * A generic interface for the Service layer. The interface
  * describes base business logic operations for DTO objects.
  *
  * @param <T> the generic DTO object type
+ * @param <P> the query parameter
  */
-
-public interface BaseService<T> {
+public interface BaseService<T, P extends QueryParameterDto> {
 
     /**
      * Adds the DTO object.
@@ -25,20 +26,20 @@ public interface BaseService<T> {
      * @param id the DTO object identifier
      * @return the DTO object
      */
-    T findById(String id);
+    T findById(long id);
 
     /**
      * Find all DTO objects.
      *
-     * @return the list of DTO objects
+     * @param queryParameterDto the query parameter dto
+     * @return the page
      */
-    List<T> findAll();
+    PagedModel<T> findAll(P queryParameterDto);
 
     /**
      * Removes the by DTO object identifier.
      *
      * @param id the the DTO object identifier
-     * @return true, if successful
      */
-    boolean removeById(long id);
+    void removeById(long id);
 }

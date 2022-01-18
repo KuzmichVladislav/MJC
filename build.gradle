@@ -1,31 +1,48 @@
+buildscript {
+    ext {
+        springVersion = '5.3.13'
+        lombokVersion = '1.18.22'
+        jacksonVersion = '2.13.0'
+        springBootVersion = '2.6.2'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
 group 'com.epam.esm'
 version '1.0-SNAPSHOT'
 
 subprojects {
     apply plugin: 'java'
+    apply plugin: "io.spring.dependency-management"
 
     repositories {
         mavenCentral()
     }
 
-    ext{
-        springVersion = '5.3.13'
-        lombokVersion = '1.18.22'
-        jacksonVersion = '2.13.0'
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.boot:spring-boot-dependencies:$springBootVersion"
+        }
     }
 
     dependencies {
         implementation "org.springframework:spring-core:$springVersion"
         implementation "org.springframework:spring-context:$springVersion"
-
         compileOnly "org.projectlombok:lombok:$lombokVersion"
         annotationProcessor "org.projectlombok:lombok:$lombokVersion"
-
         testCompileOnly "org.projectlombok:lombok:$lombokVersion"
         testAnnotationProcessor "org.projectlombok:lombok:$lombokVersion"
-
         implementation "com.fasterxml.jackson.core:jackson-core:$jacksonVersion"
         implementation "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
         implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion"
+        implementation 'org.springframework.data:spring-data-commons:2.6.0'
+    }
+    test {
+        useJUnitPlatform()
     }
 }
