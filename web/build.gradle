@@ -6,7 +6,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     implementation 'org.springframework.boot:spring-boot-starter-hateoas'
-    implementation 'org.springframework.boot:spring-boot-devtools'
     compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
     implementation 'com.jayway.jsonpath:json-path:2.6.0'
     implementation 'org.springframework.hateoas:spring-hateoas:1.4.0'
