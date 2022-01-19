@@ -7,16 +7,13 @@ import com.epam.esm.entity.QueryParameter;
 import com.epam.esm.entity.Role;
 import com.epam.esm.entity.User;
 import com.epam.esm.exception.ExceptionKey;
-import com.epam.esm.exception.RequestValidationException;
 import com.epam.esm.exception.ResourceNotFoundException;
-import com.epam.esm.repos.UserRepo;
 import com.epam.esm.service.UserService;
 import com.epam.esm.util.ListConverter;
 import com.epam.esm.util.TotalPageCountCalculator;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.hateoas.PagedModel;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -58,17 +55,17 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserDto add(UserDto userDto) {
-        String login = userDto.getUsername();
-        if (loadUserByUsername(login) == null) {
-            userDto.setActive(true);
-            userDto.setRoles(Collections.singleton(Role.USER));
-            userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
-            User user = modelMapper.map(userDto, User.class);
-            userDto.setId(userDao.add(user).getId());
-            return userDto;
-        } else {
-            throw new RequestValidationException(ExceptionKey.TAG_EXISTS, login); // TODO: 1/18/2022
-        }
+//        String username = userDto.getUsername();
+//        if (userDao.findByUsername(username) == null) {
+        userDto.setActive(true);
+        userDto.setRoles(Collections.singleton(Role.USER));
+        userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        User user = modelMapper.map(userDto, User.class);
+        userDto.setId(userDao.add(user).getId());
+        return userDto;
+//        } else {
+//            throw new RequestValidationException(ExceptionKey.TAG_EXISTS, username); // TODO: 1/18/2022
+//        }
     }
 
     private UserDto convertToUserDto(User user) {
@@ -77,7 +74,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public User loadUserByUsername(String username) throws UsernameNotFoundException {
         return userDao.findByUsername(username);
+    }
+
+    @Override
+    @Transactional
+    public UserDto findByLoginAndPassword(String login, String password) {
+        UserDto userDto = convertToUserDto(loadUserByUsername(login));
+        if (userDto != null && passwordEncoder.matches(password, userDto.getPassword())) {
+            return userDto;
+        }
+        return null; // TODO: 1/19/2022 add exception
     }
 }

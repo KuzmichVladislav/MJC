@@ -33,6 +33,10 @@ subprojects {
     dependencies {
         implementation "org.springframework:spring-core:$springVersion"
         implementation "org.springframework:spring-context:$springVersion"
+        implementation 'org.springframework.data:spring-data-commons:2.6.0'
+        implementation 'org.springframework.security:spring-security-test'
+        implementation 'org.springframework.boot:spring-boot-starter-security'
+        implementation 'org.springframework.boot:spring-boot-starter-oauth2-client:2.6.2'
         compileOnly "org.projectlombok:lombok:$lombokVersion"
         annotationProcessor "org.projectlombok:lombok:$lombokVersion"
         testCompileOnly "org.projectlombok:lombok:$lombokVersion"
@@ -40,14 +44,6 @@ subprojects {
         implementation "com.fasterxml.jackson.core:jackson-core:$jacksonVersion"
         implementation "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
         implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion"
-        implementation 'org.springframework.data:spring-data-commons:2.6.0'
-
-
-        implementation 'org.springframework.boot:spring-boot-starter-security'
-        implementation 'org.springframework.security:spring-security-test'
-
-        // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-oauth2-client
-        implementation 'org.springframework.boot:spring-boot-starter-oauth2-client:2.6.2'
     }
     test {
         useJUnitPlatform()
