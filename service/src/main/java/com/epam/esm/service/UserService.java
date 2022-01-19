@@ -3,12 +3,13 @@ package com.epam.esm.service;
 import com.epam.esm.dto.QueryParameterDto;
 import com.epam.esm.dto.UserDto;
 import org.springframework.hateoas.PagedModel;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 /**
  * The Interface UserService.
  * A interface to define all required methods for user DTO object.
  */
-public interface UserService {
+public interface UserService extends UserDetailsService {
 
     /**
      * Find user by identifier.
@@ -18,6 +19,7 @@ public interface UserService {
      */
     UserDto findById(long id);
 
+
     /**
      * Find all users.
      *
@@ -25,4 +27,8 @@ public interface UserService {
      * @return the page
      */
     PagedModel<UserDto> findAll(QueryParameterDto queryParameterDto);
+
+//    Optional<User> findByUserLogin(String login);
+
+    UserDto add(UserDto userDto);
 }

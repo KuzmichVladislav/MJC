@@ -33,4 +33,8 @@ public interface UserDao {
      * @return the total number of items
      */
     long getTotalNumberOfItems();
+
+    User findByUsername(String login);
+
+    User add(User user);
 }

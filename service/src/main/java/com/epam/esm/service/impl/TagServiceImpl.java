@@ -41,8 +41,7 @@ public class TagServiceImpl implements TagService {
             tagDto.setId(tagDao.add(tag).getId());
             return tagDto;
         } else {
-            throw new RequestValidationException(ExceptionKey.TAG_EXISTS,
-                    String.valueOf(tagName));
+            throw new RequestValidationException(ExceptionKey.TAG_EXISTS, tagName);
         }
     }
 
