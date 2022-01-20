@@ -1,4 +1,4 @@
-package com.epam.esm.configuration.jwt;
+package com.epam.esm.security.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -10,20 +10,27 @@ import io.jsonwebtoken.UnsupportedJwtException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 
+import static org.springframework.util.StringUtils.hasText;
+
 @Component
 public class JwtTokenProvider {
+
+    private static final String AUTHORIZATION = "Authorization";
+    private static final String BEARER = "Bearer ";
 
     @Value("$(jwt.secret)")
     private String jwtSecret;
 
-    public String generateToken(String login) {
+
+    public String generateToken(String username) {
         Date date = Date.from(LocalDate.now().plusDays(15).atStartOfDay(ZoneId.systemDefault()).toInstant());
         return Jwts.builder()
-                .setSubject(login)
+                .setSubject(username)
                 .setExpiration(date)
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
@@ -34,21 +41,29 @@ public class JwtTokenProvider {
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
             return true;
         } catch (ExpiredJwtException expEx) {
-            // TODO: 1/19/2022 Token expired
+            System.out.println("TODO: 1/19/2022 Token expired");
         } catch (UnsupportedJwtException unsEx) {
-            // TODO: Unsupported jwt
+            System.out.println("TODO: Unsupported jwt");
         } catch (MalformedJwtException mjEx) {
-            // TODO: Malformed jwt
+            System.out.println("TODO: Malformed jwt");
         } catch (SignatureException sEx) {
-            // TODO: Invalid signature
+            System.out.println("TODO: Invalid signature");
         } catch (Exception e) {
-            // TODO: invalid token
+            System.out.println("TODO: invalid token");
         }
         return false;
     }
 
-    public String getLoginFromToken(String token) {
+    public String getUsernameFromToken(String token) {
         Claims claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
         return claims.getSubject();
+    }
+
+    public String resolveToken(HttpServletRequest request) {
+        String bearer = request.getHeader(AUTHORIZATION);
+        if (hasText(bearer) && bearer.startsWith(BEARER)) {
+            return bearer.substring(7);
+        }
+        return null;
     }
 }

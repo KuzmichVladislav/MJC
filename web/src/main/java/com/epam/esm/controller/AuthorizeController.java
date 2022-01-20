@@ -1,7 +1,8 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.configuration.jwt.JwtTokenProvider;
+import com.epam.esm.dto.AuthorizeRequestDto;
 import com.epam.esm.dto.UserDto;
+import com.epam.esm.security.jwt.JwtTokenProvider;
 import com.epam.esm.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,15 +22,15 @@ public class AuthorizeController {
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public String registerUser(@RequestBody @Valid UserDto userDto) {
+    public String registerUser(@RequestBody @Valid UserDto userDto) { // TODO: 1/20/2022 add validation
         userService.add(userDto);
         return "OK";
         // TODO: 1/19/2022 redirect?
     }
 
     @PostMapping("/authorize")
-    public String authorizeUser(@RequestBody AuthorizeRequest request) {
-        UserDto userEntity = userService.findByLoginAndPassword(request.getLogin(), request.getPassword());
+    public String authorizeUser(@RequestBody AuthorizeRequestDto authorizeRequestDto) {
+        UserDto userEntity = userService.findByUsernameAndPassword(authorizeRequestDto.getUsername(), authorizeRequestDto.getPassword());
         return jwtTokenProvider.generateToken(userEntity.getUsername());
     }
 }

@@ -1,6 +1,5 @@
 package com.epam.esm.dto;
 
-import com.epam.esm.entity.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,5 +23,5 @@ public class UserDto extends RepresentationModel<UserDto> {
     private String firstName;
     private String lastName;
     private boolean active;
-    private Set<Role> roles;
+    private Set<RoleDto> roles;
 }

@@ -22,7 +22,7 @@ public class UserDaoImpl implements UserDao {
 
     private static final String FIND_ALL_USERS = "select u from User u order by u.username ";
     private static final String TOTAL_NUMBER_OF_ITEMS = "select count(u) from User u";
-    private static final String FIND_USER_BY_LOGIN = "select u from User u where u.username = ?1";
+    private static final String FIND_USER_BY_USERNAME = "select u from User u where u.username = ?1";
     private static final String FIND_ROLES_BY_USER_ID = "SELECT roles FROM user_role WHERE user_id=";
 
     @PersistenceContext
@@ -48,16 +48,19 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public User findByUsername(String login) {
-        User user = entityManager.createQuery(FIND_USER_BY_LOGIN, User.class)
-                .setParameter(1, login)
+    public Optional<User> findByUsername(String username) {
+        Optional<User> user = entityManager.createQuery(FIND_USER_BY_USERNAME, User.class)
+                .setParameter(1, username)
                 .getResultStream()
-                .findFirst().get();
-        Collection<Role> collect = (Collection) entityManager.createNativeQuery(FIND_ROLES_BY_USER_ID + user.getId())
-                .getResultList().stream()
-                .map(t -> Role.valueOf((String) t))
-                .collect(Collectors.toSet());
-        user.setRoles(new HashSet<>(collect));
+                .findFirst();
+        if (user.isPresent()) {
+            Collection<Role> collect = (Collection) entityManager
+                    .createNativeQuery(FIND_ROLES_BY_USER_ID + user.get().getId())
+                    .getResultList().stream()
+                    .map(t -> Role.valueOf((String) t))
+                    .collect(Collectors.toSet());
+            user.get().setRoles(new HashSet<>(collect));
+        }
         return user;
     }
 
