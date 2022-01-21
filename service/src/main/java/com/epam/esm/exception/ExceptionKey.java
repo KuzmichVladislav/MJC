@@ -37,6 +37,7 @@ public final class ExceptionKey {
     public static final String SIZE_MIGHT_NOT_BE_NEGATIVE = "size.mightNotBeNegative";
     public static final String TAG_BELONGS_TO_CERTIFICATE = "tag.belongsToCertificate";
     public static final String ORDER_NOT_FOUND = "order.notFound";
+    public static final String JWT_TOKEN_IS_EXPIRED_OR_INVALID = "jwt.token.is.expired.or.invalid";
 
     private ExceptionKey() {
     }

@@ -1,5 +1,6 @@
 package com.epam.esm.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,6 +20,7 @@ public class UserDto extends RepresentationModel<UserDto> {
 
     private long id;
     private String username;
+    @JsonIgnore
     private String password;
     private String firstName;
     private String lastName;

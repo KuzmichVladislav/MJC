@@ -9,6 +9,7 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,6 +51,7 @@ public class OrderController {
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAuthority('USER')")
     public OrderDto addOrder(@Valid @RequestBody OrderDto orderDto) {
         OrderDto resultOrder = orderService.add(orderDto);
         linkCreator.addOrderLinks(resultOrder);
@@ -65,6 +67,7 @@ public class OrderController {
      * @return the all orders
      */
     @GetMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     public PagedModel<OrderDto> getAllOrders(@Min(value = 1, message = PAGE_MIGHT_NOT_BE_NEGATIVE)
                                              @RequestParam(required = false, defaultValue = "1") int page,
                                              @Min(value = 1, message = SIZE_MIGHT_NOT_BE_NEGATIVE)
@@ -89,6 +92,7 @@ public class OrderController {
      * @return the order identifier
      */
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public OrderDto getOrderById(@Positive(message = ID_MIGHT_NOT_BE_NEGATIVE)
                                  @PathVariable("id") long id) {
         OrderDto resultOrder = orderService.findById(id);
@@ -103,6 +107,7 @@ public class OrderController {
      * @return the http entity
      */
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public HttpEntity<Void> deleteOrder(@Positive(message = ID_MIGHT_NOT_BE_NEGATIVE)
                                         @PathVariable("id") long id) {
         orderService.removeById(id);
@@ -115,7 +120,8 @@ public class OrderController {
      * @param userId the user identifier
      * @return the orders
      */
-    @GetMapping("/users/{userId}")
+    @GetMapping("/users/{userId}")// TODO: 1/20/2022 get id from jwt?
+    @PreAuthorize("hasAuthority('ADMIN')")
     public List<OrderDto> getOrdersByUserId(@Positive(message = ID_MIGHT_NOT_BE_NEGATIVE)
                                             @PathVariable("userId") long userId) {
         return orderService.findOrdersByUserId(userId);

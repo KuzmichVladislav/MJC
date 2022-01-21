@@ -1,6 +1,7 @@
 package com.epam.esm.security.service;
 
 import com.epam.esm.dto.UserDto;
+import com.epam.esm.dto.UserRegistrationDto;
 import com.epam.esm.security.entity.JwtUserDetails;
 import com.epam.esm.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,7 @@ public class JwtUserDetailsService implements UserDetailsService {
 
     @Override
     public JwtUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserDto userEntity = userService.loadUserByUsername(username);
-        return JwtUserDetails.mapToJwtUserDetails(userEntity);
+        UserRegistrationDto userRegistrationDto = userService.loadUserByUsername(username);
+        return JwtUserDetails.mapToJwtUserDetails(userRegistrationDto);
     }
 }

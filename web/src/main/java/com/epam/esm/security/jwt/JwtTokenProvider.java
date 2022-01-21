@@ -1,62 +1,59 @@
 package com.epam.esm.security.jwt;
 
+import com.epam.esm.security.entity.JwtUserDetails;
+import com.epam.esm.security.service.JwtUserDetailsService;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.SignatureException;
-import io.jsonwebtoken.UnsupportedJwtException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.Date;
 
 import static org.springframework.util.StringUtils.hasText;
 
 @Component
+@RequiredArgsConstructor
 public class JwtTokenProvider {
 
     private static final String AUTHORIZATION = "Authorization";
     private static final String BEARER = "Bearer ";
-
+    private final JwtUserDetailsService jwtUserDetailsService;
     @Value("$(jwt.secret)")
     private String jwtSecret;
-
+    @Value("${jwt.expired}")
+    private long expirationInMilliseconds;
 
     public String generateToken(String username) {
-        Date date = Date.from(LocalDate.now().plusDays(15).atStartOfDay(ZoneId.systemDefault()).toInstant());
+        Date now = new Date();
+        Date expiration = new Date(now.getTime() + expirationInMilliseconds);
         return Jwts.builder()
                 .setSubject(username)
-                .setExpiration(date)
+                .setIssuedAt(now)
+                .setExpiration(expiration)
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
     }
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
-            return true;
-        } catch (ExpiredJwtException expEx) {
-            System.out.println("TODO: 1/19/2022 Token expired");
-        } catch (UnsupportedJwtException unsEx) {
-            System.out.println("TODO: Unsupported jwt");
-        } catch (MalformedJwtException mjEx) {
-            System.out.println("TODO: Malformed jwt");
-        } catch (SignatureException sEx) {
-            System.out.println("TODO: Invalid signature");
-        } catch (Exception e) {
-            System.out.println("TODO: invalid token");
+            Jws<Claims> claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
+            return !claims.getBody().getExpiration().before(new Date());
+        } catch (JwtException | IllegalArgumentException e) {
+            return false;
+//            throw new JwtAuthenticationException(ExceptionKey.JWT_TOKEN_IS_EXPIRED_OR_INVALID);
         }
-        return false;
     }
 
     public String getUsernameFromToken(String token) {
-        Claims claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
-        return claims.getSubject();
+        return Jwts.parser().setSigningKey(jwtSecret)
+                .parseClaimsJws(token).getBody().getSubject();
     }
 
     public String resolveToken(HttpServletRequest request) {
@@ -65,5 +62,10 @@ public class JwtTokenProvider {
             return bearer.substring(7);
         }
         return null;
+    }
+
+    public Authentication getAuthentication(String token) {
+        JwtUserDetails jwtUserDetails = jwtUserDetailsService.loadUserByUsername(getUsernameFromToken(token));
+        return new UsernamePasswordAuthenticationToken(jwtUserDetails, null, jwtUserDetails.getAuthorities());
     }
 }

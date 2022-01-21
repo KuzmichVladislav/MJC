@@ -6,6 +6,7 @@ import com.epam.esm.service.UserService;
 import com.epam.esm.util.LinkCreator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.PagedModel;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -42,6 +43,7 @@ public class UserController {
      * @return the all users
      */
     @GetMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     public PagedModel<UserDto> getAllUsers(@Min(value = 1, message = PAGE_MIGHT_NOT_BE_NEGATIVE)
                                            @RequestParam(required = false, defaultValue = "1") int page,
                                            @Min(value = 1, message = SIZE_MIGHT_NOT_BE_NEGATIVE)
@@ -66,6 +68,7 @@ public class UserController {
      * @return the user by identifier
      */
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')") // TODO: 1/20/2022 own profile?
     public UserDto getUserById(@Positive(message = ID_MIGHT_NOT_BE_NEGATIVE)
                                @PathVariable("id") long id) {
         UserDto user = userService.findById(id);

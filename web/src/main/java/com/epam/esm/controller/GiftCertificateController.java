@@ -41,7 +41,6 @@ import static com.epam.esm.exception.ExceptionKey.SIZE_MIGHT_NOT_BE_NEGATIVE;
 @RequestMapping("/v1/gift-certificates")
 @RequiredArgsConstructor
 @Validated
-@PreAuthorize("hasAuthority('USER')")
 public class GiftCertificateController {
 
     private final GiftCertificateService giftCertificateService;
@@ -55,6 +54,7 @@ public class GiftCertificateController {
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAuthority('ADMIN')")
     public GiftCertificateDto addGiftCertificate(@Valid @RequestBody GiftCertificateDto giftCertificateDto) {
         GiftCertificateDto resultGiftCertificate = giftCertificateService.add(giftCertificateDto);
         linkCreator.addGiftCertificateLinks(resultGiftCertificate);
@@ -95,7 +95,6 @@ public class GiftCertificateController {
                 .size(size)
                 .sortingDirection(sortingDirection)
                 .build();
-
         PagedModel<GiftCertificateDto> giftCertificatePage = giftCertificateService.findAll(giftCertificateQueryParameterDto);
         giftCertificatePage.getContent().forEach(linkCreator::addGiftCertificateLinks);
         linkCreator.addGiftCertificatePaginationLinks(giftCertificateQueryParameterDto, giftCertificatePage);
@@ -124,6 +123,7 @@ public class GiftCertificateController {
      * @return the gift certificate DTO object
      */
     @PatchMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public GiftCertificateDto updateGiftCertificate(@Positive(message = ID_MIGHT_NOT_BE_NEGATIVE)
                                                     @PathVariable("id") long id,
                                                     @Valid @RequestBody GiftCertificateDto giftCertificateDto) {
@@ -139,6 +139,7 @@ public class GiftCertificateController {
      * @return the http entity
      */
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public HttpEntity<Void> deleteGiftCertificate(@Positive(message = ID_MIGHT_NOT_BE_NEGATIVE)
                                                   @PathVariable("id") long id) {
         giftCertificateService.removeById(id);

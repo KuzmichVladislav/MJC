@@ -2,6 +2,7 @@ package com.epam.esm.service;
 
 import com.epam.esm.dto.QueryParameterDto;
 import com.epam.esm.dto.UserDto;
+import com.epam.esm.dto.UserRegistrationDto;
 import org.springframework.hateoas.PagedModel;
 
 /**
@@ -27,9 +28,9 @@ public interface UserService {
      */
     PagedModel<UserDto> findAll(QueryParameterDto queryParameterDto);
 
-    UserDto loadUserByUsername(String login);
+    UserRegistrationDto loadUserByUsername(String username);
 
-    UserDto add(UserDto userDto);
+    UserDto add(UserRegistrationDto registrationDto);
 
-    UserDto findByUsernameAndPassword(String login, String password);
+    UserRegistrationDto findByUsernameAndPassword(String username, String password);
 }

@@ -1,5 +1,7 @@
 package com.epam.esm.exception;
 
+import com.epam.esm.security.exception.JwtAuthenticationException;
+import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
@@ -173,5 +175,21 @@ public class ErrorHandler {
     private String createMessage(Locale locale, String messageKey, String messageParameter) {
         return String.format(messageSource.getMessage(messageKey, new Object[]{}, locale),
                 messageParameter);
+    }
+
+
+    // TODO: 1/21/2022
+    @ExceptionHandler(JwtAuthenticationException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ResponseBody
+    public ExceptionResult handle(JwtAuthenticationException e, Locale locale) {
+        return new ExceptionResult(e.getMessage(), ErrorCode.UNAUTHORIZED.getCode());
+    }
+
+    @ExceptionHandler(ExpiredJwtException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ResponseBody
+    public ExceptionResult handle(ExpiredJwtException e, Locale locale) {
+        return new ExceptionResult(e.getMessage(), ErrorCode.UNAUTHORIZED.getCode());
     }
 }

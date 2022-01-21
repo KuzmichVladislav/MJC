@@ -4,6 +4,7 @@ import com.epam.esm.dao.UserDao;
 import com.epam.esm.dto.QueryParameterDto;
 import com.epam.esm.dto.RoleDto;
 import com.epam.esm.dto.UserDto;
+import com.epam.esm.dto.UserRegistrationDto;
 import com.epam.esm.entity.QueryParameter;
 import com.epam.esm.entity.User;
 import com.epam.esm.exception.ExceptionKey;
@@ -55,15 +56,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserDto add(UserDto userDto) {
-        String username = userDto.getUsername();
+    public UserDto add(UserRegistrationDto registrationDto) {
+        String username = registrationDto.getUsername();
         if (userDao.findByUsername(username).isEmpty()) {
-            userDto.setActive(true);
-            userDto.setRoles(Collections.singleton(RoleDto.USER));
-            userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
-            User user = modelMapper.map(userDto, User.class);
-            userDto.setId(userDao.add(user).getId());
-            return userDto;
+            registrationDto.setActive(true);
+            registrationDto.setRoles(Collections.singleton(RoleDto.USER));
+            registrationDto.setPassword(passwordEncoder.encode(registrationDto.getPassword()));
+            User user = modelMapper.map(registrationDto, User.class);
+            registrationDto.setId(userDao.add(user).getId());
+            return (UserDto) registrationDto;
         } else {
             throw new RequestValidationException(ExceptionKey.TAG_EXISTS, username); // TODO: 1/18/2022
         }
@@ -75,18 +76,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserDto loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserRegistrationDto loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userDao.findByUsername(username).orElseThrow(() ->
                 new RequestValidationException(ExceptionKey.TAG_EXISTS, username)); // TODO: 1/20/2022
-        return modelMapper.map(user, UserDto.class);
+        return modelMapper.map(user, UserRegistrationDto.class);
     }
 
     @Override
     @Transactional
-    public UserDto findByUsernameAndPassword(String username, String password) {
-        UserDto userDto = loadUserByUsername(username);
-        if (passwordEncoder.matches(password, userDto.getPassword())) {
-            return userDto;
+    public UserRegistrationDto findByUsernameAndPassword(String username, String password) {
+        UserRegistrationDto userRegistrationDto = loadUserByUsername(username);
+        if (passwordEncoder.matches(password, userRegistrationDto.getPassword())) {
+            return userRegistrationDto;
         }
         return null; // TODO: 1/19/2022 add exception
     }

@@ -1,6 +1,7 @@
 package com.epam.esm.security.entity;
 
 import com.epam.esm.dto.UserDto;
+import com.epam.esm.dto.UserRegistrationDto;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,14 +16,14 @@ public class JwtUserDetails implements UserDetails {
     private Collection<? extends GrantedAuthority> authorities;
     private boolean active;
 
-    public static JwtUserDetails mapToJwtUserDetails(UserDto userDto) {
+    public static JwtUserDetails mapToJwtUserDetails(UserRegistrationDto userRegistrationDto) {
         JwtUserDetails jwtUserDetails = new JwtUserDetails();
-        jwtUserDetails.username = userDto.getUsername();
-        jwtUserDetails.password = userDto.getPassword();
-        jwtUserDetails.authorities = userDto.getRoles().stream()
+        jwtUserDetails.username = userRegistrationDto.getUsername();
+        jwtUserDetails.password = userRegistrationDto.getPassword();
+        jwtUserDetails.authorities = userRegistrationDto.getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority(role.name()))
                 .collect(Collectors.toList());
-        jwtUserDetails.active = userDto.isActive();
+        jwtUserDetails.active = userRegistrationDto.isActive();
         return jwtUserDetails;
     }
 
