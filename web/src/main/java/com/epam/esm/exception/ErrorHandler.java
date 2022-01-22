@@ -1,7 +1,8 @@
 package com.epam.esm.exception;
 
-import com.epam.esm.security.exception.JwtAuthenticationException;
+import com.epam.esm.security.exception._JwtAuthenticationException;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
@@ -177,12 +178,14 @@ public class ErrorHandler {
                 messageParameter);
     }
 
+    private String createMessage(Locale locale, String messageKey) {
+        return messageSource.getMessage(messageKey, new Object[]{}, locale);
+    }
 
-    // TODO: 1/21/2022
-    @ExceptionHandler(JwtAuthenticationException.class)
+    @ExceptionHandler(_JwtAuthenticationException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ResponseBody
-    public ExceptionResult handle(JwtAuthenticationException e, Locale locale) {
+    public ExceptionResult handle(_JwtAuthenticationException e, Locale locale) {
         return new ExceptionResult(e.getMessage(), ErrorCode.UNAUTHORIZED.getCode());
     }
 
@@ -191,5 +194,21 @@ public class ErrorHandler {
     @ResponseBody
     public ExceptionResult handle(ExpiredJwtException e, Locale locale) {
         return new ExceptionResult(e.getMessage(), ErrorCode.UNAUTHORIZED.getCode());
+    }
+
+    @ExceptionHandler(JwtException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ResponseBody
+    public ExceptionResult handle(JwtException e, Locale locale) {
+        return new ExceptionResult(e.getMessage(), ErrorCode.UNAUTHORIZED.getCode());
+    }
+
+    // TODO: 1/22/2022
+    @ExceptionHandler(PasswordAuthenticationException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseBody
+    public ExceptionResult handle(PasswordAuthenticationException e, Locale locale) {
+        String errorMessage = createMessage(locale, e.getMessageKey());
+        return new ExceptionResult(errorMessage, ErrorCode.RESOURCE_NOT_FOUND.getCode());
     }
 }

@@ -3,7 +3,10 @@ package com.epam.esm.configuration;
 import com.epam.esm.security.jwt.JwtAuthenticationEntryPoint;
 import com.epam.esm.security.jwt.JwtTokenFilter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -14,6 +17,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
+//        securedEnabled = true,
+//        jsr250Enabled = true)
 @RequiredArgsConstructor
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
@@ -30,11 +35,17 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/admin/*").hasRole("ADMIN") // TODO: 1/20/2022
-                .antMatchers("/user/*").hasRole("USER") // TODO: 1/20/2022
-                .antMatchers("/register", "/authorize").permitAll()
-//                .anyRequest().authenticated()
+//                .antMatchers("/**").access("hasRole('ADMIN')")
+                .antMatchers("/v1/register", "/v1/authorize").permitAll()
+                .antMatchers(HttpMethod.GET, "/v1/gift-certificates/**").permitAll()
+                .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
+    }
+
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
     }
 }

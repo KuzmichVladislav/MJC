@@ -37,6 +37,7 @@ import static com.epam.esm.exception.ExceptionKey.SIZE_MIGHT_NOT_BE_NEGATIVE;
 @RequestMapping("/v1/tags")
 @RequiredArgsConstructor
 @Validated
+@PreAuthorize("hasAuthority('ADMIN')")
 public class TagController {
 
     private final LinkCreator linkCreator;
@@ -51,7 +52,6 @@ public class TagController {
      * @return the all tags
      */
     @GetMapping
-    @PreAuthorize("hasAuthority('ADMIN')")
     public PagedModel<TagDto> getAllTags(@Min(value = 1, message = PAGE_MIGHT_NOT_BE_NEGATIVE)
                                          @RequestParam(required = false, defaultValue = "1") int page,
                                          @Min(value = 1, message = SIZE_MIGHT_NOT_BE_NEGATIVE)
@@ -77,7 +77,6 @@ public class TagController {
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasAuthority('ADMIN')")
     public TagDto addTag(@Valid @RequestBody TagDto tagDto) {
         TagDto resultTag = tagService.add(tagDto);
         linkCreator.addTagLinks(resultTag);
@@ -91,7 +90,6 @@ public class TagController {
      * @return the tag
      */
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
     public TagDto getTagById(@Positive(message = ID_MIGHT_NOT_BE_NEGATIVE)
                              @PathVariable("id") long id) {
         TagDto resultTag = tagService.findById(id);
@@ -106,7 +104,6 @@ public class TagController {
      * @return the http entity
      */
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
     public HttpEntity<Void> deleteTag(@Positive(message = ID_MIGHT_NOT_BE_NEGATIVE)
                                       @PathVariable("id") long id) {
         tagService.removeById(id);
@@ -120,7 +117,6 @@ public class TagController {
      * @return the tag dto
      */
     @GetMapping("/users/{id}/most-used")
-    @PreAuthorize("hasAuthority('ADMIN')")
     public TagDto findMostUsedTag(@Positive(message = ID_MIGHT_NOT_BE_NEGATIVE)
                                   @PathVariable("id") long id) {
         TagDto resultTag = tagService.findMostUsedTag(id);

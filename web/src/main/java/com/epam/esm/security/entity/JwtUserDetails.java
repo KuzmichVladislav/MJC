@@ -1,6 +1,5 @@
 package com.epam.esm.security.entity;
 
-import com.epam.esm.dto.UserDto;
 import com.epam.esm.dto.UserRegistrationDto;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -11,20 +10,29 @@ import java.util.stream.Collectors;
 
 public class JwtUserDetails implements UserDetails {
 
+    private long id;
     private String username;
     private String password;
     private Collection<? extends GrantedAuthority> authorities;
-    private boolean active;
 
     public static JwtUserDetails mapToJwtUserDetails(UserRegistrationDto userRegistrationDto) {
         JwtUserDetails jwtUserDetails = new JwtUserDetails();
+        jwtUserDetails.id = userRegistrationDto.getId();
         jwtUserDetails.username = userRegistrationDto.getUsername();
         jwtUserDetails.password = userRegistrationDto.getPassword();
         jwtUserDetails.authorities = userRegistrationDto.getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority(role.name()))
                 .collect(Collectors.toList());
-        jwtUserDetails.active = userRegistrationDto.isActive();
         return jwtUserDetails;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public JwtUserDetails setId(long id) {
+        this.id = id;
+        return this;
     }
 
     @Override
@@ -59,6 +67,6 @@ public class JwtUserDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return active;
+        return true;
     }
 }

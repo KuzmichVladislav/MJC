@@ -6,6 +6,7 @@ import com.epam.esm.service.UserService;
 import com.epam.esm.util.LinkCreator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.PagedModel;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -68,10 +69,11 @@ public class UserController {
      * @return the user by identifier
      */
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')") // TODO: 1/20/2022 own profile?
+    @PostAuthorize("#id == authentication.principal.id or hasAuthority('ADMIN')")
     public UserDto getUserById(@Positive(message = ID_MIGHT_NOT_BE_NEGATIVE)
                                @PathVariable("id") long id) {
         UserDto user = userService.findById(id);
+        user.setUsername(user.getUsername());
         linkCreator.addUserLinks(user);
         return user;
     }

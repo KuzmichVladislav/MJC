@@ -8,6 +8,7 @@ import com.epam.esm.dto.UserRegistrationDto;
 import com.epam.esm.entity.QueryParameter;
 import com.epam.esm.entity.User;
 import com.epam.esm.exception.ExceptionKey;
+import com.epam.esm.exception.PasswordAuthenticationException;
 import com.epam.esm.exception.RequestValidationException;
 import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.service.UserService;
@@ -59,26 +60,20 @@ public class UserServiceImpl implements UserService {
     public UserDto add(UserRegistrationDto registrationDto) {
         String username = registrationDto.getUsername();
         if (userDao.findByUsername(username).isEmpty()) {
-            registrationDto.setActive(true);
             registrationDto.setRoles(Collections.singleton(RoleDto.USER));
             registrationDto.setPassword(passwordEncoder.encode(registrationDto.getPassword()));
             User user = modelMapper.map(registrationDto, User.class);
-            registrationDto.setId(userDao.add(user).getId());
-            return (UserDto) registrationDto;
+            return findById(userDao.add(user).getId());
         } else {
-            throw new RequestValidationException(ExceptionKey.TAG_EXISTS, username); // TODO: 1/18/2022
+            throw new RequestValidationException(ExceptionKey.USER_EXISTS, username);
         }
-    }
-
-    private UserDto convertToUserDto(User user) {
-        return modelMapper.map(user, UserDto.class);
     }
 
     @Override
     @Transactional
     public UserRegistrationDto loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userDao.findByUsername(username).orElseThrow(() ->
-                new RequestValidationException(ExceptionKey.TAG_EXISTS, username)); // TODO: 1/20/2022
+                new RequestValidationException(ExceptionKey.USER_NOT_EXISTS, username));
         return modelMapper.map(user, UserRegistrationDto.class);
     }
 
@@ -88,7 +83,12 @@ public class UserServiceImpl implements UserService {
         UserRegistrationDto userRegistrationDto = loadUserByUsername(username);
         if (passwordEncoder.matches(password, userRegistrationDto.getPassword())) {
             return userRegistrationDto;
+        } else {
+            throw new PasswordAuthenticationException(ExceptionKey.USERNAME_OR_PASSWORD_INCORRECT);
         }
-        return null; // TODO: 1/19/2022 add exception
+    }
+
+    private UserDto convertToUserDto(User user) {
+        return modelMapper.map(user, UserDto.class);
     }
 }

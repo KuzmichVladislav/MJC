@@ -36,7 +36,6 @@ public class User {
     private String password;
     private String firstName;
     private String lastName;
-    private boolean active;
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)

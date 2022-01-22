@@ -38,6 +38,15 @@ public final class ExceptionKey {
     public static final String TAG_BELONGS_TO_CERTIFICATE = "tag.belongsToCertificate";
     public static final String ORDER_NOT_FOUND = "order.notFound";
     public static final String JWT_TOKEN_IS_EXPIRED_OR_INVALID = "jwt.token.is.expired.or.invalid";
+    public static final String USER_USERNAME_LENGTH_IS_NOT_VALID = "user.username.LengthIsNotValid";
+    public static final String USER_USERNAME_IS_NOT_VALID = "user.username.isNotValid";
+    public static final String USER_FIRST_NAME_LENGTH_IS_NOT_VALID = "user.first.name.LengthIsNotValid";
+    public static final String USER_FIRST_NAME_IS_NOT_VALID = "user.first.name.isNotValid";
+    public static final String USER_LAST_NAME_LENGTH_IS_NOT_VALID = "user.last.name.LengthIsNotValid";
+    public static final String USER_LAST_NAME_IS_NOT_VALID = "user.last.name.isNotValid";
+    public static final String USER_EXISTS = "user.exists";
+    public static final String USER_NOT_EXISTS = "user.notExists";
+    public static final String USERNAME_OR_PASSWORD_INCORRECT = "user.usernameOrPasswordIncorrect";
 
     private ExceptionKey() {
     }
