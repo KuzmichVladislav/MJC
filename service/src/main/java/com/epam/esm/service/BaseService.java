@@ -35,11 +35,4 @@ public interface BaseService<T, P extends QueryParameterDto> {
      * @return the page
      */
     PagedModel<T> findAll(P queryParameterDto);
-
-    /**
-     * Removes the by DTO object identifier.
-     *
-     * @param id the the DTO object identifier
-     */
-    void removeById(long id);
 }

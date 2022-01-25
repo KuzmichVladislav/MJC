@@ -18,4 +18,12 @@ public interface OrderService extends BaseService<OrderDto, QueryParameterDto> {
      * @return the list of order DTO objects
      */
     List<OrderDto> findOrdersByUserId(long userId);
+
+    /**
+     * Removes the by order DTO object identifier.
+     *
+     * @param id the order DTO object identifier
+     * @return the order DTO object
+     */
+    OrderDto removeById(long id);
 }

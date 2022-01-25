@@ -8,16 +8,25 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
+/**
+ * The Class JwtUserDetails provides core user information..
+ */
 public class JwtUserDetails implements UserDetails {
 
-    private long id;
+    private long userId;
     private String username;
     private String password;
     private Collection<? extends GrantedAuthority> authorities;
 
+    /**
+     * Map user registration DTO to jwt user details.
+     *
+     * @param userRegistrationDto the user registration dto
+     * @return the jwt user details
+     */
     public static JwtUserDetails mapToJwtUserDetails(UserRegistrationDto userRegistrationDto) {
         JwtUserDetails jwtUserDetails = new JwtUserDetails();
-        jwtUserDetails.id = userRegistrationDto.getId();
+        jwtUserDetails.userId = userRegistrationDto.getId();
         jwtUserDetails.username = userRegistrationDto.getUsername();
         jwtUserDetails.password = userRegistrationDto.getPassword();
         jwtUserDetails.authorities = userRegistrationDto.getRoles().stream()
@@ -26,12 +35,12 @@ public class JwtUserDetails implements UserDetails {
         return jwtUserDetails;
     }
 
-    public long getId() {
-        return id;
+    public long getUserId() {
+        return userId;
     }
 
-    public JwtUserDetails setId(long id) {
-        this.id = id;
+    public JwtUserDetails setUserId(long userId) {
+        this.userId = userId;
         return this;
     }
 

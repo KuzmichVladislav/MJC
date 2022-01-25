@@ -69,7 +69,7 @@ public class UserController {
      * @return the user by identifier
      */
     @GetMapping("/{id}")
-    @PostAuthorize("#id == authentication.principal.id or hasAuthority('ADMIN')")
+    @PostAuthorize("#id == principal.userId or hasAuthority('ADMIN')")
     public UserDto getUserById(@Positive(message = ID_MIGHT_NOT_BE_NEGATIVE)
                                @PathVariable("id") long id) {
         UserDto user = userService.findById(id);

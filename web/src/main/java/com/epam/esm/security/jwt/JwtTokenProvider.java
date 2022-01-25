@@ -18,6 +18,9 @@ import java.util.Date;
 
 import static org.springframework.util.StringUtils.hasText;
 
+/**
+ * The Class JwtTokenProvider serves to work with Jwt token.
+ */
 @Component
 @RequiredArgsConstructor
 public class JwtTokenProvider {
@@ -30,6 +33,12 @@ public class JwtTokenProvider {
     @Value("${jwt.expired}")
     private long expirationInMilliseconds;
 
+    /**
+     * Generate Jwt token.
+     *
+     * @param username the username
+     * @return the Jwt token
+     */
     public String generateToken(String username) {
         Date now = new Date();
         Date expiration = new Date(now.getTime() + expirationInMilliseconds);
@@ -41,21 +50,38 @@ public class JwtTokenProvider {
                 .compact();
     }
 
+    /**
+     * Validate Jwt token.
+     *
+     * @param token the Jwt token
+     * @return the boolean
+     */
     public boolean validateToken(String token) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
             return !claims.getBody().getExpiration().before(new Date());
         } catch (JwtException | IllegalArgumentException e) {
             return false;
-//            throw new JwtAuthenticationException(ExceptionKey.JWT_TOKEN_IS_EXPIRED_OR_INVALID);
         }
     }
 
+    /**
+     * Gets username from Jwt token.
+     *
+     * @param token the Jwt token
+     * @return the username from Jwt token
+     */
     public String getUsernameFromToken(String token) {
         return Jwts.parser().setSigningKey(jwtSecret)
                 .parseClaimsJws(token).getBody().getSubject();
     }
 
+    /**
+     * Resolve Jwt token.
+     *
+     * @param request the request
+     * @return the bearer
+     */
     public String resolveToken(HttpServletRequest request) {
         String bearer = request.getHeader(AUTHORIZATION);
         if (hasText(bearer) && bearer.startsWith(BEARER)) {
@@ -64,6 +90,12 @@ public class JwtTokenProvider {
         return null;
     }
 
+    /**
+     * Gets authentication.
+     *
+     * @param token the Jwt token
+     * @return the authentication
+     */
     public Authentication getAuthentication(String token) {
         JwtUserDetails jwtUserDetails = jwtUserDetailsService.loadUserByUsername(getUsernameFromToken(token));
         return new UsernamePasswordAuthenticationToken(jwtUserDetails, null, jwtUserDetails.getAuthorities());

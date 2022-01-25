@@ -2,6 +2,7 @@ package com.epam.esm.controller;
 
 import com.epam.esm.dto.OrderDto;
 import com.epam.esm.dto.QueryParameterDto;
+import com.epam.esm.security.entity.JwtUserDetails;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.util.LinkCreator;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -53,6 +56,9 @@ public class OrderController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public OrderDto addOrder(@Valid @RequestBody OrderDto orderDto) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        JwtUserDetails userDetails = (JwtUserDetails) authentication.getPrincipal();
+        orderDto.setUserId(userDetails.getUserId());
         OrderDto resultOrder = orderService.add(orderDto);
         linkCreator.addOrderLinks(resultOrder);
         return resultOrder;
@@ -92,7 +98,7 @@ public class OrderController {
      * @return the order identifier
      */
     @GetMapping("/{id}")
-    @PostAuthorize("returnObject.userId == authentication.principal.id or hasAuthority('ADMIN')")
+    @PostAuthorize("returnObject.userId == principal.userId or hasAuthority('ADMIN')")
     public OrderDto getOrderById(@Positive(message = ID_MIGHT_NOT_BE_NEGATIVE)
                                  @PathVariable("id") long id) {
         OrderDto resultOrder = orderService.findById(id);
@@ -107,7 +113,6 @@ public class OrderController {
      * @return the http entity
      */
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')") // TODO: 1/21/2022
     public HttpEntity<Void> deleteOrder(@Positive(message = ID_MIGHT_NOT_BE_NEGATIVE)
                                         @PathVariable("id") long id) {
         orderService.removeById(id);
@@ -121,7 +126,7 @@ public class OrderController {
      * @return the orders
      */
     @GetMapping("/users/{userId}")
-    @PostAuthorize("#userId == authentication.principal.id or hasAuthority('ADMIN')")
+    @PostAuthorize("#userId == principal.userId or hasAuthority('ADMIN')")
     public List<OrderDto> getOrdersByUserId(@Positive(message = ID_MIGHT_NOT_BE_NEGATIVE)
                                             @PathVariable("userId") long userId) {
         return orderService.findOrdersByUserId(userId);

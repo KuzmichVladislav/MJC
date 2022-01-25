@@ -28,9 +28,28 @@ public interface UserService {
      */
     PagedModel<UserDto> findAll(QueryParameterDto queryParameterDto);
 
+    /**
+     * Load user by username registration DTO.
+     *
+     * @param username the username
+     * @return the user registration DTO
+     */
     UserRegistrationDto loadUserByUsername(String username);
 
+    /**
+     * Add user DTO.
+     *
+     * @param registrationDto the registration DTO
+     * @return the user DTO
+     */
     UserDto add(UserRegistrationDto registrationDto);
 
+    /**
+     * Find by username and password user registration DTO.
+     *
+     * @param username the username
+     * @param password the password
+     * @return the user registration DTO
+     */
     UserRegistrationDto findByUsernameAndPassword(String username, String password);
 }

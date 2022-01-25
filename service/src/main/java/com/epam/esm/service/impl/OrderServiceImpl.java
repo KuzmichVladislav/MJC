@@ -17,10 +17,12 @@ import com.epam.esm.util.TotalPageCountCalculator;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.hateoas.PagedModel;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -61,13 +63,16 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDto findById(long id) {
         Order order = orderDao.findById(id).orElseThrow(() ->
-                new ResourceNotFoundException(ExceptionKey.USER_NOT_FOUND, String.valueOf(id)));
+                new ResourceNotFoundException(ExceptionKey.ORDER_NOT_FOUND, String.valueOf(id)));
         return getOrderDto(order);
     }
 
     @Override
     public PagedModel<OrderDto> findAll(QueryParameterDto queryParameterDto) {
         long totalNumberOfItems = orderDao.getTotalNumberOfItems();
+        if (totalNumberOfItems == 0) {
+            return PagedModel.of(new ArrayList<>(), new PagedModel.PageMetadata(0, 1, 0, 1));
+        }
         int totalPage = totalPageCountCalculator.getTotalPage(queryParameterDto, totalNumberOfItems);
         List<Order> orders = orderDao.findAll(modelMapper.map(queryParameterDto, QueryParameter.class));
         List<OrderDto> orderDtos = orders.stream().map(this::getOrderDto).collect(Collectors.toList());
@@ -86,9 +91,12 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public void removeById(long id) {
-        orderDao.remove(orderDao.findById(id).orElseThrow(() ->
-                new ResourceNotFoundException(ExceptionKey.ORDER_NOT_FOUND, String.valueOf(id))));
+    @PostAuthorize("returnObject.userId == principal.userId or hasAuthority('ADMIN')")
+    public OrderDto removeById(long id) {
+        Order order = orderDao.findById(id).orElseThrow(() ->
+                new ResourceNotFoundException(ExceptionKey.ORDER_NOT_FOUND, String.valueOf(id)));
+        orderDao.remove(order);
+        return modelMapper.map(order, OrderDto.class);
     }
 
     private OrderDto getOrderDto(Order order) {

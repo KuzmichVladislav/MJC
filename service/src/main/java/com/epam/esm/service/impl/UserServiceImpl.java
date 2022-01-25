@@ -8,7 +8,7 @@ import com.epam.esm.dto.UserRegistrationDto;
 import com.epam.esm.entity.QueryParameter;
 import com.epam.esm.entity.User;
 import com.epam.esm.exception.ExceptionKey;
-import com.epam.esm.exception.PasswordAuthenticationException;
+import com.epam.esm.exception.JwtAuthorizationException;
 import com.epam.esm.exception.RequestValidationException;
 import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.service.UserService;
@@ -22,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -47,6 +48,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public PagedModel<UserDto> findAll(QueryParameterDto queryParameterDto) {
         long totalNumberOfItems = userDao.getTotalNumberOfItems();
+        if (totalNumberOfItems == 0) {
+            return PagedModel.of(new ArrayList<>(), new PagedModel.PageMetadata(0, 1, 0, 1));
+        }
         int totalPage = totalPageCountCalculator.getTotalPage(queryParameterDto, totalNumberOfItems);
         List<UserDto> users = listConverter.convertList(userDao.findAll(modelMapper.map(queryParameterDto,
                 QueryParameter.class)), this::convertToUserDto);
@@ -73,7 +77,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserRegistrationDto loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userDao.findByUsername(username).orElseThrow(() ->
-                new RequestValidationException(ExceptionKey.USER_NOT_EXISTS, username));
+                new JwtAuthorizationException(ExceptionKey.USERNAME_OR_PASSWORD_INCORRECT));
         return modelMapper.map(user, UserRegistrationDto.class);
     }
 
@@ -84,7 +88,7 @@ public class UserServiceImpl implements UserService {
         if (passwordEncoder.matches(password, userRegistrationDto.getPassword())) {
             return userRegistrationDto;
         } else {
-            throw new PasswordAuthenticationException(ExceptionKey.USERNAME_OR_PASSWORD_INCORRECT);
+            throw new JwtAuthorizationException(ExceptionKey.USERNAME_OR_PASSWORD_INCORRECT);
         }
     }
 

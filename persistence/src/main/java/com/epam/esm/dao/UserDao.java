@@ -34,7 +34,19 @@ public interface UserDao {
      */
     long getTotalNumberOfItems();
 
+    /**
+     * Find by username.
+     *
+     * @param username the user username
+     * @return the optional
+     */
     Optional<User> findByUsername(String username);
 
+    /**
+     * Add user.
+     *
+     * @param user the user
+     * @return the user
+     */
     User add(User user);
 }

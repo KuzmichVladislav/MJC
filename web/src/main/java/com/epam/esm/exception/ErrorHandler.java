@@ -1,8 +1,5 @@
 package com.epam.esm.exception;
 
-import com.epam.esm.security.exception._JwtAuthenticationException;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtException;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
@@ -118,20 +115,6 @@ public class ErrorHandler {
     }
 
     /**
-     * Handle RuntimeException.
-     *
-     * @param e      the exception
-     * @param locale the locale
-     * @return the exception result
-     */
-//    @ExceptionHandler(RuntimeException.class)
-//    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-//    @ResponseBody
-//    public ExceptionResult handle(RuntimeException e, Locale locale) {
-//        return new ExceptionResult(e.getMessage(), ErrorCode.INTERNAL_ERROR.getCode());
-//    }
-
-    /**
      * Handle HttpRequestMethodNotSupportedException.
      *
      * @param e      the exception
@@ -173,6 +156,21 @@ public class ErrorHandler {
         return new ExceptionResult(e.getMessage(), ErrorCode.NOT_VALID_PARAM.getCode());
     }
 
+    /**
+     * Handle exception result.
+     *
+     * @param e      the exception
+     * @param locale the locale
+     * @return the exception result
+     */
+    @ExceptionHandler(JwtAuthorizationException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ResponseBody
+    public ExceptionResult handle(JwtAuthorizationException e, Locale locale) {
+        String errorMessage = createMessage(locale, e.getMessageKey());
+        return new ExceptionResult(errorMessage, ErrorCode.UNAUTHORIZED.getCode());
+    }
+
     private String createMessage(Locale locale, String messageKey, String messageParameter) {
         return String.format(messageSource.getMessage(messageKey, new Object[]{}, locale),
                 messageParameter);
@@ -180,35 +178,5 @@ public class ErrorHandler {
 
     private String createMessage(Locale locale, String messageKey) {
         return messageSource.getMessage(messageKey, new Object[]{}, locale);
-    }
-
-    @ExceptionHandler(_JwtAuthenticationException.class)
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    @ResponseBody
-    public ExceptionResult handle(_JwtAuthenticationException e, Locale locale) {
-        return new ExceptionResult(e.getMessage(), ErrorCode.UNAUTHORIZED.getCode());
-    }
-
-    @ExceptionHandler(ExpiredJwtException.class)
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    @ResponseBody
-    public ExceptionResult handle(ExpiredJwtException e, Locale locale) {
-        return new ExceptionResult(e.getMessage(), ErrorCode.UNAUTHORIZED.getCode());
-    }
-
-    @ExceptionHandler(JwtException.class)
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    @ResponseBody
-    public ExceptionResult handle(JwtException e, Locale locale) {
-        return new ExceptionResult(e.getMessage(), ErrorCode.UNAUTHORIZED.getCode());
-    }
-
-    // TODO: 1/22/2022
-    @ExceptionHandler(PasswordAuthenticationException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ResponseBody
-    public ExceptionResult handle(PasswordAuthenticationException e, Locale locale) {
-        String errorMessage = createMessage(locale, e.getMessageKey());
-        return new ExceptionResult(errorMessage, ErrorCode.RESOURCE_NOT_FOUND.getCode());
     }
 }

@@ -47,6 +47,12 @@ public final class ExceptionKey {
     public static final String USER_EXISTS = "user.exists";
     public static final String USER_NOT_EXISTS = "user.notExists";
     public static final String USERNAME_OR_PASSWORD_INCORRECT = "user.usernameOrPasswordIncorrect";
+    public static final String USER_USERNAME_MIGHT_NOT_BE_NULL = "user.username.mightNotBeNull";
+    public static final String USER_PASSWORD_MIGHT_NOT_BE_NULL = "user.password.mightNotBeNull";
+    public static final String USER_FIRST_NAME_MIGHT_NOT_BE_NULL = "user.firstName.mightNotBeNull";
+    public static final String USER_LAST_NAME_MIGHT_NOT_BE_NULL = "user.lastName.mightNotBeNull";
+    public static final String USER_PASSWORD_LENGTH_IS_NOT_VALID = "user.password.LengthIsNotValid";
+    public static final String USER_PASSWORD_IS_NOT_VALID = "user.password.isNotValid";
 
     private ExceptionKey() {
     }

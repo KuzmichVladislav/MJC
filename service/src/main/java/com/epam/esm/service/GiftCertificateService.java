@@ -17,4 +17,11 @@ public interface GiftCertificateService extends BaseService<GiftCertificateDto, 
      * @return the gift certificate DTO object
      */
     GiftCertificateDto update(long id, GiftCertificateDto giftCertificate);
+
+    /**
+     * Removes the by gift certificate DTO object identifier.
+     *
+     * @param id the gift certificate DTO object identifier
+     */
+    void removeById(long id);
 }

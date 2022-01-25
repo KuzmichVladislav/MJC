@@ -14,11 +14,12 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+/**
+ * The type Security configuration contains a spring configuration for security.
+ */
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-//        securedEnabled = true,
-//        jsr250Enabled = true)
 @RequiredArgsConstructor
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
@@ -35,8 +36,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-//                .antMatchers("/**").access("hasRole('ADMIN')")
                 .antMatchers("/v1/register", "/v1/authorize").permitAll()
+                .antMatchers("/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.GET, "/v1/gift-certificates/**").permitAll()
                 .anyRequest().authenticated()
                 .and()

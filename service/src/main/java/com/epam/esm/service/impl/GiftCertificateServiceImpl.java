@@ -21,6 +21,7 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -56,6 +57,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     public PagedModel<GiftCertificateDto> findAll(GiftCertificateQueryParameterDto queryParameterDto) {
         long totalNumberOfItems = giftCertificateDao.getTotalNumberOfItems(modelMapper.map(queryParameterDto,
                 GiftCertificateQueryParameter.class));
+        if (totalNumberOfItems == 0) {
+            return PagedModel.of(new ArrayList<>(), new PagedModel.PageMetadata(0, 1, 0, 1));
+        }
         int totalPage = totalPageCountCalculator.getTotalPage(queryParameterDto, totalNumberOfItems);
         List<GiftCertificateDto> giftCertificates =
                 listConverter.convertList(giftCertificateDao.findAll(modelMapper.map(queryParameterDto,

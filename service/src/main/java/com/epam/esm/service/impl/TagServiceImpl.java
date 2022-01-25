@@ -17,6 +17,7 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -61,6 +62,9 @@ public class TagServiceImpl implements TagService {
     @Override
     public PagedModel<TagDto> findAll(QueryParameterDto queryParameterDto) {
         long totalNumberOfItems = tagDao.getTotalNumberOfItems();
+        if (totalNumberOfItems == 0) {
+            return PagedModel.of(new ArrayList<>(), new PagedModel.PageMetadata(0, 1, 0, 1));
+        }
         int totalPage = totalPageCountCalculator.getTotalPage(queryParameterDto, totalNumberOfItems);
         List<TagDto> tags = listConverter.convertList(tagDao.findAll(modelMapper
                 .map(queryParameterDto, QueryParameter.class)), this::convertToTagDto);

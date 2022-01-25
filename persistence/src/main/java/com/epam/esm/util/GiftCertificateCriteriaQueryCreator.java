@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -20,14 +21,22 @@ import java.util.List;
 @Component
 public class GiftCertificateCriteriaQueryCreator {
 
+    private static final String ID = "id";
     private static final String TAGS = "tags";
     private static final String IS_REMOVED = "isRemoved";
     private static final String NAME = "name";
     private static final String LIKE = "%%%s%%";
     private static final String DESCRIPTION = "description";
 
+    /**
+     * Gets criteria query for gift certificate.
+     *
+     * @param queryParameter the query parameter
+     * @param entityManager  the entity manager
+     * @return the criteria query
+     */
     public CriteriaQuery<GiftCertificate> getGiftCertificateCriteriaQuery
-            (GiftCertificateQueryParameter queryParameter, EntityManager entityManager) {
+    (GiftCertificateQueryParameter queryParameter, EntityManager entityManager) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<GiftCertificate> certificateCriteriaQuery = criteriaBuilder.createQuery(GiftCertificate.class);
         Root<GiftCertificate> giftCertificateRoot = certificateCriteriaQuery.from(GiftCertificate.class);
@@ -35,6 +44,11 @@ public class GiftCertificateCriteriaQueryCreator {
         Predicate[] predicateArray = getPredicates(queryParameter, criteriaBuilder, giftCertificateRoot, tagRoot);
         certificateCriteriaQuery.select(giftCertificateRoot).where(predicateArray);
         addSortingDirection(queryParameter, criteriaBuilder, certificateCriteriaQuery, giftCertificateRoot);
+        if (queryParameter.getTagNames().isPresent()) {
+            certificateCriteriaQuery.groupBy(giftCertificateRoot.get(ID));
+            certificateCriteriaQuery.having(criteriaBuilder.equal(criteriaBuilder.count(giftCertificateRoot.get(ID)),
+                    queryParameter.getTagNames().get().size()));
+        }
         return certificateCriteriaQuery;
     }
 
@@ -51,8 +65,9 @@ public class GiftCertificateCriteriaQueryCreator {
                     String.format(LIKE, queryParameter.getDescription().get())));
         }
         if (queryParameter.getTagNames().isPresent()) {
-            queryParameter.getTagNames().get().forEach(tag ->
-                    predicates.add(criteriaBuilder.like(tagRoot.get(NAME), tag)));
+            Expression<String> expression = tagRoot.get(NAME);
+            Predicate parentPredicate = expression.in(queryParameter.getTagNames().get());
+            predicates.add(parentPredicate);
         }
         Predicate[] predicateArray = new Predicate[predicates.size()];
         predicateArray = predicates.toArray(predicateArray);
