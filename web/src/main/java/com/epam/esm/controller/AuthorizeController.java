@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
@@ -17,7 +18,7 @@ import javax.validation.Valid;
  * The Class AuthorizeController is a Controller class which will have
  * end points for authorization and registration user.
  */
-@Controller
+@RestController
 @RequestMapping("/v1")
 @RequiredArgsConstructor
 public class AuthorizeController {

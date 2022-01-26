@@ -53,6 +53,7 @@ public final class ExceptionKey {
     public static final String USER_LAST_NAME_MIGHT_NOT_BE_NULL = "user.lastName.mightNotBeNull";
     public static final String USER_PASSWORD_LENGTH_IS_NOT_VALID = "user.password.LengthIsNotValid";
     public static final String USER_PASSWORD_IS_NOT_VALID = "user.password.isNotValid";
+    public static final String ACCESS_FORBIDDEN = "access.forbidden";
 
     private ExceptionKey() {
     }

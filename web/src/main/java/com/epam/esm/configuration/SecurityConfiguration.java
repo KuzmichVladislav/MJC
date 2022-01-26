@@ -1,5 +1,6 @@
 package com.epam.esm.configuration;
 
+import com.epam.esm.security.jwt.JwtAccessDeniedHandler;
 import com.epam.esm.security.jwt.JwtAuthenticationEntryPoint;
 import com.epam.esm.security.jwt.JwtTokenFilter;
 import lombok.RequiredArgsConstructor;
@@ -25,11 +26,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final JwtTokenFilter jwtTokenFilter;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                .and()
+                .exceptionHandling().accessDeniedHandler(jwtAccessDeniedHandler)
                 .and()
                 .httpBasic().disable()
                 .csrf().disable()
@@ -37,7 +41,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/v1/register", "/v1/authorize").permitAll()
-                .antMatchers("/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.GET, "/v1/gift-certificates/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
