@@ -21,7 +21,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
 /**
- * The Class JwtAuthenticationEntryPoint configures exception handling.
+ * The Class JwtAuthenticationEntryPoint to commence an authentication scheme.
  */
 @Component
 @RequiredArgsConstructor

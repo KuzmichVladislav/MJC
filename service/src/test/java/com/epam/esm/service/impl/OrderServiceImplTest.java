@@ -1,25 +1,28 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.dao.OrderDao;
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.OrderCertificateDetailsDto;
 import com.epam.esm.dto.OrderDto;
-import com.epam.esm.dto.QueryParameterDto;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Order;
 import com.epam.esm.entity.OrderCertificateDetails;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.repository.OrderCertificateDetailsRepository;
+import com.epam.esm.repository.OrderRepository;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.OrderService;
-import com.epam.esm.util.TotalPageCountCalculator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
-import org.springframework.hateoas.PagedModel;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -36,29 +39,27 @@ import static org.mockito.Mockito.when;
 class OrderServiceImplTest {
 
     @Mock
-    OrderDao orderDao;
+    private OrderRepository orderRepository;
     @Mock
-    GiftCertificateService giftCertificateService;
+    private GiftCertificateService giftCertificateService;
     @Mock
-    TotalPageCountCalculator totalPageCountCalculator;
-    ModelMapper modelMapper;
-    OrderService orderService;
-    OrderCertificateDetails orderCertificateDetails;
-    GiftCertificate giftCertificate;
-    GiftCertificateDto giftCertificateDto;
-    Order order;
-    OrderDto orderDto;
-    OrderCertificateDetailsDto orderCertificateDetailsDto;
+    private OrderCertificateDetailsRepository orderCertificateDetailsRepository;
+    private OrderService orderService;
+    private GiftCertificateDto giftCertificateDto;
+    private Order order;
+    private OrderDto orderDto;
+    private Pageable pageable;
+
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        modelMapper = new ModelMapper();
-        orderService = new OrderServiceImpl(orderDao,
-                modelMapper,
+        ModelMapper modelMapper = new ModelMapper();
+        orderService = new OrderServiceImpl(modelMapper,
                 giftCertificateService,
-                totalPageCountCalculator);
-        giftCertificate = GiftCertificate.builder()
+                orderRepository,
+                orderCertificateDetailsRepository);
+        GiftCertificate giftCertificate = GiftCertificate.builder()
                 .id(1L)
                 .name("name")
                 .description("description")
@@ -78,13 +79,13 @@ class OrderServiceImplTest {
                 .lastUpdateDate(LocalDateTime.of(2021, Month.DECEMBER, 11, 20, 24, 43))
                 .tags(Collections.singletonList(new TagDto(1L, "name")))
                 .build();
-        orderCertificateDetails = OrderCertificateDetails.builder()
+        OrderCertificateDetails orderCertificateDetails = OrderCertificateDetails.builder()
                 .giftCertificate(giftCertificate)
                 .order(order)
                 .numberOfCertificates(1)
                 .giftCertificateCost(new BigDecimal(1))
                 .build();
-        orderCertificateDetailsDto = OrderCertificateDetailsDto.builder()
+        OrderCertificateDetailsDto orderCertificateDetailsDto = OrderCertificateDetailsDto.builder()
                 .giftCertificate(giftCertificateDto)
                 .price(new BigDecimal(1))
                 .numberOfCertificates(1)
@@ -102,13 +103,14 @@ class OrderServiceImplTest {
                 .purchaseTime(LocalDateTime.of(2021, Month.DECEMBER, 11, 20, 24, 43))
                 .orderCertificateDetailsDtos(Collections.singletonList(orderCertificateDetailsDto))
                 .build();
+        pageable = PageRequest.of(1, 20, Sort.Direction.ASC, "id");
     }
 
 
     @Test
     void testAdd_AllFieldsAreValid_CreatesOrder() {
         // Given
-        when(orderDao.add(any())).thenReturn(order);
+        when(orderRepository.save(any())).thenReturn(order);
         when(giftCertificateService.findById(anyLong())).thenReturn(giftCertificateDto);
         // When
         OrderDto result = orderService.add(orderDto);
@@ -120,7 +122,7 @@ class OrderServiceImplTest {
     @Test
     void testFindById_ValidId_findsOrder() {
         // Given
-        when(orderDao.findById(1L)).thenReturn(Optional.ofNullable(order));
+        when(orderRepository.findById(1L)).thenReturn(Optional.ofNullable(order));
         // When
         OrderDto result = orderService.findById(1L);
         // Then
@@ -130,19 +132,17 @@ class OrderServiceImplTest {
     @Test
     void testFindAll_OrdersExist_findsOrders() {
         // Given
-        when(orderDao.findAll(any())).thenReturn(Collections.singletonList(order));
-        when(orderDao.getTotalNumberOfItems()).thenReturn(1L);
-        when(totalPageCountCalculator.getTotalPage(any(), anyLong())).thenReturn(1);
+        when(orderRepository.findAll(pageable)).thenReturn(new PageImpl<>(Collections.singletonList(order)));
         // When
-        PagedModel<OrderDto> result = orderService.findAll(new QueryParameterDto());
+        Page<OrderDto> result = orderService.findAll(pageable);
         // Then
-        Assertions.assertEquals(1, result.getMetadata().getTotalElements());
+        Assertions.assertEquals(1, result.getContent().size());
     }
 
     @Test
     void testFindOrdersByUserId_ValidUserId_findsOrder() {
         // Given
-        when(orderDao.findOrdersByUserId(1L)).thenReturn(Collections.singletonList(order));
+        when(orderRepository.findByUserId(1L)).thenReturn(Collections.singletonList(order));
         // When
         List<OrderDto> result = orderService.findOrdersByUserId(1L);
         // Then

@@ -1,6 +1,5 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.GiftCertificateQueryParameterDto;
 import com.epam.esm.dto.TagDto;
@@ -10,10 +9,9 @@ import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.ExceptionKey;
 import com.epam.esm.exception.RequestValidationException;
 import com.epam.esm.exception.ResourceNotFoundException;
+import com.epam.esm.repository.GiftCertificateRepository;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.TagService;
-import com.epam.esm.util.ListConverter;
-import com.epam.esm.util.TotalPageCountCalculator;
 import com.epam.esm.validator.GiftCertificateValidator;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -23,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -32,41 +31,39 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class GiftCertificateServiceImpl implements GiftCertificateService {
 
-    private final GiftCertificateDao giftCertificateDao;
     private final TagService tagService;
     private final ModelMapper modelMapper;
-    private final ListConverter listConverter;
-    private final TotalPageCountCalculator totalPageCountCalculator;
     private final GiftCertificateValidator giftCertificateValidator;
+    private final GiftCertificateRepository giftCertificateRepository;
 
     @Override
     @Transactional
     public GiftCertificateDto add(GiftCertificateDto giftCertificateDto) {
         giftCertificateValidator.checkGiftCertificateFields(giftCertificateDto);
         findAndSetTags(giftCertificateDto);
-        return convertToGiftCertificateDto(giftCertificateDao.add(convertToGiftCertificateEntity(giftCertificateDto)));
+        return convertToGiftCertificateDto(giftCertificateRepository.save(convertToGiftCertificateEntity(giftCertificateDto)));
     }
 
     @Override
     public GiftCertificateDto findById(long id) {
-        return convertToGiftCertificateDto(giftCertificateDao.findById(id).orElseThrow(() ->
+        return convertToGiftCertificateDto(giftCertificateRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException(ExceptionKey.CERTIFICATE_NOT_FOUND, String.valueOf(id))));
     }
 
     @Override
-    public PagedModel<GiftCertificateDto> findAll(GiftCertificateQueryParameterDto queryParameterDto) {
-        long totalNumberOfItems = giftCertificateDao.getTotalNumberOfItems(modelMapper.map(queryParameterDto,
+    public PagedModel<GiftCertificateDto> findAll(GiftCertificateQueryParameterDto giftCertificateQueryParameterDto) {
+        long totalNumberOfItems = giftCertificateRepository.getTotalNumberOfItems(modelMapper.map(giftCertificateQueryParameterDto,
                 GiftCertificateQueryParameter.class));
         if (totalNumberOfItems == 0) {
             return PagedModel.of(new ArrayList<>(), new PagedModel.PageMetadata(0, 1, 0, 1));
         }
-        int totalPage = totalPageCountCalculator.getTotalPage(queryParameterDto, totalNumberOfItems);
+        int totalPage = getTotalPage(giftCertificateQueryParameterDto, totalNumberOfItems);
         List<GiftCertificateDto> giftCertificates =
-                listConverter.convertList(giftCertificateDao.findAll(modelMapper.map(queryParameterDto,
+                convertList(giftCertificateRepository.findAllGiftCertificates(modelMapper.map(giftCertificateQueryParameterDto,
                         GiftCertificateQueryParameter.class)),
                         this::convertToGiftCertificateDto);
-        PagedModel.PageMetadata pageMetadata = new PagedModel.PageMetadata(queryParameterDto.getSize(),
-                queryParameterDto.getPage(), totalNumberOfItems, totalPage);
+        PagedModel.PageMetadata pageMetadata = new PagedModel.PageMetadata(giftCertificateQueryParameterDto.getSize(),
+                giftCertificateQueryParameterDto.getPage(), totalNumberOfItems, totalPage);
         return PagedModel.of(giftCertificates, pageMetadata);
     }
 
@@ -82,19 +79,19 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         GiftCertificateDto existing = findById(id);
         GiftCertificateDto updatedGiftCertificateDto = copyNonNullProperties(giftCertificateDto, existing);
         findAndSetTags(updatedGiftCertificateDto);
-        giftCertificateDao.update(modelMapper.map(updatedGiftCertificateDto, GiftCertificate.class));
+        giftCertificateRepository.save(modelMapper.map(updatedGiftCertificateDto, GiftCertificate.class));
         return updatedGiftCertificateDto;
     }
 
     @Override
     @Transactional
     public void removeById(long id) {
-        GiftCertificate giftCertificate = giftCertificateDao.findById(id).orElseThrow(() ->
+        GiftCertificate giftCertificate = giftCertificateRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException(ExceptionKey.CERTIFICATE_NOT_FOUND, String.valueOf(id)));
         if (giftCertificate.isRemoved()) {
             throw new ResourceNotFoundException(ExceptionKey.CERTIFICATE_NOT_FOUND, String.valueOf(id));
         }
-        giftCertificateDao.remove(giftCertificate);
+        giftCertificateRepository.delete(giftCertificate);
     }
 
     private GiftCertificateDto copyNonNullProperties(GiftCertificateDto giftCertificateDto, GiftCertificateDto existing) {
@@ -119,7 +116,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     private GiftCertificate convertToGiftCertificateEntity(GiftCertificateDto giftCertificateDto) {
         GiftCertificate giftCertificate = modelMapper.map(giftCertificateDto, GiftCertificate.class);
         if (giftCertificateDto.getTags() != null) {
-            giftCertificate.setTags(listConverter.convertList(giftCertificateDto.getTags(),
+            giftCertificate.setTags(convertList(giftCertificateDto.getTags(),
                     tagDto -> modelMapper.map(tagDto, Tag.class)));
         }
         return giftCertificate;
@@ -137,5 +134,20 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
                     .collect(Collectors.toList());
         }
         giftCertificateDto.setTags(tags);
+    }
+
+    private int getTotalPage(GiftCertificateQueryParameterDto giftCertificateQueryParameterDto, long totalNumberOfItems) {
+        int page = giftCertificateQueryParameterDto.getPage();
+        int size = giftCertificateQueryParameterDto.getSize();
+        int totalPage = (int) Math.ceil(totalNumberOfItems / (double) size);
+        if (page > totalPage) {
+            throw new ResourceNotFoundException(ExceptionKey.SPECIFIED_PAGE_DOES_NOT_EXIST, String.valueOf(page));
+        }
+        giftCertificateQueryParameterDto.setFirstValue(page * size);
+        return totalPage - 1;
+    }
+
+    private <R, E> List<R> convertList(List<E> list, Function<E, R> converter) {
+        return list.stream().map(converter).collect(Collectors.toList());
     }
 }

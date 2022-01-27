@@ -7,7 +7,6 @@ import com.epam.esm.exception.JwtAuthorizationException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.access.AccessDeniedException;
@@ -21,6 +20,9 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
+/**
+ * The Class JwtAccessDeniedHandler to handle an AccessDeniedException..
+ */
 @Component
 @RequiredArgsConstructor
 public class JwtAccessDeniedHandler implements AccessDeniedHandler {
@@ -40,7 +42,7 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
         response.getOutputStream().write(jsonError.getBytes(StandardCharsets.UTF_8));
     }
 
-    public ExceptionResult getErrorBody(JwtAuthorizationException e, Locale locale) {
+    private ExceptionResult getErrorBody(JwtAuthorizationException e, Locale locale) {
         String errorMessage = messageSource.getMessage(e.getMessageKey(), new Object[]{}, locale);
         return new ExceptionResult(errorMessage, ErrorCode.ACCESS_FORBIDDEN.getCode());
     }

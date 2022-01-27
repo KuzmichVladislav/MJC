@@ -1,7 +1,8 @@
 package com.epam.esm.service;
 
 import com.epam.esm.dto.OrderDto;
-import com.epam.esm.dto.QueryParameterDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -9,12 +10,28 @@ import java.util.List;
  * The Interface OrderService.
  * A interface to define all required methods for order DTO object.
  */
-public interface OrderService extends BaseService<OrderDto, QueryParameterDto> {
+public interface OrderService {
 
     /**
-     * Find orders by user identifier.
+     * Adds the order DTO object.
      *
-     * @param userId the user identifier
+     * @param orderDto the order DTO object
+     * @return the order DTO object
+     */
+    OrderDto add(OrderDto orderDto);
+
+    /**
+     * Find by order DTO object identifier.
+     *
+     * @param id the order DTO object identifier
+     * @return the order DTO object
+     */
+    OrderDto findById(long id);
+
+    /**
+     * Find orders by order DTO object identifier.
+     *
+     * @param userId the order DTO object identifier
      * @return the list of order DTO objects
      */
     List<OrderDto> findOrdersByUserId(long userId);
@@ -26,4 +43,12 @@ public interface OrderService extends BaseService<OrderDto, QueryParameterDto> {
      * @return the order DTO object
      */
     OrderDto removeById(long id);
+
+    /**
+     * Find all page.
+     *
+     * @param pageable the pageable
+     * @return the page
+     */
+    Page<OrderDto> findAll(Pageable pageable);
 }

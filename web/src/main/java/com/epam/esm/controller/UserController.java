@@ -1,10 +1,15 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.dto.QueryParameterDto;
 import com.epam.esm.dto.UserDto;
 import com.epam.esm.service.UserService;
 import com.epam.esm.util.LinkCreator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -34,6 +39,7 @@ public class UserController {
 
     private final UserService userService;
     private final LinkCreator linkCreator;
+    private final PagedResourcesAssembler<UserDto> pagedResourcesAssembler;
 
     /**
      * Gets all users based on GET request.
@@ -45,21 +51,17 @@ public class UserController {
      */
     @GetMapping
     @PreAuthorize("hasAuthority('ADMIN')")
-    public PagedModel<UserDto> getAllUsers(@Min(value = 1, message = PAGE_MIGHT_NOT_BE_NEGATIVE)
-                                           @RequestParam(required = false, defaultValue = "1") int page,
-                                           @Min(value = 1, message = SIZE_MIGHT_NOT_BE_NEGATIVE)
-                                           @RequestParam(required = false, defaultValue = "10") int size,
-                                           @RequestParam(value = "order-by", required = false, defaultValue = "ASC")
-                                                   QueryParameterDto.SortingDirection sortingDirection) {
-        QueryParameterDto queryParameterDto = QueryParameterDto.builder()
-                .page(page)
-                .size(size)
-                .sortingDirection(sortingDirection)
-                .build();
-        PagedModel<UserDto> userPage = userService.findAll(queryParameterDto);
+    public PagedModel<EntityModel<UserDto>> getAllUsers(
+            @RequestParam(required = false, defaultValue = "0")
+            @Min(value = 0, message = PAGE_MIGHT_NOT_BE_NEGATIVE) int page,
+            @RequestParam(required = false, defaultValue = "10")
+            @Min(value = 1, message = SIZE_MIGHT_NOT_BE_NEGATIVE) int size,
+            @RequestParam(value = "order-by", required = false, defaultValue = "ASC")
+                    String sortingDirection) {
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.valueOf(sortingDirection), "username");
+        Page<UserDto> userPage = userService.findAll(pageable);
         userPage.getContent().forEach(linkCreator::addUserLinks);
-        linkCreator.addUserPaginationLinks(queryParameterDto, userPage);
-        return userPage;
+        return pagedResourcesAssembler.toModel(userPage);
     }
 
     /**

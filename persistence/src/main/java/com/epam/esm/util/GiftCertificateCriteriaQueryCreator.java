@@ -2,7 +2,6 @@ package com.epam.esm.util;
 
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.GiftCertificateQueryParameter;
-import com.epam.esm.entity.QueryParameter;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
@@ -78,10 +77,10 @@ public class GiftCertificateCriteriaQueryCreator {
                                      CriteriaBuilder criteriaBuilder,
                                      CriteriaQuery<GiftCertificate> certificateCriteriaQuery,
                                      Root<GiftCertificate> giftCertificateRoot) {
-        if (queryParameter.getSortingDirection() == QueryParameter.SortingDirection.ASC) {
+        if (queryParameter.getSortingDirection() == GiftCertificateQueryParameter.SortingDirection.ASC) {
             certificateCriteriaQuery.orderBy(criteriaBuilder
                     .asc(giftCertificateRoot.get(queryParameter.getSortParameter().getParameter())));
-        } else if (queryParameter.getSortingDirection() == QueryParameter.SortingDirection.DESC) {
+        } else if (queryParameter.getSortingDirection() == GiftCertificateQueryParameter.SortingDirection.DESC) {
             certificateCriteriaQuery.orderBy(criteriaBuilder
                     .desc(giftCertificateRoot.get(queryParameter.getSortParameter().getParameter())));
         }

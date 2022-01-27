@@ -2,7 +2,6 @@ package com.epam.esm.controller;
 
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.GiftCertificateQueryParameterDto;
-import com.epam.esm.dto.QueryParameterDto;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.util.LinkCreator;
 import lombok.RequiredArgsConstructor;
@@ -75,8 +74,8 @@ public class GiftCertificateController {
      */
     @GetMapping
     public PagedModel<GiftCertificateDto>
-    getAllGiftCertificates(@Min(value = 1, message = PAGE_MIGHT_NOT_BE_NEGATIVE)
-                           @RequestParam(value = "page", required = false, defaultValue = "1") int page,
+    getAllGiftCertificates(@Min(value = 0, message = PAGE_MIGHT_NOT_BE_NEGATIVE)
+                           @RequestParam(value = "page", required = false, defaultValue = "0") int page,
                            @Min(value = 1, message = SIZE_MIGHT_NOT_BE_NEGATIVE)
                            @RequestParam(value = "size", required = false, defaultValue = "10") int size,
                            @RequestParam(value = "name", required = false) Optional<String> name,
@@ -85,8 +84,8 @@ public class GiftCertificateController {
                            @RequestParam(value = "sort", required = false, defaultValue = "NAME")
                                    GiftCertificateQueryParameterDto.SortParameter sortParameter,
                            @RequestParam(value = "order-by", required = false, defaultValue = "ASC")
-                                   QueryParameterDto.SortingDirection sortingDirection) {
-        GiftCertificateQueryParameterDto giftCertificateQueryParameterDto = GiftCertificateQueryParameterDto.giftCertificateQueryParameterDtoBuilder()
+                                   GiftCertificateQueryParameterDto.SortingDirection sortingDirection) {
+        GiftCertificateQueryParameterDto giftCertificateQueryParameterDto = GiftCertificateQueryParameterDto.builder()
                 .name(name)
                 .description(description)
                 .tagNames(tagNames)

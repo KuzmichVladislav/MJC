@@ -6,7 +6,6 @@ import com.epam.esm.dto.UserRegistrationDto;
 import com.epam.esm.security.jwt.JwtTokenProvider;
 import com.epam.esm.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

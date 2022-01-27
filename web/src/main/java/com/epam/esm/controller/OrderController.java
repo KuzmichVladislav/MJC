@@ -1,11 +1,16 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.dto.OrderDto;
-import com.epam.esm.dto.QueryParameterDto;
 import com.epam.esm.security.entity.JwtUserDetails;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.util.LinkCreator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
@@ -46,6 +51,7 @@ public class OrderController {
 
     private final OrderService orderService;
     private final LinkCreator linkCreator;
+    private final PagedResourcesAssembler<OrderDto> pagedResourcesAssembler;
 
     /**
      * Add order order based on POST request.
@@ -74,21 +80,16 @@ public class OrderController {
      */
     @GetMapping
     @PreAuthorize("hasAuthority('ADMIN')")
-    public PagedModel<OrderDto> getAllOrders(@Min(value = 1, message = PAGE_MIGHT_NOT_BE_NEGATIVE)
-                                             @RequestParam(required = false, defaultValue = "1") int page,
-                                             @Min(value = 1, message = SIZE_MIGHT_NOT_BE_NEGATIVE)
-                                             @RequestParam(required = false, defaultValue = "10") int size,
-                                             @RequestParam(value = "order-by", required = false, defaultValue = "ASC")
-                                                     QueryParameterDto.SortingDirection sortingDirection) {
-        QueryParameterDto queryParameterDto = QueryParameterDto.builder()
-                .page(page)
-                .size(size)
-                .sortingDirection(sortingDirection)
-                .build();
-        PagedModel<OrderDto> orderPage = orderService.findAll(queryParameterDto);
+    public PagedModel<EntityModel<OrderDto>> getAllOrders(@Min(value = 1, message = PAGE_MIGHT_NOT_BE_NEGATIVE)
+                                                          @RequestParam(required = false, defaultValue = "1") int page,
+                                                          @Min(value = 1, message = SIZE_MIGHT_NOT_BE_NEGATIVE)
+                                                          @RequestParam(required = false, defaultValue = "10") int size,
+                                                          @RequestParam(value = "order-by", required = false, defaultValue = "ASC")
+                                                                  String sortingDirection) {
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.valueOf(sortingDirection), "id");
+        Page<OrderDto> orderPage = orderService.findAll(pageable);
         orderPage.getContent().forEach(linkCreator::addOrderLinks);
-        linkCreator.addOrderPaginationLinks(queryParameterDto, orderPage);
-        return orderPage;
+        return pagedResourcesAssembler.toModel(orderPage);
     }
 
     /**
