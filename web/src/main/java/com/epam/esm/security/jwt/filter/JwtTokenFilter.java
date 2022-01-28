@@ -1,4 +1,4 @@
-package com.epam.esm.security.jwt;
+package com.epam.esm.security.jwt.filter;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;

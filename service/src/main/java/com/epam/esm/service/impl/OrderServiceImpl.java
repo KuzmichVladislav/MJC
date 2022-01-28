@@ -17,7 +17,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -76,7 +75,6 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    @PostAuthorize("returnObject.userId == principal.userId or hasAuthority('ADMIN')")
     public OrderDto removeById(long id) {
         Order order = orderRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException(ExceptionKey.ORDER_NOT_FOUND, String.valueOf(id)));

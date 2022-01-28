@@ -1,6 +1,7 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.dto.OrderDto;
+import com.epam.esm.security.access.OrderAccess;
 import com.epam.esm.security.entity.JwtUserDetails;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.util.LinkCreator;
@@ -52,6 +53,7 @@ public class OrderController {
     private final OrderService orderService;
     private final LinkCreator linkCreator;
     private final PagedResourcesAssembler<OrderDto> pagedResourcesAssembler;
+    private final OrderAccess orderAccess;
 
     /**
      * Add order order based on POST request.
@@ -114,6 +116,7 @@ public class OrderController {
      * @return the http entity
      */
     @DeleteMapping("/{id}")
+    @PreAuthorize("@orderAccess.canDeleteOrder(authentication, #id) or hasAuthority('ADMIN')")
     public HttpEntity<Void> deleteOrder(@Positive(message = ID_MIGHT_NOT_BE_NEGATIVE)
                                         @PathVariable("id") long id) {
         orderService.removeById(id);

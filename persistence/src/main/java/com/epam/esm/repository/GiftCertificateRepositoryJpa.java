@@ -8,8 +8,7 @@ import java.util.List;
 /**
  * The interface to expand the capabilities of the {@link GiftCertificateRepository}.
  */
-public interface GiftCertificateRepositoryCustom {
-
+public interface GiftCertificateRepositoryJpa {
 
     /**
      * Find all gift certificates list.

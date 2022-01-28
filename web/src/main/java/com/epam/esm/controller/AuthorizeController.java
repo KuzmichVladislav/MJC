@@ -3,7 +3,7 @@ package com.epam.esm.controller;
 import com.epam.esm.dto.AuthorizeRequestDto;
 import com.epam.esm.dto.UserDto;
 import com.epam.esm.dto.UserRegistrationDto;
-import com.epam.esm.security.jwt.JwtTokenProvider;
+import com.epam.esm.security.jwt.filter.JwtTokenProvider;
 import com.epam.esm.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,9 +43,8 @@ public class AuthorizeController {
      * @return the JWT token
      */
     @PostMapping("/authorize")
-    public String authorizeUser(@RequestBody AuthorizeRequestDto authorizeRequestDto) {
-        UserDto userEntity = userService.findByUsernameAndPassword(authorizeRequestDto.getUsername(),
-                authorizeRequestDto.getPassword());
+    public String authorize(@RequestBody AuthorizeRequestDto authorizeRequestDto) {
+        UserDto userEntity = userService.authorize(authorizeRequestDto);
         return jwtTokenProvider.generateToken(userEntity.getUsername());
     }
 }

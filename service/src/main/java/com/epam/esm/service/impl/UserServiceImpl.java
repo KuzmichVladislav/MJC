@@ -1,5 +1,6 @@
 package com.epam.esm.service.impl;
 
+import com.epam.esm.dto.AuthorizeRequestDto;
 import com.epam.esm.dto.RoleDto;
 import com.epam.esm.dto.UserDto;
 import com.epam.esm.dto.UserRegistrationDto;
@@ -67,9 +68,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserRegistrationDto findByUsernameAndPassword(String username, String password) {
-        UserRegistrationDto userRegistrationDto = loadUserByUsername(username);
-        if (passwordEncoder.matches(password, userRegistrationDto.getPassword())) {
+    public UserRegistrationDto authorize(AuthorizeRequestDto authorizeRequestDto) {
+        UserRegistrationDto userRegistrationDto = loadUserByUsername(authorizeRequestDto.getUsername());
+        if (passwordEncoder.matches(authorizeRequestDto.getPassword(), userRegistrationDto.getPassword())) {
             return userRegistrationDto;
         } else {
             throw new JwtAuthorizationException(ExceptionKey.USERNAME_OR_PASSWORD_INCORRECT);

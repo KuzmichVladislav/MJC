@@ -1,5 +1,6 @@
 package com.epam.esm.service;
 
+import com.epam.esm.dto.AuthorizeRequestDto;
 import com.epam.esm.dto.UserDto;
 import com.epam.esm.dto.UserRegistrationDto;
 import org.springframework.data.domain.Page;
@@ -46,9 +47,8 @@ public interface UserService {
     /**
      * Find by user username and password.
      *
-     * @param username the username
-     * @param password the password
+     * @param authorizeRequestDto the authorize request DTO object
      * @return the user registration DTO object
      */
-    UserRegistrationDto findByUsernameAndPassword(String username, String password);
+    UserRegistrationDto authorize(AuthorizeRequestDto authorizeRequestDto);
 }

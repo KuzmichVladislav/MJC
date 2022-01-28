@@ -1,4 +1,4 @@
-package com.epam.esm.security.jwt;
+package com.epam.esm.security.jwt.filter;
 
 import com.epam.esm.security.entity.JwtUserDetails;
 import com.epam.esm.security.service.JwtUserDetailsService;

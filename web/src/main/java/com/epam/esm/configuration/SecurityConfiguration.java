@@ -1,8 +1,8 @@
 package com.epam.esm.configuration;
 
-import com.epam.esm.security.jwt.JwtAccessDeniedHandler;
-import com.epam.esm.security.jwt.JwtAuthenticationEntryPoint;
-import com.epam.esm.security.jwt.JwtTokenFilter;
+import com.epam.esm.security.jwt.access.JwtAccessDeniedHandler;
+import com.epam.esm.security.jwt.access.JwtAuthenticationEntryPoint;
+import com.epam.esm.security.jwt.filter.JwtTokenFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
