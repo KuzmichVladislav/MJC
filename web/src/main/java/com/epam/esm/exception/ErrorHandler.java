@@ -115,20 +115,6 @@ public class ErrorHandler {
     }
 
     /**
-     * Handle RuntimeException.
-     *
-     * @param e      the exception
-     * @param locale the locale
-     * @return the exception result
-     */
-    @ExceptionHandler(RuntimeException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ResponseBody
-    public ExceptionResult handle(RuntimeException e, Locale locale) {
-        return new ExceptionResult(e.getMessage(), ErrorCode.INTERNAL_ERROR.getCode());
-    }
-
-    /**
      * Handle HttpRequestMethodNotSupportedException.
      *
      * @param e      the exception
@@ -170,8 +156,27 @@ public class ErrorHandler {
         return new ExceptionResult(e.getMessage(), ErrorCode.NOT_VALID_PARAM.getCode());
     }
 
+    /**
+     * Handle exception result.
+     *
+     * @param e      the exception
+     * @param locale the locale
+     * @return the exception result
+     */
+    @ExceptionHandler(JwtAuthorizationException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ResponseBody
+    public ExceptionResult handle(JwtAuthorizationException e, Locale locale) {
+        String errorMessage = createMessage(locale, e.getMessageKey());
+        return new ExceptionResult(errorMessage, ErrorCode.UNAUTHORIZED.getCode());
+    }
+
     private String createMessage(Locale locale, String messageKey, String messageParameter) {
         return String.format(messageSource.getMessage(messageKey, new Object[]{}, locale),
                 messageParameter);
+    }
+
+    private String createMessage(Locale locale, String messageKey) {
+        return messageSource.getMessage(messageKey, new Object[]{}, locale);
     }
 }

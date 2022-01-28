@@ -1,13 +1,11 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.dao.TagDao;
-import com.epam.esm.dto.QueryParameterDto;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.ResourceNotFoundException;
+import com.epam.esm.repository.GiftCertificateRepository;
+import com.epam.esm.repository.TagRepository;
 import com.epam.esm.service.TagService;
-import com.epam.esm.util.ListConverter;
-import com.epam.esm.util.TotalPageCountCalculator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,43 +14,45 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
-import org.springframework.hateoas.PagedModel;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 class TagServiceImplTest {
 
     @Mock
-    private TagDao tagDao;
-    private ListConverter listConverter;
-    private ModelMapper modelMapper;
+    private TagRepository tagRepository;
+    @Mock
+    private GiftCertificateRepository giftCertificateRepository;
     private TagService tagService;
     private Tag tag;
     private TagDto tagDto;
-    private TotalPageCountCalculator totalPageCountCalculator;
-    private QueryParameterDto queryParameter;
     private Validator validator;
+    private Pageable pageable;
+
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
         ValidatorFactory config = Validation.buildDefaultValidatorFactory();
         validator = config.getValidator();
-        listConverter = new ListConverter();
-        modelMapper = new ModelMapper();
-        totalPageCountCalculator = new TotalPageCountCalculator();
-        tagService = new TagServiceImpl(tagDao, modelMapper, listConverter, totalPageCountCalculator);
+        ModelMapper modelMapper = new ModelMapper();
+        tagService = new TagServiceImpl(modelMapper,
+                giftCertificateRepository,
+                tagRepository);
         tag = Tag.builder()
                 .id(1L)
                 .name("name")
@@ -61,18 +61,14 @@ class TagServiceImplTest {
                 .id(1L)
                 .name("name")
                 .build();
-        queryParameter = QueryParameterDto.builder()
-                .page(1)
-                .size(10)
-                .firstValue(1)
-                .sortingDirection(QueryParameterDto.SortingDirection.ASC)
-                .build();
+        pageable = PageRequest.of(1, 20, Sort.Direction.ASC, "id");
+
     }
 
     @Test
     void testAdd_AllFieldsAreValid_CreatesTag() {
         // Given
-        when(tagDao.add(tag)).thenReturn(tag);
+        when(tagRepository.save(tag)).thenReturn(tag);
         // When
         TagDto result = tagService.add(tagDto);
         // Then
@@ -94,7 +90,7 @@ class TagServiceImplTest {
     @Test
     void testFindById_ValidId_findsTag() {
         // Given
-        when(tagDao.findById(anyLong())).thenReturn(Optional.ofNullable(tag));
+        when(tagRepository.findById(anyLong())).thenReturn(Optional.ofNullable(tag));
         // When
         TagDto result = tagService.findById(1L);
         // Then
@@ -104,12 +100,11 @@ class TagServiceImplTest {
     @Test
     void testFindAll_TagsExist_findsTags() {
         // Given
-        when(tagDao.findAll(any())).thenReturn(Collections.singletonList(tag));
-        when(tagDao.getTotalNumberOfItems()).thenReturn(20L);
+        when(tagRepository.findAll(pageable)).thenReturn(new PageImpl<>(Collections.singletonList(tag)));
         // When
-        PagedModel<TagDto> result = tagService.findAll(queryParameter);
+        Page<TagDto> result = tagService.findAll(pageable);
         // Then
-        Assertions.assertEquals(Collections.singletonList(tagDto), new ArrayList<>(result.getContent()));
+        Assertions.assertEquals(1, result.getContent().size());
     }
 
     @Test
@@ -124,7 +119,7 @@ class TagServiceImplTest {
     @Test
     void testFindByName_ValidId_findsTag() {
         // Given
-        when(tagDao.findByName("name")).thenReturn(Optional.ofNullable(tag));
+        when(tagRepository.findByName("name")).thenReturn(Optional.ofNullable(tag));
         // When
         Optional<TagDto> result = tagService.findByName("name");
         // Then

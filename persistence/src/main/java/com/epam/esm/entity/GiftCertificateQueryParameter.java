@@ -3,7 +3,6 @@ package com.epam.esm.entity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -13,30 +12,25 @@ import java.util.Optional;
 /**
  * Entity Class GiftCertificateQueryParameter for gift certificate query parameter entity
  */
-@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
-public class GiftCertificateQueryParameter extends QueryParameter {
+@AllArgsConstructor
+@Builder
+public class GiftCertificateQueryParameter {
 
     private Optional<String> name;
     private Optional<String> description;
     private Optional<List<String>> tagNames;
     private SortParameter sortParameter;
+    private int page;
+    private int size;
+    private int firstValue;
+    private SortingDirection sortingDirection;
 
-    @Builder(builderMethodName = "giftCertificateQueryParameterBuilder")
-    public GiftCertificateQueryParameter(int page,
-                                         int size,
-                                         int firstValue,
-                                         SortingDirection sortingDirection,
-                                         Optional<String> name,
-                                         Optional<String> description,
-                                         Optional<List<String>> tagNames,
-                                         SortParameter sortParameter) {
-        super(page, size, firstValue, sortingDirection);
-        this.name = name;
-        this.description = description;
-        this.tagNames = tagNames;
-        this.sortParameter = sortParameter;
+    public enum SortingDirection {
+
+        ASC,
+        DESC
     }
 
     @AllArgsConstructor
@@ -47,6 +41,7 @@ public class GiftCertificateQueryParameter extends QueryParameter {
         NAME("name"),
         CREATE_DATE("createDate"),
         LAST_UPDATE_DATE("lastUpdateDate");
+
         String parameter;
     }
 }

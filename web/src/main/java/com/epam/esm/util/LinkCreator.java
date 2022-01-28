@@ -7,7 +7,6 @@ import com.epam.esm.controller.UserController;
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.GiftCertificateQueryParameterDto;
 import com.epam.esm.dto.OrderDto;
-import com.epam.esm.dto.QueryParameterDto;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.dto.UserDto;
 import org.springframework.hateoas.Link;
@@ -25,10 +24,15 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Component
 public class LinkCreator {
 
+    private static final String NOT_USED_PARAMETERS_REGEX = "\\{.*?\\}";
+    private static final String REPLACEMENT = "";
     private static final String DELETE = "delete";
     private static final String UPDATE = "update";
-    private static final String NEXT_PAGE = "next page";
-    private static final String PREVIOUS_PAGE = "previous page";
+    private static final String FIRST_PAGE = "first";
+    private static final String PREVIOUS_PAGE = "prev";
+    private static final String SELF_PAGE = "self";
+    private static final String NEXT_PAGE = "next";
+    private static final String LAST_PAGE = "last";
 
     /**
      * Add tag HATEOAS links.
@@ -81,66 +85,24 @@ public class LinkCreator {
      * @param giftCertificateQueryParameterDto the gift certificate query parameter DTO
      * @param giftCertificatePage              the gift certificate page number
      */
-    public void addGiftCertificatePaginationLinks(GiftCertificateQueryParameterDto giftCertificateQueryParameterDto, PagedModel<GiftCertificateDto> giftCertificatePage) {
+    public void addGiftCertificatePaginationLinks(GiftCertificateQueryParameterDto giftCertificateQueryParameterDto,
+                                                  PagedModel<GiftCertificateDto> giftCertificatePage) {
+        addGiftCertificatePaginationLink(giftCertificateQueryParameterDto, giftCertificatePage,
+                FIRST_PAGE, 0);
+        if (giftCertificateQueryParameterDto.getPage() > 0) {
+            int page = giftCertificateQueryParameterDto.getPage() - 1;
+            addGiftCertificatePaginationLink(giftCertificateQueryParameterDto, giftCertificatePage,
+                    PREVIOUS_PAGE, page);
+        }
+        addGiftCertificatePaginationLink(giftCertificateQueryParameterDto, giftCertificatePage,
+                SELF_PAGE, giftCertificateQueryParameterDto.getPage());
         if (giftCertificatePage.getMetadata().getTotalPages() > giftCertificateQueryParameterDto.getPage()) {
             int page = giftCertificateQueryParameterDto.getPage() + 1;
-            addGiftCertificatePaginationLink(giftCertificateQueryParameterDto, giftCertificatePage, NEXT_PAGE, page);
+            addGiftCertificatePaginationLink(giftCertificateQueryParameterDto, giftCertificatePage,
+                    NEXT_PAGE, page);
         }
-        if (giftCertificateQueryParameterDto.getPage() > 1) {
-            int page = giftCertificateQueryParameterDto.getPage() - 1;
-            addGiftCertificatePaginationLink(giftCertificateQueryParameterDto, giftCertificatePage, PREVIOUS_PAGE, page);
-        }
-    }
-
-    /**
-     * Add order pagination HATEOAS links.
-     *
-     * @param queryParameterDto the query parameter DTO
-     * @param orderPage         the order page number
-     */
-    public void addOrderPaginationLinks(QueryParameterDto queryParameterDto, PagedModel<OrderDto> orderPage) {
-        if (orderPage.getMetadata().getTotalPages() > queryParameterDto.getPage()) {
-            orderPage.add(linkTo(methodOn(OrderController.class).getAllOrders(queryParameterDto.getPage() + 1,
-                    queryParameterDto.getSize(), queryParameterDto.getSortingDirection())).withRel(NEXT_PAGE));
-        }
-        if (queryParameterDto.getPage() > 1) {
-            orderPage.add(linkTo(methodOn(OrderController.class).getAllOrders(queryParameterDto.getPage() - 1,
-                    queryParameterDto.getSize(), queryParameterDto.getSortingDirection())).withRel(PREVIOUS_PAGE));
-        }
-    }
-
-    /**
-     * Add tag pagination HATEOAS links.
-     *
-     * @param queryParameterDto the query parameter DTO
-     * @param tagPage           the tag page number
-     */
-    public void addTagPaginationLinks(QueryParameterDto queryParameterDto, PagedModel<TagDto> tagPage) {
-        if (tagPage.getMetadata().getTotalPages() > queryParameterDto.getPage()) {
-            tagPage.add(linkTo(methodOn(TagController.class).getAllTags(queryParameterDto.getPage() + 1,
-                    queryParameterDto.getSize(), queryParameterDto.getSortingDirection())).withRel(NEXT_PAGE));
-        }
-        if (queryParameterDto.getPage() > 1) {
-            tagPage.add(linkTo(methodOn(TagController.class).getAllTags(queryParameterDto.getPage() - 1,
-                    queryParameterDto.getSize(), queryParameterDto.getSortingDirection())).withRel(PREVIOUS_PAGE));
-        }
-    }
-
-    /**
-     * Add user pagination HATEOAS links.
-     *
-     * @param queryParameterDto the query parameter DTO
-     * @param userPage          the user page number
-     */
-    public void addUserPaginationLinks(QueryParameterDto queryParameterDto, PagedModel<UserDto> userPage) {
-        if (userPage.getMetadata().getTotalPages() > queryParameterDto.getPage()) {
-            userPage.add(linkTo(methodOn(UserController.class).getAllUsers(queryParameterDto.getPage() + 1,
-                    queryParameterDto.getSize(), queryParameterDto.getSortingDirection())).withRel(NEXT_PAGE));
-        }
-        if (queryParameterDto.getPage() > 1) {
-            userPage.add(linkTo(methodOn(UserController.class).getAllUsers(queryParameterDto.getPage() - 1,
-                    queryParameterDto.getSize(), queryParameterDto.getSortingDirection())).withRel(PREVIOUS_PAGE));
-        }
+        addGiftCertificatePaginationLink(giftCertificateQueryParameterDto, giftCertificatePage,
+                LAST_PAGE, (int) giftCertificatePage.getMetadata().getTotalPages());
     }
 
     private void addTagLinksToGiftCertificate(List<TagDto> tags) {
@@ -161,6 +123,6 @@ public class LinkCreator {
                         giftCertificateQueryParameterDto.getTagNames(),
                         giftCertificateQueryParameterDto.getSortParameter(),
                         giftCertificateQueryParameterDto.getSortingDirection()))
-                .toString().replaceAll("\\{.*?\\}", "")).withRel(linkName));
+                .toString().replaceAll(NOT_USED_PARAMETERS_REGEX, REPLACEMENT)).withRel(linkName));
     }
 }

@@ -37,6 +37,23 @@ public final class ExceptionKey {
     public static final String SIZE_MIGHT_NOT_BE_NEGATIVE = "size.mightNotBeNegative";
     public static final String TAG_BELONGS_TO_CERTIFICATE = "tag.belongsToCertificate";
     public static final String ORDER_NOT_FOUND = "order.notFound";
+    public static final String JWT_TOKEN_IS_EXPIRED_OR_INVALID = "jwt.token.is.expired.or.invalid";
+    public static final String USER_USERNAME_LENGTH_IS_NOT_VALID = "user.username.LengthIsNotValid";
+    public static final String USER_USERNAME_IS_NOT_VALID = "user.username.isNotValid";
+    public static final String USER_FIRST_NAME_LENGTH_IS_NOT_VALID = "user.first.name.LengthIsNotValid";
+    public static final String USER_FIRST_NAME_IS_NOT_VALID = "user.first.name.isNotValid";
+    public static final String USER_LAST_NAME_LENGTH_IS_NOT_VALID = "user.last.name.LengthIsNotValid";
+    public static final String USER_LAST_NAME_IS_NOT_VALID = "user.last.name.isNotValid";
+    public static final String USER_EXISTS = "user.exists";
+    public static final String USER_NOT_EXISTS = "user.notExists";
+    public static final String USERNAME_OR_PASSWORD_INCORRECT = "user.usernameOrPasswordIncorrect";
+    public static final String USER_USERNAME_MIGHT_NOT_BE_NULL = "user.username.mightNotBeNull";
+    public static final String USER_PASSWORD_MIGHT_NOT_BE_NULL = "user.password.mightNotBeNull";
+    public static final String USER_FIRST_NAME_MIGHT_NOT_BE_NULL = "user.firstName.mightNotBeNull";
+    public static final String USER_LAST_NAME_MIGHT_NOT_BE_NULL = "user.lastName.mightNotBeNull";
+    public static final String USER_PASSWORD_LENGTH_IS_NOT_VALID = "user.password.LengthIsNotValid";
+    public static final String USER_PASSWORD_IS_NOT_VALID = "user.password.isNotValid";
+    public static final String ACCESS_FORBIDDEN = "access.forbidden";
 
     private ExceptionKey() {
     }

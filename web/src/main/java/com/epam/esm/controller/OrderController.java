@@ -1,14 +1,25 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.dto.OrderDto;
-import com.epam.esm.dto.QueryParameterDto;
+import com.epam.esm.security.access.OrderAccess;
+import com.epam.esm.security.entity.JwtUserDetails;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.util.LinkCreator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,6 +52,8 @@ public class OrderController {
 
     private final OrderService orderService;
     private final LinkCreator linkCreator;
+    private final PagedResourcesAssembler<OrderDto> pagedResourcesAssembler;
+    private final OrderAccess orderAccess;
 
     /**
      * Add order order based on POST request.
@@ -51,6 +64,9 @@ public class OrderController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public OrderDto addOrder(@Valid @RequestBody OrderDto orderDto) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        JwtUserDetails userDetails = (JwtUserDetails) authentication.getPrincipal();
+        orderDto.setUserId(userDetails.getUserId());
         OrderDto resultOrder = orderService.add(orderDto);
         linkCreator.addOrderLinks(resultOrder);
         return resultOrder;
@@ -65,21 +81,17 @@ public class OrderController {
      * @return the all orders
      */
     @GetMapping
-    public PagedModel<OrderDto> getAllOrders(@Min(value = 1, message = PAGE_MIGHT_NOT_BE_NEGATIVE)
-                                             @RequestParam(required = false, defaultValue = "1") int page,
-                                             @Min(value = 1, message = SIZE_MIGHT_NOT_BE_NEGATIVE)
-                                             @RequestParam(required = false, defaultValue = "10") int size,
-                                             @RequestParam(value = "order-by", required = false, defaultValue = "ASC")
-                                                     QueryParameterDto.SortingDirection sortingDirection) {
-        QueryParameterDto queryParameterDto = QueryParameterDto.builder()
-                .page(page)
-                .size(size)
-                .sortingDirection(sortingDirection)
-                .build();
-        PagedModel<OrderDto> orderPage = orderService.findAll(queryParameterDto);
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public PagedModel<EntityModel<OrderDto>> getAllOrders(@Min(value = 1, message = PAGE_MIGHT_NOT_BE_NEGATIVE)
+                                                          @RequestParam(required = false, defaultValue = "1") int page,
+                                                          @Min(value = 1, message = SIZE_MIGHT_NOT_BE_NEGATIVE)
+                                                          @RequestParam(required = false, defaultValue = "10") int size,
+                                                          @RequestParam(value = "order-by", required = false, defaultValue = "ASC")
+                                                                  String sortingDirection) {
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.valueOf(sortingDirection), "id");
+        Page<OrderDto> orderPage = orderService.findAll(pageable);
         orderPage.getContent().forEach(linkCreator::addOrderLinks);
-        linkCreator.addOrderPaginationLinks(queryParameterDto, orderPage);
-        return orderPage;
+        return pagedResourcesAssembler.toModel(orderPage);
     }
 
     /**
@@ -89,6 +101,7 @@ public class OrderController {
      * @return the order identifier
      */
     @GetMapping("/{id}")
+    @PostAuthorize("returnObject.userId == principal.userId or hasAuthority('ADMIN')")
     public OrderDto getOrderById(@Positive(message = ID_MIGHT_NOT_BE_NEGATIVE)
                                  @PathVariable("id") long id) {
         OrderDto resultOrder = orderService.findById(id);
@@ -103,6 +116,7 @@ public class OrderController {
      * @return the http entity
      */
     @DeleteMapping("/{id}")
+    @PreAuthorize("@orderAccess.canDeleteOrder(authentication, #id) or hasAuthority('ADMIN')")
     public HttpEntity<Void> deleteOrder(@Positive(message = ID_MIGHT_NOT_BE_NEGATIVE)
                                         @PathVariable("id") long id) {
         orderService.removeById(id);
@@ -116,6 +130,7 @@ public class OrderController {
      * @return the orders
      */
     @GetMapping("/users/{userId}")
+    @PostAuthorize("#userId == principal.userId or hasAuthority('ADMIN')")
     public List<OrderDto> getOrdersByUserId(@Positive(message = ID_MIGHT_NOT_BE_NEGATIVE)
                                             @PathVariable("userId") long userId) {
         return orderService.findOrdersByUserId(userId);
