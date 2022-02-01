@@ -1,22 +1,22 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.dao.OrderDao;
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.OrderCertificateDetailsDto;
 import com.epam.esm.dto.OrderDto;
-import com.epam.esm.dto.QueryParameterDto;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Order;
 import com.epam.esm.entity.OrderCertificateDetails;
-import com.epam.esm.entity.QueryParameter;
 import com.epam.esm.exception.ExceptionKey;
 import com.epam.esm.exception.ResourceNotFoundException;
+import com.epam.esm.repository.OrderCertificateDetailsRepository;
+import com.epam.esm.repository.OrderRepository;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.OrderService;
-import com.epam.esm.util.TotalPageCountCalculator;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.hateoas.PagedModel;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,22 +36,22 @@ import static java.util.stream.Collectors.counting;
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
 
-    private final OrderDao orderDao;
     private final ModelMapper modelMapper;
     private final GiftCertificateService giftCertificateService;
-    private final TotalPageCountCalculator totalPageCountCalculator;
+    private final OrderRepository orderRepository;
+    private final OrderCertificateDetailsRepository orderCertificateDetailsRepository;
 
     @Override
     @Transactional
     public OrderDto add(OrderDto orderDto) {
-        Order order = orderDao.add(modelMapper.map(orderDto, Order.class));
+        Order order = orderRepository.save(modelMapper.map(orderDto, Order.class));
         Set<OrderCertificateDetails> orderCertificateDetailsSet = new HashSet<>();
         orderDto.getOrderCertificateDetailsDtos().stream()
                 .map(t -> giftCertificateService.findById(t.getGiftCertificate().getId()))
                 .collect(Collectors.groupingBy(Function.identity(), counting()))
                 .forEach((g, c) -> {
                     OrderCertificateDetails orderCertificateDetails = getOrderCertificateDetails(order, g, c);
-                    orderDao.addGiftCertificateToOrder(orderCertificateDetails);
+                    orderCertificateDetailsRepository.save(orderCertificateDetails);
                     orderCertificateDetailsSet.add(orderCertificateDetails);
                 });
         order.setOrderCertificateDetails(orderCertificateDetailsSet);
@@ -60,25 +60,14 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDto findById(long id) {
-        Order order = orderDao.findById(id).orElseThrow(() ->
-                new ResourceNotFoundException(ExceptionKey.USER_NOT_FOUND, String.valueOf(id)));
+        Order order = orderRepository.findById(id).orElseThrow(() ->
+                new ResourceNotFoundException(ExceptionKey.ORDER_NOT_FOUND, String.valueOf(id)));
         return getOrderDto(order);
     }
 
     @Override
-    public PagedModel<OrderDto> findAll(QueryParameterDto queryParameterDto) {
-        long totalNumberOfItems = orderDao.getTotalNumberOfItems();
-        int totalPage = totalPageCountCalculator.getTotalPage(queryParameterDto, totalNumberOfItems);
-        List<Order> orders = orderDao.findAll(modelMapper.map(queryParameterDto, QueryParameter.class));
-        List<OrderDto> orderDtos = orders.stream().map(this::getOrderDto).collect(Collectors.toList());
-        PagedModel.PageMetadata pageMetadata = new PagedModel.PageMetadata(queryParameterDto.getSize(),
-                queryParameterDto.getPage(), totalNumberOfItems, totalPage);
-        return PagedModel.of(orderDtos, pageMetadata);
-    }
-
-    @Override
     public List<OrderDto> findOrdersByUserId(long userId) {
-        List<Order> orders = orderDao.findOrdersByUserId(userId);
+        List<Order> orders = orderRepository.findByUserId(userId);
         return orders.stream()
                 .map(this::getOrderDto)
                 .collect(Collectors.toList());
@@ -86,13 +75,22 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public void removeById(long id) {
-        orderDao.remove(orderDao.findById(id).orElseThrow(() ->
-                new ResourceNotFoundException(ExceptionKey.ORDER_NOT_FOUND, String.valueOf(id))));
+    public OrderDto removeById(long id) {
+        Order order = orderRepository.findById(id).orElseThrow(() ->
+                new ResourceNotFoundException(ExceptionKey.ORDER_NOT_FOUND, String.valueOf(id)));
+        orderRepository.delete(order);
+        return convertToOrderDto(order);
+    }
+
+    @Override
+    public Page<OrderDto> findAll(Pageable pageable) {
+        Page<Order> orders = orderRepository.findAll(pageable);
+        List<OrderDto> orderDtos = orders.stream().map(this::getOrderDto).collect(Collectors.toList());
+        return new PageImpl<>(orderDtos, orders.getPageable(), orders.getTotalElements());
     }
 
     private OrderDto getOrderDto(Order order) {
-        OrderDto orderDto = modelMapper.map(order, OrderDto.class);
+        OrderDto orderDto = convertToOrderDto(order);
         List<OrderCertificateDetailsDto> orderCertificateDetails = getOrderCertificateDetails(order);
         orderDto.setOrderCertificateDetailsDtos(orderCertificateDetails);
         BigDecimal totalCost = orderCertificateDetails.stream()
@@ -123,5 +121,9 @@ public class OrderServiceImpl implements OrderService {
                 .giftCertificateCost(giftCertificateDto.getPrice())
                 .numberOfCertificates(Math.toIntExact(giftCertificateCount))
                 .build();
+    }
+
+    private OrderDto convertToOrderDto(Order order) {
+        return modelMapper.map(order, OrderDto.class);
     }
 }

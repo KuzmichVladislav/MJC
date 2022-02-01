@@ -2,7 +2,6 @@ package com.epam.esm.controller;
 
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.GiftCertificateQueryParameterDto;
-import com.epam.esm.dto.QueryParameterDto;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.util.LinkCreator;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +9,7 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -53,6 +53,7 @@ public class GiftCertificateController {
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAuthority('ADMIN')")
     public GiftCertificateDto addGiftCertificate(@Valid @RequestBody GiftCertificateDto giftCertificateDto) {
         GiftCertificateDto resultGiftCertificate = giftCertificateService.add(giftCertificateDto);
         linkCreator.addGiftCertificateLinks(resultGiftCertificate);
@@ -73,8 +74,8 @@ public class GiftCertificateController {
      */
     @GetMapping
     public PagedModel<GiftCertificateDto>
-    getAllGiftCertificates(@Min(value = 1, message = PAGE_MIGHT_NOT_BE_NEGATIVE)
-                           @RequestParam(value = "page", required = false, defaultValue = "1") int page,
+    getAllGiftCertificates(@Min(value = 0, message = PAGE_MIGHT_NOT_BE_NEGATIVE)
+                           @RequestParam(value = "page", required = false, defaultValue = "0") int page,
                            @Min(value = 1, message = SIZE_MIGHT_NOT_BE_NEGATIVE)
                            @RequestParam(value = "size", required = false, defaultValue = "10") int size,
                            @RequestParam(value = "name", required = false) Optional<String> name,
@@ -83,8 +84,8 @@ public class GiftCertificateController {
                            @RequestParam(value = "sort", required = false, defaultValue = "NAME")
                                    GiftCertificateQueryParameterDto.SortParameter sortParameter,
                            @RequestParam(value = "order-by", required = false, defaultValue = "ASC")
-                                   QueryParameterDto.SortingDirection sortingDirection) {
-        GiftCertificateQueryParameterDto giftCertificateQueryParameterDto = GiftCertificateQueryParameterDto.giftCertificateQueryParameterDtoBuilder()
+                                   GiftCertificateQueryParameterDto.SortingDirection sortingDirection) {
+        GiftCertificateQueryParameterDto giftCertificateQueryParameterDto = GiftCertificateQueryParameterDto.builder()
                 .name(name)
                 .description(description)
                 .tagNames(tagNames)
@@ -93,7 +94,6 @@ public class GiftCertificateController {
                 .size(size)
                 .sortingDirection(sortingDirection)
                 .build();
-
         PagedModel<GiftCertificateDto> giftCertificatePage = giftCertificateService.findAll(giftCertificateQueryParameterDto);
         giftCertificatePage.getContent().forEach(linkCreator::addGiftCertificateLinks);
         linkCreator.addGiftCertificatePaginationLinks(giftCertificateQueryParameterDto, giftCertificatePage);
@@ -122,6 +122,7 @@ public class GiftCertificateController {
      * @return the gift certificate DTO object
      */
     @PatchMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public GiftCertificateDto updateGiftCertificate(@Positive(message = ID_MIGHT_NOT_BE_NEGATIVE)
                                                     @PathVariable("id") long id,
                                                     @Valid @RequestBody GiftCertificateDto giftCertificateDto) {
@@ -137,6 +138,7 @@ public class GiftCertificateController {
      * @return the http entity
      */
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public HttpEntity<Void> deleteGiftCertificate(@Positive(message = ID_MIGHT_NOT_BE_NEGATIVE)
                                                   @PathVariable("id") long id) {
         giftCertificateService.removeById(id);

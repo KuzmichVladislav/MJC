@@ -1,14 +1,20 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.dto.QueryParameterDto;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.service.TagService;
 import com.epam.esm.util.LinkCreator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,10 +42,12 @@ import static com.epam.esm.exception.ExceptionKey.SIZE_MIGHT_NOT_BE_NEGATIVE;
 @RequestMapping("/v1/tags")
 @RequiredArgsConstructor
 @Validated
+@PreAuthorize("hasAuthority('ADMIN')")
 public class TagController {
 
     private final LinkCreator linkCreator;
     private final TagService tagService;
+    private final PagedResourcesAssembler<TagDto> pagedResourcesAssembler;
 
     /**
      * Get list of tags based on GET request.
@@ -50,21 +58,14 @@ public class TagController {
      * @return the all tags
      */
     @GetMapping
-    public PagedModel<TagDto> getAllTags(@Min(value = 1, message = PAGE_MIGHT_NOT_BE_NEGATIVE)
-                                         @RequestParam(required = false, defaultValue = "1") int page,
-                                         @Min(value = 1, message = SIZE_MIGHT_NOT_BE_NEGATIVE)
-                                         @RequestParam(required = false, defaultValue = "10") int size,
-                                         @RequestParam(value = "order-by", required = false, defaultValue = "ASC")
-                                                 QueryParameterDto.SortingDirection sortingDirection) {
-        QueryParameterDto queryParameterDto = QueryParameterDto.builder()
-                .page(page)
-                .size(size)
-                .sortingDirection(sortingDirection)
-                .build();
-        PagedModel<TagDto> tagPage = tagService.findAll(queryParameterDto);
+    public PagedModel<EntityModel<TagDto>> getAllTags(
+            @RequestParam(required = false, defaultValue = "0") @Min(value = 0, message = PAGE_MIGHT_NOT_BE_NEGATIVE) int page,
+            @RequestParam(required = false, defaultValue = "10") @Min(value = 1, message = SIZE_MIGHT_NOT_BE_NEGATIVE) int size,
+            @RequestParam(value = "order-by", required = false, defaultValue = "ASC") String sortingDirection) {
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.valueOf(sortingDirection), "name");
+        Page<TagDto> tagPage = tagService.findAll(pageable);
         tagPage.getContent().forEach(linkCreator::addTagLinks);
-        linkCreator.addTagPaginationLinks(queryParameterDto, tagPage);
-        return tagPage;
+        return pagedResourcesAssembler.toModel(tagPage);
     }
 
     /**
@@ -117,7 +118,7 @@ public class TagController {
     @GetMapping("/users/{id}/most-used")
     public TagDto findMostUsedTag(@Positive(message = ID_MIGHT_NOT_BE_NEGATIVE)
                                   @PathVariable("id") long id) {
-        TagDto resultTag = tagService.findMostUsedTag(id);
+        TagDto resultTag = tagService.findMostUsedUserTag(id);
         linkCreator.addTagLinks(resultTag);
         return resultTag;
     }

@@ -1,8 +1,10 @@
 package com.epam.esm.service;
 
-import com.epam.esm.dto.QueryParameterDto;
+import com.epam.esm.dto.AuthorizeRequestDto;
 import com.epam.esm.dto.UserDto;
-import org.springframework.hateoas.PagedModel;
+import com.epam.esm.dto.UserRegistrationDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 /**
  * The Interface UserService.
@@ -14,15 +16,39 @@ public interface UserService {
      * Find user by identifier.
      *
      * @param id the identifier
-     * @return the user DTO
+     * @return the user DTO object
      */
     UserDto findById(long id);
 
     /**
-     * Find all users.
+     * Find all user DTO objects.
      *
-     * @param queryParameterDto the query parameter DTO
+     * @param pageable the pageable
      * @return the page
      */
-    PagedModel<UserDto> findAll(QueryParameterDto queryParameterDto);
+    Page<UserDto> findAll(Pageable pageable);
+
+    /**
+     * Load user by username.
+     *
+     * @param username the username
+     * @return the user registration DTO object
+     */
+    UserRegistrationDto loadUserByUsername(String username);
+
+    /**
+     * Add user DTO object.
+     *
+     * @param registrationDto the registration DTO object
+     * @return the user DTO object
+     */
+    UserDto add(UserRegistrationDto registrationDto);
+
+    /**
+     * Find by user username and password.
+     *
+     * @param authorizeRequestDto the authorize request DTO object
+     * @return the user registration DTO object
+     */
+    UserRegistrationDto authorize(AuthorizeRequestDto authorizeRequestDto);
 }

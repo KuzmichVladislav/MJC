@@ -3,7 +3,6 @@ package com.epam.esm.dto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -13,26 +12,25 @@ import java.util.Optional;
 /**
  * DTO Class GiftCertificateQueryParameterDto contains parameters for generation query
  */
-@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
-public class GiftCertificateQueryParameterDto extends QueryParameterDto {
+@AllArgsConstructor
+@Builder
+public class GiftCertificateQueryParameterDto {
+
     private Optional<String> name;
     private Optional<String> description;
     private Optional<List<String>> tagNames;
     private SortParameter sortParameter;
+    private int page;
+    private int size;
+    private int firstValue;
+    private SortingDirection sortingDirection;
 
+    public enum SortingDirection {
 
-    @Builder(builderMethodName = "giftCertificateQueryParameterDtoBuilder")
-    public GiftCertificateQueryParameterDto(int page, int size, int firstValue,
-                                            SortingDirection sortingDirection, Optional<String> name,
-                                            Optional<String> description, Optional<List<String>> tagNames,
-                                            SortParameter sortParameter) {
-        super(page, size, firstValue, sortingDirection);
-        this.name = name;
-        this.description = description;
-        this.tagNames = tagNames;
-        this.sortParameter = sortParameter;
+        ASC,
+        DESC
     }
 
     @AllArgsConstructor

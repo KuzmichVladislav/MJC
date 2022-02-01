@@ -1,17 +1,14 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.GiftCertificateQueryParameterDto;
-import com.epam.esm.dto.QueryParameterDto;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.ResourceNotFoundException;
+import com.epam.esm.repository.GiftCertificateRepository;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.TagService;
-import com.epam.esm.util.ListConverter;
-import com.epam.esm.util.TotalPageCountCalculator;
 import com.epam.esm.validator.GiftCertificateValidator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,19 +40,15 @@ import static org.mockito.Mockito.when;
 class GiftCertificateServiceImplTest {
 
     @Mock
-    private GiftCertificateDao giftCertificateDao;
+    private GiftCertificateRepository giftCertificateRepository;
     @Mock
     private TagService tagService;
     private Validator validator;
-    private ListConverter listConverter;
-    private ModelMapper modelMapper;
     private GiftCertificateService giftCertificateService;
     private GiftCertificateDto giftCertificateDto;
     private GiftCertificate giftCertificate;
     private TagDto tagDto;
-    private TotalPageCountCalculator totalPageCountCalculator;
     private GiftCertificateQueryParameterDto queryParameter;
-    private GiftCertificateValidator giftCertificateValidator;
 
 
     @BeforeEach
@@ -63,17 +56,17 @@ class GiftCertificateServiceImplTest {
         MockitoAnnotations.openMocks(this);
         ValidatorFactory config = Validation.buildDefaultValidatorFactory();
         validator = config.getValidator();
-        listConverter = new ListConverter();
-        totalPageCountCalculator = new TotalPageCountCalculator();
-        modelMapper = new ModelMapper();
-        giftCertificateValidator = new GiftCertificateValidator();
+        ModelMapper modelMapper = new ModelMapper();
+        GiftCertificateValidator giftCertificateValidator = new GiftCertificateValidator();
         modelMapper.getConfiguration()
                 .setFieldAccessLevel(Configuration.AccessLevel.PRIVATE)
                 .setSkipNullEnabled(true)
                 .setMatchingStrategy(MatchingStrategies.STRICT)
                 .setFieldMatchingEnabled(true);
-        giftCertificateService = new GiftCertificateServiceImpl(giftCertificateDao,
-                tagService, modelMapper, listConverter, totalPageCountCalculator, giftCertificateValidator);
+        giftCertificateService = new GiftCertificateServiceImpl(tagService,
+                modelMapper,
+                giftCertificateValidator,
+                giftCertificateRepository);
         giftCertificateDto = GiftCertificateDto.builder()
                 .id(1L)
                 .name("name")
@@ -95,7 +88,7 @@ class GiftCertificateServiceImplTest {
                 .tags(Collections.singletonList(new Tag(1L, "name")))
                 .build();
         tagDto = new TagDto(1L, "name");
-        queryParameter = GiftCertificateQueryParameterDto.giftCertificateQueryParameterDtoBuilder()
+        queryParameter = GiftCertificateQueryParameterDto.builder()
                 .name(Optional.ofNullable(null))
                 .description(Optional.ofNullable(null))
                 .tagNames(Optional.ofNullable(null))
@@ -103,14 +96,14 @@ class GiftCertificateServiceImplTest {
                 .page(1)
                 .size(10)
                 .firstValue(1)
-                .sortingDirection(QueryParameterDto.SortingDirection.ASC)
+                .sortingDirection(GiftCertificateQueryParameterDto.SortingDirection.ASC)
                 .build();
     }
 
     @Test
     void testAdd_AllFieldsAreValid_CreatesGiftCertificate() {
         // Given
-        when(giftCertificateDao.add(any())).thenReturn(giftCertificate);
+        when(giftCertificateRepository.save(any())).thenReturn(giftCertificate);
         when(tagService.findByName("name")).thenReturn(Optional.ofNullable(tagDto));
         when(tagService.add(any())).thenReturn(tagDto);
         // When
@@ -179,7 +172,7 @@ class GiftCertificateServiceImplTest {
     @Test
     void testFindById_ValidId_findsGiftCertificate() {
         // Given
-        when(giftCertificateDao.findById(1L)).thenReturn(Optional.ofNullable(giftCertificate));
+        when(giftCertificateRepository.findById(1L)).thenReturn(Optional.ofNullable(giftCertificate));
         // When
         GiftCertificateDto result = giftCertificateService.findById(1L);
         // Then
@@ -198,8 +191,8 @@ class GiftCertificateServiceImplTest {
     @Test
     void testFindAll_GiftCertificatesExist_findsGiftCertificates() {
         // Given
-        when(giftCertificateDao.findAll(any())).thenReturn(Collections.singletonList(giftCertificate));
-        when(giftCertificateDao.getTotalNumberOfItems(any())).thenReturn(20L);
+        when(giftCertificateRepository.findAllGiftCertificates(any())).thenReturn(Collections.singletonList(giftCertificate));
+        when(giftCertificateRepository.getTotalNumberOfItems(any())).thenReturn(20L);
         // When
         PagedModel<GiftCertificateDto> result = giftCertificateService.findAll(queryParameter);
         // Then
@@ -220,7 +213,7 @@ class GiftCertificateServiceImplTest {
                 .lastUpdateDate(LocalDateTime.of(2021, Month.DECEMBER, 11, 20, 24, 43))
                 .tags(Collections.singletonList(new Tag(1L, "name")))
                 .build();
-        when(giftCertificateDao.findById(1L)).thenReturn(Optional.ofNullable(updatedGiftCertificate));
+        when(giftCertificateRepository.findById(1L)).thenReturn(Optional.ofNullable(updatedGiftCertificate));
         when(tagService.findByName("name")).thenReturn(Optional.ofNullable(tagDto));
         when(tagService.add(tagDto)).thenReturn(tagDto);
         GiftCertificateDto updatedGiftCertificateDto = GiftCertificateDto.builder()
