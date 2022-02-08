@@ -32,7 +32,7 @@ public class TagServiceImpl implements TagService {
     @Transactional
     public TagDto add(TagDto tagDto) {
         String tagName = tagDto.getName();
-        if (tagRepository.findByName(tagName).isEmpty()) {
+        if (!tagRepository.findByName(tagName).isPresent()) {
             Tag tag = modelMapper.map(tagDto, Tag.class);
             tagDto.setId(tagRepository.save(tag).getId());
             return tagDto;

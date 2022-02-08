@@ -48,7 +48,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserDto add(UserRegistrationDto registrationDto) {
         String username = registrationDto.getUsername();
-        if (userRepository.findByUsername(username).isEmpty()) {
+        if (!userRepository.findByUsername(username).isPresent()) {
             registrationDto.setRoles(Collections.singleton(RoleDto.USER));
             registrationDto.setPassword(passwordEncoder.encode(registrationDto.getPassword()));
             User user = modelMapper.map(registrationDto, User.class);
