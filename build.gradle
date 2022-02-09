@@ -9,12 +9,9 @@ buildscript {
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:3.3"
         classpath "org.springframework.boot:spring-boot-gradle-plugin:2.6.3"
     }
 }
-
-apply plugin: "org.sonarqube"
 
 group 'com.epam.esm'
 version '1.0-SNAPSHOT'
