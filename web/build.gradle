@@ -1,6 +1,14 @@
 plugins {
     id 'war'
+    id 'application'
 }
+
+war {
+    baseName = 'mjc'
+}
+
+mainClassName = "com.tutorialspoint.demo.DemoApplication"
+
 dependencies {
     implementation project(':service')
     implementation 'org.springframework.boot:spring-boot-starter-web'
