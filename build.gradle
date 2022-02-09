@@ -21,7 +21,7 @@ version '1.0-SNAPSHOT'
 
 subprojects {
     apply plugin: 'java'
-    apply plugin: "io.spring.dependency-management"
+    apply plugin: 'io.spring.dependency-management'
 
     repositories {
         mavenCentral()
@@ -43,7 +43,7 @@ subprojects {
         testAnnotationProcessor "org.projectlombok:lombok:$lombokVersion"
         implementation 'org.springframework.boot:spring-boot-starter-hateoas'
     }
-    test {
-        useJUnitPlatform()
-    }
+//    test {
+//        useJUnitPlatform()
+//    }
 }

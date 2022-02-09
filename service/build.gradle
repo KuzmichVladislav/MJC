@@ -1,3 +1,12 @@
+plugins {
+    id 'application'
+    id 'jacoco'
+}
+
+jacoco {
+    applyTo run
+}
+
 dependencies {
     implementation project(':persistence')
     implementation 'org.modelmapper:modelmapper:2.4.5'
@@ -8,6 +17,18 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.6.1")
 }
 
+//test {
+//    useJUnitPlatform()
+//}
+
 test {
-    useJUnitPlatform()
+    finalizedBy jacocoTestReport // report is always generated after tests run
+}
+jacocoTestReport {
+    dependsOn test // tests are required to run before generating the report
+}
+
+tasks.register('applicationCodeCoverageReport', JacocoReport) {
+    executionData run
+    sourceSets sourceSets.main
 }
