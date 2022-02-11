@@ -24,25 +24,66 @@ test {
     finalizedBy jacocoTestReport // report is always generated after tests run
 }
 
+jacoco {
+    toolVersion = "0.8.7"
+    reportsDirectory = layout.buildDirectory.dir('customJacocoReportDir')
+}
+
+
 jacocoTestReport {
-    dependsOn test
+    group = "Reporting"
     reports {
         xml.enabled true
+        csv.enabled false
+        html.destination file("${buildDir}/reports/coverage")
+        xml.destination file("${buildDir}/reports/jacoco.xml")
     }
 }
 
-//sonarqube {
-//    properties {
-//        property "sonar.login", "admin"
-//        property "sonar.password", "Kuziaert9"
-//        property "sonar.projectVersion", "1.0"
-//        property "sonar.host.url", "http://localhost:9000"
-//        property "sonar.sourceEncoding", "UTF-8"
-//        property "sonar.projectName", "SonarQubeMJCDemo"
-//        property "sonar.projectKey", "SonarQubeMJCDemo"
-//    }
-//}
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.5
+            }
+        }
+
+        rule {
+            enabled = false
+            element = 'CLASS'
+            includes = ['org.gradle.*']
+
+            limit {
+                counter = 'LINE'
+                value = 'TOTALCOUNT'
+                maximum = 0.3
+            }
+        }
+    }
+}
+
+
+sonarqube {
+    properties {
+        property "sonar.login", "admin"
+        property "sonar.password", "Kuziaert9"
+        property "sonar.projectVersion", "1.0"
+        property "sonar.host.url", "http://localhost:9000"
+        property "sonar.sourceEncoding", "UTF-8"
+        property "sonar.projectName", "SonarQubeMJCDemo"
+        property "sonar.projectKey", "SonarQubeMJCDemo"
+        property 'sonar.core.codeCoveragePlugin', 'jacoco'
+        property 'sonar.coverage.jacoco.xmlReportPaths', '${project.buildDir}/reports/jacoco.xml'
+    }
+}
 
 jacoco {
     toolVersion = "0.8.7"
+}
+
+test {
+    jacoco {
+        destinationFile = layout.buildDirectory.file('jacoco/jacocoTest.exec').get().asFile
+        classDumpDir = layout.buildDirectory.dir('jacoco/classpathdumps').get().asFile
+    }
 }
