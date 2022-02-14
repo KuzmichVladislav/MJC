@@ -26,7 +26,7 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepositoryJ
     @Override
     public List<GiftCertificate> findAllGiftCertificates(GiftCertificateQueryParameter giftCertificateQueryParameter) {
         return entityManager.createQuery(giftCertificateCriteriaQueryCreator
-                .getGiftCertificateCriteriaQuery(giftCertificateQueryParameter, entityManager))
+                        .getGiftCertificateCriteriaQuery(giftCertificateQueryParameter, entityManager))
                 .setFirstResult(giftCertificateQueryParameter.getFirstValue())
                 .setMaxResults(giftCertificateQueryParameter.getSize())
                 .getResultList();
@@ -35,7 +35,7 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepositoryJ
     @Override
     public long getTotalNumberOfItems(GiftCertificateQueryParameter giftCertificateQueryParameter) {
         return entityManager.createQuery(giftCertificateCriteriaQueryCreator
-                .getGiftCertificateCriteriaQuery(giftCertificateQueryParameter, entityManager))
+                        .getGiftCertificateCriteriaQuery(giftCertificateQueryParameter, entityManager))
                 .getResultList().size();
     }
 }

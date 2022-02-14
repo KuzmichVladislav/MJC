@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 /**
- * The Class JwtTokenFilter accesses the user's identity to perform authentication/authorization..
+ * The Class JwtTokenFilter accesses the user's identity to perform authentication/authorization.
  */
 @Component
 @RequiredArgsConstructor

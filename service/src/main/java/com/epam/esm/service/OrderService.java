@@ -8,7 +8,7 @@ import java.util.List;
 
 /**
  * The Interface OrderService.
- * A interface to define all required methods for order DTO object.
+ * An interface to define all required methods for order DTO object.
  */
 public interface OrderService {
 

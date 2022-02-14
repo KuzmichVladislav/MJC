@@ -6,7 +6,7 @@ import org.springframework.hateoas.PagedModel;
 
 /**
  * The Interface GiftCertificateService.
- * A interface to define all required methods for gift certificate DTO object.
+ * An interface to define all required methods for gift certificate DTO object.
  */
 public interface GiftCertificateService {
 

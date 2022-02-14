@@ -60,7 +60,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         int totalPage = getTotalPage(giftCertificateQueryParameterDto, totalNumberOfItems);
         List<GiftCertificateDto> giftCertificates =
                 convertList(giftCertificateRepository.findAllGiftCertificates(modelMapper.map(giftCertificateQueryParameterDto,
-                        GiftCertificateQueryParameter.class)),
+                                GiftCertificateQueryParameter.class)),
                         this::convertToGiftCertificateDto);
         PagedModel.PageMetadata pageMetadata = new PagedModel.PageMetadata(giftCertificateQueryParameterDto.getSize(),
                 giftCertificateQueryParameterDto.getPage(), totalNumberOfItems, totalPage);

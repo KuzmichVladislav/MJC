@@ -4,16 +4,13 @@ import com.epam.esm.controller.GiftCertificateController;
 import com.epam.esm.controller.OrderController;
 import com.epam.esm.controller.TagController;
 import com.epam.esm.controller.UserController;
-import com.epam.esm.dto.GiftCertificateDto;
-import com.epam.esm.dto.GiftCertificateQueryParameterDto;
-import com.epam.esm.dto.OrderDto;
-import com.epam.esm.dto.TagDto;
-import com.epam.esm.dto.UserDto;
+import com.epam.esm.dto.*;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Objects;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -96,7 +93,7 @@ public class LinkCreator {
         }
         addGiftCertificatePaginationLink(giftCertificateQueryParameterDto, giftCertificatePage,
                 SELF_PAGE, giftCertificateQueryParameterDto.getPage());
-        if (giftCertificatePage.getMetadata().getTotalPages() > giftCertificateQueryParameterDto.getPage()) {
+        if (Objects.requireNonNull(giftCertificatePage.getMetadata()).getTotalPages() > giftCertificateQueryParameterDto.getPage()) {
             int page = giftCertificateQueryParameterDto.getPage() + 1;
             addGiftCertificatePaginationLink(giftCertificateQueryParameterDto, giftCertificatePage,
                     NEXT_PAGE, page);

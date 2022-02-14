@@ -25,24 +25,25 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
      * @param id the identifier
      * @return the optional
      */
-    @Query(value = "SELECT id, name\n" +
-            "         FROM (\n" +
-            "         SELECT id, name, sum(cost) AS amount, (COUNT(id) * number_of_certificates) AS number_of_orders\n" +
-            "         FROM (\n" +
-            "                  SELECT t.id,\n" +
-            "                         t.name,\n" +
-            "                         (oc.gift_certificate_cost * oc.number_of_certificates) AS 'cost',\n" +
-            "                         oc.number_of_certificates\n" +
-            "                  FROM tag t\n" +
-            "                           LEFT JOIN gift_certificate_has_tag gcti ON t.id = gcti.tag_id\n" +
-            "                           LEFT JOIN gift_certificate gc ON gc.id = gcti.gift_certificate_id\n" +
-            "                           LEFT JOIN order_certificates oc ON gc.id = oc.gift_certificate_id\n" +
-            "                           LEFT JOIN orders o ON oc.order_id = o.id\n" +
-            "                           LEFT JOIN user u ON o.user_id = u.id\n" +
-            "                  WHERE u.id = ?1) AS inner_table\n" +
-            "         GROUP BY id\n" +
-            "         ORDER BY number_of_orders DESC, amount DESC\n" +
-            "         LIMIT 1) AS outer_table",
+    @Query(value = """
+            SELECT id, name
+                     FROM (
+                     SELECT id, name, sum(cost) AS amount, (COUNT(id) * number_of_certificates) AS number_of_orders
+                     FROM (
+                              SELECT t.id,
+                                     t.name,
+                                     (oc.gift_certificate_cost * oc.number_of_certificates) AS 'cost',
+                                     oc.number_of_certificates
+                              FROM tag t
+                                       LEFT JOIN gift_certificate_has_tag gcti ON t.id = gcti.tag_id
+                                       LEFT JOIN gift_certificate gc ON gc.id = gcti.gift_certificate_id
+                                       LEFT JOIN order_certificates oc ON gc.id = oc.gift_certificate_id
+                                       LEFT JOIN orders o ON oc.order_id = o.id
+                                       LEFT JOIN user u ON o.user_id = u.id
+                              WHERE u.id = ?1) AS inner_table
+                     GROUP BY id
+                     ORDER BY number_of_orders DESC, amount DESC
+                     LIMIT 1) AS outer_table""",
             nativeQuery = true)
     Optional<Tag> findMostUsedUserTag(long id);
 }

@@ -21,24 +21,14 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Positive;
 import java.util.List;
 
-import static com.epam.esm.exception.ExceptionKey.ID_MIGHT_NOT_BE_NEGATIVE;
-import static com.epam.esm.exception.ExceptionKey.PAGE_MIGHT_NOT_BE_NEGATIVE;
-import static com.epam.esm.exception.ExceptionKey.SIZE_MIGHT_NOT_BE_NEGATIVE;
+import static com.epam.esm.exception.ExceptionKey.*;
 
 /**
  * The Class OrderController is a Rest Controller class which will have
@@ -56,7 +46,7 @@ public class OrderController {
     private final OrderAccess orderAccess;
 
     /**
-     * Add order order based on POST request.
+     * Add order based on POST request.
      *
      * @param orderDto the order DTO
      * @return the order DTO
@@ -101,7 +91,7 @@ public class OrderController {
      * @return the order identifier
      */
     @GetMapping("/{id}")
-    @PostAuthorize("returnObject.userId == principal.userId or hasAuthority('ADMIN')")
+    @PostAuthorize("returnObject.userId == authentication.principal.userId or hasAuthority('ADMIN')")
     public OrderDto getOrderById(@Positive(message = ID_MIGHT_NOT_BE_NEGATIVE)
                                  @PathVariable("id") long id) {
         OrderDto resultOrder = orderService.findById(id);
@@ -130,7 +120,7 @@ public class OrderController {
      * @return the orders
      */
     @GetMapping("/users/{userId}")
-    @PostAuthorize("#userId == principal.userId or hasAuthority('ADMIN')")
+    @PostAuthorize("#userId == authentication.principal.userId or hasAuthority('ADMIN')")
     public List<OrderDto> getOrdersByUserId(@Positive(message = ID_MIGHT_NOT_BE_NEGATIVE)
                                             @PathVariable("userId") long userId) {
         return orderService.findOrdersByUserId(userId);

@@ -11,15 +11,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.Set;
 
-import static com.epam.esm.exception.ExceptionKey.USER_FIRST_NAME_IS_NOT_VALID;
-import static com.epam.esm.exception.ExceptionKey.USER_FIRST_NAME_LENGTH_IS_NOT_VALID;
-import static com.epam.esm.exception.ExceptionKey.USER_FIRST_NAME_MIGHT_NOT_BE_NULL;
-import static com.epam.esm.exception.ExceptionKey.USER_LAST_NAME_IS_NOT_VALID;
-import static com.epam.esm.exception.ExceptionKey.USER_LAST_NAME_LENGTH_IS_NOT_VALID;
-import static com.epam.esm.exception.ExceptionKey.USER_LAST_NAME_MIGHT_NOT_BE_NULL;
-import static com.epam.esm.exception.ExceptionKey.USER_USERNAME_IS_NOT_VALID;
-import static com.epam.esm.exception.ExceptionKey.USER_USERNAME_LENGTH_IS_NOT_VALID;
-import static com.epam.esm.exception.ExceptionKey.USER_USERNAME_MIGHT_NOT_BE_NULL;
+import static com.epam.esm.exception.ExceptionKey.*;
 
 /**
  * DTO Class UserDto for user DTO object

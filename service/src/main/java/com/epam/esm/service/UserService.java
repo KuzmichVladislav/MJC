@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 
 /**
  * The Interface UserService.
- * A interface to define all required methods for user DTO object.
+ * An interface to define all required methods for user DTO object.
  */
 public interface UserService {
 

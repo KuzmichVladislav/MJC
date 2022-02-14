@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 
 /**
- * The Class JwtUserDetails provides core user information..
+ * The Class JwtUserDetails provides core user information.
  */
 public class JwtUserDetails implements UserDetails {
 

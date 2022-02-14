@@ -1,30 +1,16 @@
 package com.epam.esm.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.PositiveOrZero;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.epam.esm.exception.ExceptionKey.CERTIFICATE_DESCRIPTION_IS_NOT_VALID;
-import static com.epam.esm.exception.ExceptionKey.CERTIFICATE_DESCRIPTION_LENGTH_IS_NOT_VALID;
-import static com.epam.esm.exception.ExceptionKey.CERTIFICATE_DURATION_IS_NOT_VALID;
-import static com.epam.esm.exception.ExceptionKey.CERTIFICATE_NAME_IS_NOT_VALID;
-import static com.epam.esm.exception.ExceptionKey.CERTIFICATE_NAME_LENGTH_IS_NOT_VALID;
-import static com.epam.esm.exception.ExceptionKey.CERTIFICATE_PRICE_IS_NOT_VALID;
-import static com.epam.esm.exception.ExceptionKey.ID_MIGHT_NOT_BE_NEGATIVE;
+import static com.epam.esm.exception.ExceptionKey.*;
 
 /**
  * DTO Class GiftCertificate for gift certificate DTO object

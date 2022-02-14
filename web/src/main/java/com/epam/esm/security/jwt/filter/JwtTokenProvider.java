@@ -2,11 +2,7 @@ package com.epam.esm.security.jwt.filter;
 
 import com.epam.esm.security.entity.JwtUserDetails;
 import com.epam.esm.security.service.JwtUserDetailsService;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

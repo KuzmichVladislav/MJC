@@ -1,6 +1,5 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.dto.TagDto;
 import com.epam.esm.dto.UserDto;
 import com.epam.esm.dto.UserRegistrationDto;
 import com.epam.esm.entity.User;
@@ -15,11 +14,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -52,27 +47,15 @@ class UserServiceImplTest {
         ValidatorFactory config = Validation.buildDefaultValidatorFactory();
         validator = config.getValidator();
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        userService = new UserServiceImpl(modelMapper,
-                passwordEncoder,
-                userRepository);
-        userDto = UserDto.builder()
-                .id(1L)
-                .username("Login")
-                .firstName("Name")
-                .lastName("Surname")
-                .build();
+        userService = new UserServiceImpl(modelMapper, passwordEncoder, userRepository);
+        userDto = UserDto.builder().id(1L).username("Login").firstName("Name").lastName("Surname").build();
         userRegistrationDto = new UserRegistrationDto();
         userRegistrationDto.setId(1L);
         userRegistrationDto.setUsername("Login");
         userRegistrationDto.setPassword("Password");
         userRegistrationDto.setFirstName("Name");
         userRegistrationDto.setLastName("Surname");
-        user = User.builder()
-                .id(1L)
-                .username("Login")
-                .firstName("Name")
-                .lastName("Surname")
-                .build();
+        user = User.builder().id(1L).username("Login").firstName("Name").lastName("Surname").build();
         pageable = PageRequest.of(1, 20, Sort.Direction.ASC, "id");
     }
 
@@ -121,8 +104,7 @@ class UserServiceImplTest {
         // Given
         userDto.setUsername(username);
         // When
-        Set<ConstraintViolation<UserDto>> constraintViolations = validator
-                .validate(userDto);
+        Set<ConstraintViolation<UserDto>> constraintViolations = validator.validate(userDto);
         // Then
         Assertions.assertTrue(constraintViolations.size() > 0);
     }
