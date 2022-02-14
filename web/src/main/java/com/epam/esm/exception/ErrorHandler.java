@@ -16,6 +16,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import javax.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 /**
  * The Class ErrorHandler maps exceptions to HTTP responses
@@ -64,8 +65,8 @@ public class ErrorHandler {
     public ExceptionResult handle(ConstraintViolationException e, Locale locale) {
         List<String> collect = e.getConstraintViolations()
                 .stream()
-                .map(error -> createMessage(locale, error.getMessageTemplate(),
-                        String.valueOf(error.getInvalidValue()))).toList();
+                .map(error -> createMessage(locale, error.getMessageTemplate(), String.valueOf(error.getInvalidValue())))
+                .collect(Collectors.toList());
         return new ExceptionResult(collect.get(0), ErrorCode.NOT_VALID_PARAM.getCode());
     }
 
