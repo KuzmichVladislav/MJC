@@ -2,7 +2,6 @@ plugins {
     id 'java'
     id "org.sonarqube" version "3.3"
     id 'jacoco'
-
 }
 
 dependencies {
@@ -15,13 +14,9 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.6.1")
 }
 
-//test {
-//    useJUnitPlatform()
-//}
-
 test {
     useJUnitPlatform()
-    finalizedBy jacocoTestReport // report is always generated after tests run
+    finalizedBy jacocoTestReport
 }
 
 jacoco {
@@ -60,25 +55,6 @@ jacocoTestCoverageVerification {
             }
         }
     }
-}
-
-
-sonarqube {
-    properties {
-        property "sonar.login", "admin"
-        property "sonar.password", "Kuziaert9"
-        property "sonar.projectVersion", "1.0"
-        property "sonar.host.url", "http://localhost:9000"
-        property "sonar.sourceEncoding", "UTF-8"
-        property "sonar.projectName", "SonarQubeMJCDemo"
-        property "sonar.projectKey", "SonarQubeMJCDemo"
-        property 'sonar.core.codeCoveragePlugin', 'jacoco'
-        property 'sonar.coverage.jacoco.xmlReportPaths', '${project.buildDir}/reports/jacoco.xml'
-    }
-}
-
-jacoco {
-    toolVersion = "0.8.7"
 }
 
 test {
