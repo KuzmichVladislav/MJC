@@ -10,7 +10,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-import static com.epam.esm.exception.ExceptionKey.*;
+import static com.epam.esm.exception.ExceptionKey.TAG_NAME_IS_NOT_VALID;
+import static com.epam.esm.exception.ExceptionKey.TAG_NAME_LENGTH_IS_NOT_VALID;
+import static com.epam.esm.exception.ExceptionKey.TAG_NAME_MIGHT_NOT_BE_NULL;
 
 /**
  * DTO Class TagDto for tag DTO object

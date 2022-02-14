@@ -9,7 +9,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-import static com.epam.esm.exception.ExceptionKey.*;
+import static com.epam.esm.exception.ExceptionKey.USER_PASSWORD_IS_NOT_VALID;
+import static com.epam.esm.exception.ExceptionKey.USER_PASSWORD_LENGTH_IS_NOT_VALID;
+import static com.epam.esm.exception.ExceptionKey.USER_PASSWORD_MIGHT_NOT_BE_NULL;
 
 /**
  * The class UserRegistrationDto extends the user class to set a password

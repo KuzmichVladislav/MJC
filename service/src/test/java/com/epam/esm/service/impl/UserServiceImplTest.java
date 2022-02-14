@@ -1,8 +1,11 @@
 package com.epam.esm.service.impl;
 
+import com.epam.esm.dto.AuthorizeRequestDto;
 import com.epam.esm.dto.UserDto;
 import com.epam.esm.dto.UserRegistrationDto;
 import com.epam.esm.entity.User;
+import com.epam.esm.exception.JwtAuthorizationException;
+import com.epam.esm.exception.RequestValidationException;
 import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.repository.UserRepository;
 import com.epam.esm.service.UserService;
@@ -14,7 +17,11 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -23,6 +30,7 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.util.Collections;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -62,7 +70,7 @@ class UserServiceImplTest {
     @Test
     void testFindById_ValidId_findsUser() {
         // Given
-        when(userRepository.findById(anyLong())).thenReturn(java.util.Optional.ofNullable(user));
+        when(userRepository.findById(anyLong())).thenReturn(Optional.ofNullable(user));
         // When
         UserDto result = userService.findById(1L);
         // Then
@@ -91,11 +99,20 @@ class UserServiceImplTest {
     void testAdd_AllFieldsAreValid_CreatesUser() {
         // Given
         when(userRepository.save(any(User.class))).thenReturn(user);
-        when(userRepository.findById(anyLong())).thenReturn(java.util.Optional.ofNullable(user));
+        when(userRepository.findById(anyLong())).thenReturn(Optional.ofNullable(user));
         // When
         UserDto result = userService.add(userRegistrationDto);
         // Then
         Assertions.assertEquals(userDto, result);
+    }
+
+    @Test
+    void testAdd_UserExists_ExceptionThrown() {
+        // Given
+        when(userRepository.findByUsername("Login")).thenReturn(Optional.ofNullable(user));
+        // When
+        // Then
+        Assertions.assertThrows(RequestValidationException.class, () -> userService.add(userRegistrationDto));
     }
 
     @ParameterizedTest
@@ -112,11 +129,44 @@ class UserServiceImplTest {
     @Test
     void testLoadUserByUsername_UserExists_FindsUser() {
         // Given
-        when(userRepository.findByUsername("Login")).thenReturn(java.util.Optional.ofNullable(user));
+        when(userRepository.findByUsername("Login")).thenReturn(Optional.ofNullable(user));
         // When
         UserRegistrationDto result = userService.loadUserByUsername("Login");
         result.setPassword("Password");
         // Then
         Assertions.assertEquals(userRegistrationDto, result);
+    }
+
+    @Test
+    void testLoadUserByUsername_UserNotExists_ExceptionThrown() {
+        // Given
+        when(userRepository.findByUsername("Login")).thenReturn(Optional.empty());
+        // When
+        // Then
+        Assertions.assertThrows(JwtAuthorizationException.class, () -> userService.loadUserByUsername("Login"));
+    }
+
+    @Test
+    void testAuthorize_PasswordIncorrect_ExceptionThrown() {
+        // Given
+        when(userRepository.findByUsername("Login")).thenReturn(Optional.ofNullable(user));
+        // When
+        AuthorizeRequestDto authorizeRequestDto = new AuthorizeRequestDto();
+        authorizeRequestDto.setUsername("Login");
+        authorizeRequestDto.setPassword("Password1");
+        // Then
+        Assertions.assertThrows(JwtAuthorizationException.class, () -> userService.authorize(authorizeRequestDto));
+    }
+
+    @Test
+    void testAuthorize_UserNotExists_ExceptionThrown() {
+        // Given
+        when(userRepository.findByUsername("Login")).thenReturn(Optional.empty());
+        // When
+        AuthorizeRequestDto authorizeRequestDto = new AuthorizeRequestDto();
+        authorizeRequestDto.setUsername("Login");
+        authorizeRequestDto.setPassword("Password1");
+        // Then
+        Assertions.assertThrows(JwtAuthorizationException.class, () -> userService.authorize(authorizeRequestDto));
     }
 }

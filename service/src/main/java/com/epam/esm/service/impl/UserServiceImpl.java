@@ -52,7 +52,6 @@ public class UserServiceImpl implements UserService {
             registrationDto.setRoles(Collections.singleton(RoleDto.USER));
             registrationDto.setPassword(passwordEncoder.encode(registrationDto.getPassword()));
             User user = modelMapper.map(registrationDto, User.class);
-            System.out.println(user);
             return findById(userRepository.save(user).getId());
         } else {
             throw new RequestValidationException(ExceptionKey.USER_EXISTS, username);
