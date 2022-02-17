@@ -2,6 +2,7 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.exception.RequestValidationException;
 import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.repository.GiftCertificateRepository;
 import com.epam.esm.repository.TagRepository;
@@ -98,6 +99,34 @@ class TagServiceImplTest {
     }
 
     @Test
+    void testFindById_InvalidId_ExceptionThrown() {
+        // Given
+        // When
+        // Then
+        Assertions.assertThrows(ResourceNotFoundException.class,
+                () -> tagService.findById(-1L));
+    }
+
+    @Test
+    void testFindMostUsedUserTag_ValidId_findsTag() {
+        // Given
+        when(tagRepository.findMostUsedUserTag(anyLong())).thenReturn(Optional.ofNullable(tag));
+        // When
+        TagDto result = tagService.findMostUsedUserTag(1L);
+        // Then
+        Assertions.assertEquals(tagDto, result);
+    }
+
+    @Test
+    void testFindMostUsedUserTag_InvalidId_ExceptionThrown() {
+        // Given
+        // When
+        // Then
+        Assertions.assertThrows(ResourceNotFoundException.class,
+                () -> tagService.findMostUsedUserTag(-1L));
+    }
+
+    @Test
     void testFindAll_TagsExist_findsTags() {
         // Given
         when(tagRepository.findAll(pageable)).thenReturn(new PageImpl<>(Collections.singletonList(tag)));
@@ -110,10 +139,21 @@ class TagServiceImplTest {
     @Test
     void testRemoveById_InvalidId_ExceptionThrown() {
         // Given
+        when(tagRepository.findAll(pageable)).thenReturn(new PageImpl<>(Collections.singletonList(tag)));
         // When
         // Then
         Assertions.assertThrows(ResourceNotFoundException.class,
-                () -> tagService.removeById(-10L));
+                () -> tagService.removeById(1L));
+    }
+
+    @Test
+    void testRemoveById_Tag_BelongsToCertificate_ExceptionThrown() {
+        // Given
+        when(giftCertificateRepository.existsByTags_Id(1L)).thenReturn(true);
+        // When
+        // Then
+        Assertions.assertThrows(RequestValidationException.class,
+                () -> tagService.removeById(1L));
     }
 
     @Test

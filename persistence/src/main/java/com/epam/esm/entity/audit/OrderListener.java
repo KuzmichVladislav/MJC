@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 public class OrderListener {
 
     /**
-     * Populates the create and purchase time field when adding a order entry to the database.
+     * Populates the create and purchase time field when adding an order entry to the database.
      *
      * @param order the order entity
      */

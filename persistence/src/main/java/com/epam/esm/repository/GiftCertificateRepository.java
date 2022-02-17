@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface GiftCertificateRepository extends JpaRepository<GiftCertificate, Long>, GiftCertificateRepositoryJpa {
 
     /**
-     * Exists by tags identifier boolean.
+     * Exists by tags' identifier boolean.
      *
      * @param id the tags identifier
      * @return the boolean

@@ -7,7 +7,7 @@ package com.epam.esm.exception;
  */
 public class JwtAuthorizationException extends RuntimeException {
 
-    private String messageKey;
+    private final String messageKey;
 
     public JwtAuthorizationException(String messageKey) {
         this.messageKey = messageKey;

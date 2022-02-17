@@ -56,7 +56,7 @@ public class OrderController {
     private final OrderAccess orderAccess;
 
     /**
-     * Add order order based on POST request.
+     * Add order based on POST request.
      *
      * @param orderDto the order DTO
      * @return the order DTO
@@ -101,7 +101,7 @@ public class OrderController {
      * @return the order identifier
      */
     @GetMapping("/{id}")
-    @PostAuthorize("returnObject.userId == principal.userId or hasAuthority('ADMIN')")
+    @PostAuthorize("returnObject.userId == authentication.principal.userId or hasAuthority('ADMIN')")
     public OrderDto getOrderById(@Positive(message = ID_MIGHT_NOT_BE_NEGATIVE)
                                  @PathVariable("id") long id) {
         OrderDto resultOrder = orderService.findById(id);
@@ -130,7 +130,7 @@ public class OrderController {
      * @return the orders
      */
     @GetMapping("/users/{userId}")
-    @PostAuthorize("#userId == principal.userId or hasAuthority('ADMIN')")
+    @PostAuthorize("#userId == authentication.principal.userId or hasAuthority('ADMIN')")
     public List<OrderDto> getOrdersByUserId(@Positive(message = ID_MIGHT_NOT_BE_NEGATIVE)
                                             @PathVariable("userId") long userId) {
         return orderService.findOrdersByUserId(userId);

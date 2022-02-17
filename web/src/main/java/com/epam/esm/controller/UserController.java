@@ -29,7 +29,7 @@ import static com.epam.esm.exception.ExceptionKey.SIZE_MIGHT_NOT_BE_NEGATIVE;
 
 /**
  * The Class UserController is a Rest Controller class which will have
- * all end points for user which is include GET request.
+ * all end points for user which is included GET request.
  */
 @RestController
 @RequestMapping("/v1/users")

@@ -1,8 +1,6 @@
 buildscript {
     ext {
-        springVersion = '5.3.13'
         lombokVersion = '1.18.22'
-//        jacksonVersion = '2.13.0'
         springBootVersion = '2.6.2'
     }
     repositories {
@@ -10,6 +8,7 @@ buildscript {
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:2.6.3"
     }
 }
 
@@ -18,7 +17,7 @@ version '1.0-SNAPSHOT'
 
 subprojects {
     apply plugin: 'java'
-    apply plugin: "io.spring.dependency-management"
+    apply plugin: 'io.spring.dependency-management'
 
     repositories {
         mavenCentral()
@@ -39,8 +38,5 @@ subprojects {
         testCompileOnly "org.projectlombok:lombok:$lombokVersion"
         testAnnotationProcessor "org.projectlombok:lombok:$lombokVersion"
         implementation 'org.springframework.boot:spring-boot-starter-hateoas'
-    }
-    test {
-        useJUnitPlatform()
     }
 }

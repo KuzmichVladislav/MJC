@@ -8,7 +8,7 @@ import java.util.Optional;
 
 /**
  * The Interface TagService.
- * A interface to define all required methods for tag DTO object.
+ * An interface to define all required methods for tag DTO object.
  */
 public interface TagService {
 
@@ -47,7 +47,7 @@ public interface TagService {
     /**
      * Removes the by tag DTO object identifier.
      *
-     * @param id the the tag DTO object identifier
+     * @param id the tag DTO object identifier
      */
     void removeById(long id);
 
