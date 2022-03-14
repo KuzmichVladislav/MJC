@@ -42,4 +42,4 @@ delete them. An **Unregistered user** can see all **Certificates** or a detailed
 - Gradle
 
 **Database visualization**
-![database](https://i.ibb.co/DbsmD3P/gifts.png)
+![database](https://i.ibb.co/BPdvV8H/gifts.png)
